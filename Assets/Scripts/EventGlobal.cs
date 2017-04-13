@@ -9,12 +9,8 @@ public enum EventGlobal
     E_AppFixedUpdate,
     E_AppLateUpdate,
 
-    E_Slot_PointerDrag,
-    E_Slot_PointerEnter,
-    E_Slot_PointerExit,
-    E_Slot_PointerUp,
-
-    //Inventory
-    E_Inventory_EquepAsset,
-    E_Inventory_DequepAsset
+    E_GeneradeRoads,
+    E_SplitSegmentForLevel,
+    E_SplitSegment,
+    E_SetTemplate,
 }

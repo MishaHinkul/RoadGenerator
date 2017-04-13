@@ -15,6 +15,8 @@ public class MainContextRoot : MVCSContext
     {
         base.addCoreComponents();
         injectionBinder.Bind<ICoroutineExecutor>().To<CoroutineExecutor>().ToSingleton();
+
+        injectionBinder.Bind<RoadNetworkModel>().ToSingleton();
     }
 
     // Commands and Bindings
@@ -24,10 +26,19 @@ public class MainContextRoot : MVCSContext
 
         //Mediator
         mediationBinder.Bind<UILoaderView>().To<UILoaderMediator>();
+        mediationBinder.Bind<DebugView>().To<DebugMediator>();
 
         commandBinder.Bind(ContextEvent.START).To<AppStartCommand>()
             .To<LoadLevelStartGameCommand>()
             .Pooled().InSequence().Once();
+
+        commandBinder.Bind(EventGlobal.E_SplitSegmentForLevel).To<SplitSegmentForLevelCommand>();
+        commandBinder.Bind(EventGlobal.E_SplitSegment).To<SplitSegmentCommand>();
+        commandBinder.Bind(EventGlobal.E_SetTemplate).To<YCenterTemplateCommand>();
+
+        commandBinder.Bind(EventGlobal.E_GeneradeRoads).To<GeneradeRoadsCommand>()
+                                                       .To<SplitBaseConfigurationCommand>()
+                                                       .To<ShowDrawLineRoadsCommand>().Pooled();
 
     }
 }

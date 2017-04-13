@@ -14,7 +14,7 @@ public class LoadLevelStartGameCommand : BaseCommand
 
     private IEnumerator Load()
     {
-        SceneManager.LoadScene("menu");
+        SceneManager.LoadScene("level");
         yield return new WaitForEndOfFrame();
         Release();
     }
