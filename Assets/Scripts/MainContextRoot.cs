@@ -34,10 +34,11 @@ public class MainContextRoot : MVCSContext
 
         commandBinder.Bind(EventGlobal.E_SplitSegmentForLevel).To<SplitSegmentForLevelCommand>();
         commandBinder.Bind(EventGlobal.E_SplitSegment).To<SplitSegmentCommand>();
-        commandBinder.Bind(EventGlobal.E_SetTemplate).To<YCenterTemplateCommand>();
+        commandBinder.Bind(EventGlobal.E_SetTemplate).To<XCenterTemplateCommand>();
 
         commandBinder.Bind(EventGlobal.E_GeneradeRoads).To<GeneradeRoadsCommand>()
                                                        .To<SplitBaseConfigurationCommand>()
+                                                       .To<ShowIntersectionCommand>()
                                                        .To<ShowDrawLineRoadsCommand>().Pooled();
 
     }

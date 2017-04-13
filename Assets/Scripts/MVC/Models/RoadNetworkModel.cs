@@ -14,6 +14,9 @@ public class RoadNetworkModel
     /// </summary>
 	public List<Intersection> roadIntersections { get; private set; }
 
+    public Transform roadNetworkTransform;
+    public Transform roadIntersectionTransform;
+
     /// <summary>
     /// Масштаб сети дорог
     /// </summary>

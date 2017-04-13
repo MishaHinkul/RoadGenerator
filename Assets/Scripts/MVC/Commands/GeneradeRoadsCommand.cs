@@ -12,8 +12,23 @@ public class GeneradeRoadsCommand : BaseCommand
         networkModel.Scale = 100;
         networkModel.Init();
 
-
-        CenterTemplateModel templateModel = new CenterTemplateModel(Vector2.zero, 120);
+        if (networkModel.roadNetworkTransform == null)
+        {
+            GameObject roadGO = GameObject.Find("Roads Network");
+            if (roadGO != null)
+            {
+                networkModel.roadNetworkTransform = roadGO.transform;
+                if (networkModel.roadIntersectionTransform == null)
+                {
+                    networkModel.roadIntersectionTransform = networkModel.roadNetworkTransform.FindChild("Road Intersections");
+                }       
+            }
+            else
+            {
+                Debug.LogError("GameObject: Roads Network - not found");
+            }
+        }    
+        CenterTemplateModel templateModel = new CenterTemplateModel(Vector2.zero, 270);
         dispatcher.Dispatch(EventGlobal.E_SetTemplate, templateModel);
     }
 }
