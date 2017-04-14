@@ -39,6 +39,7 @@ public class MainContextRoot : MVCSContext
         commandBinder.Bind(EventGlobal.E_GeneradeRoads).To<GeneradeRoadsCommand>()
                                                        .To<SplitBaseConfigurationCommand>()
                                                        .To<ShowIntersectionCommand>()
+                                                       .To<ShowRoadSegmentsCommands>()
                                                        .To<ShowDrawLineRoadsCommand>().Pooled();
 
     }

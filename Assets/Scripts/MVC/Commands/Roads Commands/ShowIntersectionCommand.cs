@@ -25,6 +25,7 @@ public class ShowIntersectionCommand : BaseCommand
             RoadPoint roadPointA = networkModel.roadIntersections[i].Points[0];
             RoadPoint roadPointB = roadPointA.mySegement.GetOther(roadPointA);
             Vector3 position = new Vector3(roadPointA.point.x, networkModel.roadIntersectionTransform.position.y, roadPointA.point.y);
+            networkModel.viewIntersection.Add(position);
             Quaternion rotation;
 
             //Перекресток
@@ -37,12 +38,11 @@ public class ShowIntersectionCommand : BaseCommand
             //T - образный перекресток
             else if (networkModel.roadIntersections[i].Points.Count == 3)
             {
-
                 intersectionGO = GameObject.Instantiate<GameObject>(intersectionT);
                 intersectionGO.transform.position = position;
                 rotation = LookRotationForTIntersection(networkModel.roadIntersections[i].Points);
                 intersectionGO.transform.rotation = rotation;
-            }         
+            }   
 
             if (intersectionGO != null)
             {

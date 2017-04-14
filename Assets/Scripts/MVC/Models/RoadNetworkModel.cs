@@ -17,6 +17,14 @@ public class RoadNetworkModel
     public Transform roadNetworkTransform;
     public Transform roadIntersectionTransform;
 
+
+    /// <summary>
+    /// Храним координаты точек которые уже учавствовали в визуализайии сети дорог
+    /// Чтобы не создать меш дважды для одного и того же места
+    /// </summary>
+    public List<Vector3> viewRoads { get; private set; }
+    public List<Vector3> viewIntersection { get; private set; }
+
     /// <summary>
     /// Масштаб сети дорог
     /// </summary>
@@ -25,13 +33,15 @@ public class RoadNetworkModel
     /// <summary>
     /// Минимальная длинна сегмента дороги, иначе он будет удален из сети
     /// </summary>
-	public float ShortCutOff = 5.5f;
-    public float CloseCutoff = 7.5f;
+	public float ShortCutOff = 5f;
+    public float CloseCutoff = 7f;
 
-    public void Init()
+    public RoadNetworkModel()
     {
         roadIntersections = new List<Intersection>();
         roadSegments = new List<RoadSegment>();
-    }
+        viewRoads = new List<Vector3>();
+        viewIntersection = new List<Vector3>();
 
+    }
 }

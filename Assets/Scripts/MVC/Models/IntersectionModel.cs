@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Пересечения, которые и формируют перекрестки
 /// </summary>
-public struct Intersection
+public class Intersection
 {
     public List<RoadPoint> Points; //список должен быть отсортирован в круговом порядке
 

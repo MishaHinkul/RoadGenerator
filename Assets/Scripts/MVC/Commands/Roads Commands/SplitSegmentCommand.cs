@@ -20,7 +20,7 @@ public class SplitSegmentCommand : BaseCommand
         }
 
         //Коэфициент на относительно которого мы разобем текущий сегмент
-        float splitDistance = Random.Range(0.33f, 0.66f);
+        float splitDistance = Random.Range(0.3f, 0.6f);
 
         //Начало и конец сегмента, положение в 3д мире
         Vector3 p1 = new Vector3(rootSegment.PointA.point.x, 0, rootSegment.PointA.point.y);
@@ -28,6 +28,8 @@ public class SplitSegmentCommand : BaseCommand
 
         float length = Vector3.Distance(p1, p2);
         length *= splitDistance; // длинна, части сегмента
+
+        length = (int)length; // пусть будут только целые числа, чтобы правильно наложить меш и не масштабировать его
 
         //Получили направление сегмента дороги
         Vector3 direction = (p1 - p2).normalized;
@@ -41,6 +43,7 @@ public class SplitSegmentCommand : BaseCommand
         //Например: scale = 100, segment.Level = 0, рендом = 1.5
         // Длинна будущего сегмента = 66.66
         float newLength = networkModel.Scale / ((rootSegment.Level + 1) * Random.Range(1f, 2f));
+        newLength = (int)newLength; // пусть будут только целые числа, чтобы правильно наложить меш и не масштабировать его
 
         //Определяем где будет конец нового сегмента
         Vector3 pointEndNewSegment = pointBeginNewSegment + (per * newLength);

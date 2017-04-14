@@ -50,7 +50,9 @@ public class RoadSegment
 
     public void DebugDriwLine()
     {
-        Debug.DrawLine(GetVector3(true), GetVector3(false), Color.green);
+        Debug.DrawLine(GetVector3(true), GetVector3(false), Color.blue);
+        Debug.DrawRay(GetVector3(true), Vector3.up, Color.red);
+        Debug.DrawRay(GetVector3(false), Vector3.up, Color.red);
     }
 
     /// <summary>
