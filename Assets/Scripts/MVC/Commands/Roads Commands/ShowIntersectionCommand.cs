@@ -18,29 +18,29 @@ public class ShowIntersectionCommand : BaseCommand
         }
 
         GameObject intersectionGO = null;
-        for (int i = 0; i < networkModel.roadIntersections.Count; i++)
+        for (int i = 0; i < networkModel.RoadIntersections.Count; i++)
         {
             //networkModel.roadIntersections[i].Points - координаты у всех одинаковые
 
-            RoadPoint roadPointA = networkModel.roadIntersections[i].Points[0];
+            RoadPoint roadPointA = networkModel.RoadIntersections[i].Points[0];
             RoadPoint roadPointB = roadPointA.mySegement.GetOther(roadPointA);
             Vector3 position = new Vector3(roadPointA.point.x, networkModel.roadIntersectionTransform.position.y, roadPointA.point.y);
             networkModel.viewIntersection.Add(position);
             Quaternion rotation;
 
             //Перекресток
-            if (networkModel.roadIntersections[i].Points.Count == 4)
+            if (networkModel.RoadIntersections[i].Points.Count == 4)
             {
                 rotation = LookRotation(roadPointA);
 
                 intersectionGO = GameObject.Instantiate<GameObject>(intersection, position, rotation);
             }
             //T - образный перекресток
-            else if (networkModel.roadIntersections[i].Points.Count == 3)
+            else if (networkModel.RoadIntersections[i].Points.Count == 3)
             {
                 intersectionGO = GameObject.Instantiate<GameObject>(intersectionT);
                 intersectionGO.transform.position = position;
-                rotation = LookRotationForTIntersection(networkModel.roadIntersections[i].Points);
+                rotation = LookRotationForTIntersection(networkModel.RoadIntersections[i].Points);
                 intersectionGO.transform.rotation = rotation;
             }   
 

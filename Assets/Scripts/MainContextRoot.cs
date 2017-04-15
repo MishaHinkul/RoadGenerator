@@ -18,6 +18,8 @@ public class MainContextRoot : MVCSContext
 
         injectionBinder.Bind<RoadNetworkModel>().ToSingleton();
         injectionBinder.Bind<GraphModel>().ToSingleton();
+        injectionBinder.Bind<TreeEntryModel>().ToSingleton();
+        injectionBinder.Bind<PopulationsModel>().ToSingleton();
     }
 
     // Commands and Bindings
@@ -42,6 +44,8 @@ public class MainContextRoot : MVCSContext
                                                        .To<ShowIntersectionCommand>()
                                                        .To<ShowRoadSegmentsCommands>()
                                                        .To<LoadGraphCommand>()
+                                                       .To<InitTreeEntryCommand>()
+                                                       .To<GeneradeGasStationCommand>()
                                                        .To<DebugBuilPuthCommand>()
                                                        .To<ShowDrawLineRoadsCommand>().Pooled();
     }

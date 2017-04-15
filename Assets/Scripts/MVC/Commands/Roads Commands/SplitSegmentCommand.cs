@@ -135,7 +135,7 @@ public class SplitSegmentCommand : BaseCommand
 
                 Intersection inter = new Intersection(points);
                 //Все оставшиеся точки, и формируют перекрестки и т.д и состовляют пересечения в нашей сети
-                networkModel.roadIntersections.Add(inter);
+                networkModel.RoadIntersections.Add(inter);
             }
         }
 
@@ -205,7 +205,7 @@ public class SplitSegmentCommand : BaseCommand
                     networkModel.roadSegments.RemoveAll(p => p.IsEqual(segmentsB[1]));
                 }
                 Intersection inter = new Intersection(points);
-                networkModel.roadIntersections.Add(inter);
+                networkModel.RoadIntersections.Add(inter);
             }
         }
 
@@ -219,21 +219,21 @@ public class SplitSegmentCommand : BaseCommand
                                                                            rootPatchs [1].PointB,
                                                                            newSegment.PointA,
                                                                            newSegmentInversion.PointA});
-                networkModel.roadIntersections.Add(inter);
+                networkModel.RoadIntersections.Add(inter);
             }
             else if (segment1)
             {
                 Intersection inter = new Intersection(new List<RoadPoint>{rootPatchs[0].PointB,
                                                                            rootPatchs[1].PointB,
                                                                            newSegment.PointA});
-                networkModel.roadIntersections.Add(inter);
+                networkModel.RoadIntersections.Add(inter);
             }
             else if (segment2)
             {
                 Intersection inter = new Intersection(new List<RoadPoint>{rootPatchs[0].PointB,
                                                                            rootPatchs[1].PointB,
                                                                            newSegmentInversion.PointA});
-                networkModel.roadIntersections.Add(inter);
+                networkModel.RoadIntersections.Add(inter);
             }
         }
     }

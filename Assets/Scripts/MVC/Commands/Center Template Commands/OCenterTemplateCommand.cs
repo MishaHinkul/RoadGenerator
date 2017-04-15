@@ -40,12 +40,12 @@ public class OCenterTemplateCommand : BaseCommand
             if (last != null)
             {
                 Intersection iA = new Intersection(new List<RoadPoint>() { rA.PointA, last.PointA });
-                networkModel.roadIntersections.Add(iA);
+                networkModel.RoadIntersections.Add(iA);
             }
             last = rA;
         }
 
         Intersection iB = new Intersection(new List<RoadPoint>() { first.PointA, last.PointA });
-        networkModel.roadIntersections.Add(iB);
+        networkModel.RoadIntersections.Add(iB);
     }
 }

@@ -12,9 +12,16 @@ public class RoadNetworkModel
     /// <summary>
     /// Список всех пересечений в нашей сети
     /// </summary>
-	public List<Intersection> roadIntersections { get; private set; }
+	public List<Intersection> RoadIntersections { get; private set; }
 
+    /// <summary>
+    /// Объект в сцене, родитель все сети
+    /// </summary>
     public Transform roadNetworkTransform;
+
+    /// <summary>
+    /// Объект в сцене, родитель для всех пересечений
+    /// </summary>
     public Transform roadIntersectionTransform;
 
 
@@ -31,6 +38,11 @@ public class RoadNetworkModel
 	public float Scale { get; set; }
 
     /// <summary>
+    /// Ширина элемента дороши (Ширины префаба)
+    /// </summary>
+    public float WithRoad { get; set; }
+
+    /// <summary>
     /// Минимальная длинна сегмента дороги, иначе он будет удален из сети
     /// </summary>
 	public float ShortCutOff = 5f;
@@ -38,7 +50,7 @@ public class RoadNetworkModel
 
     public RoadNetworkModel()
     {
-        roadIntersections = new List<Intersection>();
+        RoadIntersections = new List<Intersection>();
         roadSegments = new List<RoadSegment>();
         viewRoads = new List<Vector3>();
         viewIntersection = new List<Vector3>();

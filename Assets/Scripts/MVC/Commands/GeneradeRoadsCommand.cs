@@ -9,7 +9,7 @@ public class GeneradeRoadsCommand : BaseCommand
 
     public override void Execute()
     {
-        networkModel.Scale = 50;
+        networkModel.Scale = 25;
 
         if (networkModel.roadNetworkTransform == null)
         {

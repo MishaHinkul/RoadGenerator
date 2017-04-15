@@ -10,11 +10,13 @@ public class ShowRoadSegmentsCommands : BaseCommand
     public override void Execute()
     {
         GameObject roadPrefab = Resources.Load<GameObject>("ROAD_straight");
+     
 
         if (roadPrefab == null || networkModel.roadNetworkTransform == null)
         {
             return;
         }
+        networkModel.WithRoad = roadPrefab.transform.lossyScale.z;
 
         for (int i = 0; i < networkModel.roadSegments.Count; i++)
         {

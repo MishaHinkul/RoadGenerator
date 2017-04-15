@@ -10,6 +10,9 @@ public class DebugBuilPuthCommand : BaseCommand
     [Inject]
     public RoadNetworkModel roadNetwork { get; private set; }
 
+    [Inject]
+    public TreeEntryModel entryMode { get; private set; }
+
     public override void Execute()
     {
         LineRenderer line = GameObject.FindObjectOfType<LineRenderer>();
@@ -19,8 +22,8 @@ public class DebugBuilPuthCommand : BaseCommand
         //                            roadNetwork.roadNetworkTransform.position.y,
         //                            roadNetwork.roadSegments[roadNetwork.roadSegments.Count - 1].PointB.point.y);
 
-        Vector3 begin = new Vector3(17, 0, 1);
-        Vector3 end = new Vector3(-9, 0, -9);
+        Vector3 begin = entryMode.Entrances[0];
+        Vector3 end = entryMode.Entrances[1];
         List<Vertex> path =  gragpModel.graph.GetPathAstart(begin, end);
 
         line.numPositions = path.Count;
@@ -29,7 +32,5 @@ public class DebugBuilPuthCommand : BaseCommand
         {
             line.SetPosition(i, (path[i] as VertexVisibility).transform.position);
         }
-
-
     }
 }

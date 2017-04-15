@@ -45,6 +45,6 @@ public class YCenterTemplateCommand : BaseCommand
         networkModel.roadSegments.AddRange(new RoadSegment[] { rA, rB, rC });
 
         Intersection iA = new Intersection(new List<RoadPoint>() { rA.PointA, rB.PointA, rC.PointA });
-        networkModel.roadIntersections.Add(iA);
+        networkModel.RoadIntersections.Add(iA);
     }
 }
