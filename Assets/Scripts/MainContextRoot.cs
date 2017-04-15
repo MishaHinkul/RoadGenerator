@@ -17,6 +17,7 @@ public class MainContextRoot : MVCSContext
         injectionBinder.Bind<ICoroutineExecutor>().To<CoroutineExecutor>().ToSingleton();
 
         injectionBinder.Bind<RoadNetworkModel>().ToSingleton();
+        injectionBinder.Bind<GraphModel>().ToSingleton();
     }
 
     // Commands and Bindings
@@ -40,7 +41,8 @@ public class MainContextRoot : MVCSContext
                                                        .To<SplitBaseConfigurationCommand>()
                                                        .To<ShowIntersectionCommand>()
                                                        .To<ShowRoadSegmentsCommands>()
+                                                       .To<LoadGraphCommand>()
+                                                       .To<DebugBuilPuthCommand>()
                                                        .To<ShowDrawLineRoadsCommand>().Pooled();
-
     }
 }

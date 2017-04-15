@@ -9,7 +9,13 @@ public class ShowRoadSegmentsCommands : BaseCommand
 
     public override void Execute()
     {
-        GameObject intersection = Resources.Load<GameObject>("ROAD_straight");
+        GameObject roadPrefab = Resources.Load<GameObject>("ROAD_straight");
+
+        if (roadPrefab == null || networkModel.roadNetworkTransform == null)
+        {
+            return;
+        }
+
         for (int i = 0; i < networkModel.roadSegments.Count; i++)
         {
             RoadPoint roadPointA = networkModel.roadSegments[i].PointA;
@@ -19,7 +25,7 @@ public class ShowRoadSegmentsCommands : BaseCommand
             Vector2 directionSegment = roadPointB.point - roadPointA.point;
             Vector3 forward = new Vector3(directionSegment.x, networkModel.roadIntersectionTransform.position.y, directionSegment.y);
 
-            float step = intersection.transform.lossyScale.z;
+            float step = roadPrefab.transform.lossyScale.z;
             float iteration = Vector2.Distance(roadPointA.point, roadPointB.point) / step;
 
             forward = forward.normalized; //Направление в котором будм создавать тайлы дороги
@@ -30,7 +36,8 @@ public class ShowRoadSegmentsCommands : BaseCommand
                 //Проверка для того чтобы не создать объект на пересечении
                 if (!Contains(instPosition))
                 {
-                    GameObject instacGO = GameObject.Instantiate<GameObject>(intersection, instPosition, Quaternion.LookRotation(forward));
+                    GameObject instacGO = GameObject.Instantiate<GameObject>(roadPrefab, instPosition, Quaternion.LookRotation(forward));
+                    instacGO.transform.parent = networkModel.roadNetworkTransform;
                 }
             }
         }
