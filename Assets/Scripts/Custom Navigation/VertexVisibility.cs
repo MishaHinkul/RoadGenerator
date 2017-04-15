@@ -1,35 +1,28 @@
-﻿using System.Collections;
+﻿using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class VertexVisibility : Vertex
 {
-    private void Awake()
+
+    void Awake()
     {
         neighbours = new List<Edge>();
     }
 
     public void FindNeighbours(List<Vertex> vertices)
     {
-        //Collider c = gameObject.GetComponent<Collider>();
-        //c.enabled = false;
+        Collider c = gameObject.GetComponent<Collider>();
+        c.enabled = false;
         Vector3 direction = Vector3.zero;
-        Vector3 target = Vector3.zero;
         Vector3 origin = transform.position;
+        Vector3 target = Vector3.zero;
         RaycastHit[] hits;
         Ray ray;
-        float distance = 0;
-
-
-        //Обойдем все объекты, отбрасывая лучи для проверки прямой видимости, поппутно пополняя список соседей
-
+        float distance = 0f;
         for (int i = 0; i < vertices.Count; i++)
         {
             if (vertices[i] == this)
-            {
                 continue;
-            }
-
             target = vertices[i].transform.position;
             direction = target - origin;
             distance = direction.magnitude;
@@ -37,23 +30,37 @@ public class VertexVisibility : Vertex
             hits = Physics.RaycastAll(ray, distance);
             if (hits.Length == 1)
             {
-                if (hits[0].collider.gameObject.tag.Equals("Vertex"))
+                if (hits[0].collider != null)
                 {
-                    Edge e = new Edge();
-                    e.cost = distance;
-                    GameObject go = hits[0].collider.gameObject;
-                    Vertex v = go.GetComponent<Vertex>();
-                    if (v != vertices[i])
+                    if (hits[0].collider.gameObject.tag.Equals("Vertex"))
                     {
-                        continue;
+                        Edge e = new Edge();
+                        e.cost = distance;
+                        GameObject go = hits[0].collider.gameObject;
+                        Vertex v = go.GetComponent<Vertex>();
+                        if (v != vertices[i])
+                            continue;
+                        e.vertex = v;
+                        neighbours.Add(e);
                     }
-                    e.vertex = v;
-                    neighbours.Add(e);
-
-                }
+                }            
             }
         }
-       // c.enabled = true;
+        c.enabled = true;
     }
 
+    /// <summary>
+    /// Not in book. This is for testing purposes only.
+    /// </summary>
+    public void OnDrawGizmos()
+    {
+        Gizmos.color = Color.magenta;
+        Vector3 originPos, targetPos;
+        originPos = transform.position;
+        foreach (Edge e in neighbours)
+        {
+            targetPos = e.vertex.transform.position;
+            Gizmos.DrawLine(originPos, targetPos);
+        }
+    }
 }
