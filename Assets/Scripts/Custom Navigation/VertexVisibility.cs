@@ -52,15 +52,15 @@ public class VertexVisibility : Vertex
     /// <summary>
     /// Not in book. This is for testing purposes only.
     /// </summary>
-    public void OnDrawGizmos()
-    {
-        Gizmos.color = Color.magenta;
-        Vector3 originPos, targetPos;
-        originPos = transform.position;
-        foreach (Edge e in neighbours)
-        {
-            targetPos = e.vertex.transform.position;
-            Gizmos.DrawLine(originPos, targetPos);
-        }
-    }
+    //public void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.magenta;
+    //    Vector3 originPos, targetPos;
+    //    originPos = transform.position;
+    //    foreach (Edge e in neighbours)
+    //    {
+    //        targetPos = e.vertex.transform.position;
+    //        Gizmos.DrawLine(originPos, targetPos);
+    //    }
+    //}
 }

@@ -22,9 +22,8 @@ public class DebugBuilPuthCommand : BaseCommand
         //                            roadNetwork.roadNetworkTransform.position.y,
         //                            roadNetwork.roadSegments[roadNetwork.roadSegments.Count - 1].PointB.point.y);
 
-        Vector3 begin = entryMode.Entrances[0];
-        Vector3 end = entryMode.Entrances[1];
-        List<Vertex> path =  gragpModel.graph.GetPathAstart(begin, end);
+
+        List<Vertex> path = eventData.data as List<Vertex>;
 
         line.numPositions = path.Count;
 

@@ -16,6 +16,7 @@ public class MainContextRoot : MVCSContext
         base.addCoreComponents();
         injectionBinder.Bind<ICoroutineExecutor>().To<CoroutineExecutor>().ToSingleton();
 
+        //Model
         injectionBinder.Bind<RoadNetworkModel>().ToSingleton();
         injectionBinder.Bind<GraphModel>().ToSingleton();
         injectionBinder.Bind<TreeEntryModel>().ToSingleton();
@@ -30,23 +31,36 @@ public class MainContextRoot : MVCSContext
         //Mediator
         mediationBinder.Bind<UILoaderView>().To<UILoaderMediator>();
         mediationBinder.Bind<DebugView>().To<DebugMediator>();
+        mediationBinder.Bind<AgentView>().To<AgentMediator>();
+        mediationBinder.Bind<AgentBehaviurView>().To<AgentBehaviourMediator>();
+        mediationBinder.Bind<SeekView>().To<SeekMediator>();
+        mediationBinder.Bind<PathFollowerView>().To<FollowPathMediator>();
 
         commandBinder.Bind(ContextEvent.START).To<AppStartCommand>()
             .To<LoadLevelStartGameCommand>()
             .Pooled().InSequence().Once();
 
-        commandBinder.Bind(EventGlobal.E_SplitSegmentForLevel).To<SplitSegmentForLevelCommand>();
-        commandBinder.Bind(EventGlobal.E_SplitSegment).To<SplitSegmentCommand>();
+        //Roads Network
+
+        //От базовой фигуры зависит вид всей дорожной сети
         commandBinder.Bind(EventGlobal.E_SetTemplate).To<XCenterTemplateCommand>();
 
+        commandBinder.Bind(EventGlobal.E_SplitSegmentForLevel).To<SplitSegmentForLevelCommand>();
+        commandBinder.Bind(EventGlobal.E_SplitSegment).To<SplitSegmentCommand>();
         commandBinder.Bind(EventGlobal.E_GeneradeRoads).To<GeneradeRoadsCommand>()
                                                        .To<SplitBaseConfigurationCommand>()
                                                        .To<ShowIntersectionCommand>()
                                                        .To<ShowRoadSegmentsCommands>()
                                                        .To<LoadGraphCommand>()
+                                                       .To<DisableNavigationColliderCommand>()
                                                        .To<InitTreeEntryCommand>()
                                                        .To<GeneradeGasStationCommand>()
-                                                       .To<DebugBuilPuthCommand>()
-                                                       .To<ShowDrawLineRoadsCommand>().Pooled();
+                                                       .To<SpawnCarsCommand>().Pooled();
+
+        //Car
+        commandBinder.Bind(EventGlobal.E_InitCar).To<InitCarCommand>();
+
+        //Debug
+        commandBinder.Bind(EventGlobal.E_Dubug_ShowPath).To<DebugBuilPuthCommand>();
     }
 }

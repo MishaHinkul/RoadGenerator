@@ -6,8 +6,7 @@ using UnityEngine;
 public class Graph : MonoBehaviour
 {
     public GameObject vertexPrefab;
-    [SerializeField]
-    protected List<Vertex> vertices;
+    public List<Vertex> vertices;
     protected List<List<Vertex>> neighbours;
     protected List<List<float>> costs;
 

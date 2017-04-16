@@ -9,8 +9,15 @@ public enum EventGlobal
     E_AppFixedUpdate,
     E_AppLateUpdate,
 
+    //Roads
     E_GeneradeRoads,
     E_SplitSegmentForLevel,
     E_SplitSegment,
     E_SetTemplate,
+
+    //Car
+    E_InitCar,
+
+    //Debug
+    E_Dubug_ShowPath
 }
