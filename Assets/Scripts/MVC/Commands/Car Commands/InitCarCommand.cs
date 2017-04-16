@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InitCarCommand : BaseCommand
+public class CarLogicCommand : BaseCommand
 {
     [Inject]
     public TreeEntryModel entryModel { get; private set; }
@@ -13,6 +13,9 @@ public class InitCarCommand : BaseCommand
     [Inject]
     public GraphModel graphModel { get; private set; }
 
+    [Inject]
+    public SettingsModel settingsModel { get; private set; }
+
     public override void Execute()
     {
         GameObject model = eventData.data as GameObject;
@@ -20,8 +23,8 @@ public class InitCarCommand : BaseCommand
         {
             return;
         }
-        PathFollowerView follwPath = model.gameObject.GetComponent<PathFollowerView>();
-        if (follwPath == null)
+        CarView carView = model.gameObject.GetComponent<CarView>();
+        if (carView == null)
         {
             return;
         }
@@ -37,9 +40,18 @@ public class InitCarCommand : BaseCommand
 
         List<Vertex> pathVertex = graphModel.graph.GetPathAstart(beginPosition, endPosition);
         pathVertex.Reverse(); //Чтобы путь был от начала в конец
-        Debug.Log(pathVertex[pathVertex.Count - 1].transform.position);
-        dispatcher.Dispatch(EventGlobal.E_Dubug_ShowPath, pathVertex);
         Path path = new Path(pathVertex);
-        follwPath.StartMove(path);
+        carView.StarMove(path, () => 
+        {
+            //По достижению конца пути
+            WaitTimeModel waitTimeModel = new WaitTimeModel();
+            waitTimeModel.time = settingsModel.stopGassStationTime;
+            waitTimeModel.callback = () =>
+            {
+                //По окончанию ожидания 
+                dispatcher.Dispatch(EventGlobal.E_LeaveСity, carView);
+            };
+            dispatcher.Dispatch(EventGlobal.E_WaitTime, waitTimeModel);
+        });
     }
 }

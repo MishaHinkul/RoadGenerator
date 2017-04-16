@@ -5,26 +5,29 @@ using UnityEngine;
 public class CarView : BaseView
 {
     //public CarModel model { get; set; }
-    internal void LoadView()
+
+    public PathFollowerView followPath { get; private set; }
+    public void LoadView()
     {
-       
+        followPath = GetComponent<PathFollowerView>();
     }
 
-    internal void RemoveView()
+    public void RemoveView()
     {
 
-    }
-
-    private void Update()
-    {
-       
     }
 
     /// <summary>
-    /// Начать движение по текущему пути
+    /// Начать движение по указаному пути
     /// </summary>
-    public void StarMove()
+    public void StarMove(Path path, System.Action callbackFinished = null)
     {
-      
+        if (path == null || followPath == null)
+        {
+            return;
+        }
+        dispatcher.Dispatch(EventGlobal.E_Dubug_ShowPath, path.nodes);
+        followPath.StartMove(path, callbackFinished);
     }
+
 }

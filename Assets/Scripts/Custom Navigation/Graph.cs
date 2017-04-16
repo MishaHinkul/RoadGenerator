@@ -118,8 +118,6 @@ public class Graph : MonoBehaviour
 
     public List<Vertex> GetPathAstart(Vector3 begin, Vector3 end, Heuristic h = null)
     {
-        //if (srcObj == null || dstObj == null)
-        //    return new List<Vertex>();
         if (ReferenceEquals(h, null))
             h = EuclidDist;
 

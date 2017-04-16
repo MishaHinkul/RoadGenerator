@@ -7,6 +7,8 @@ public class PathFollowerView : SeekView
     [Header("PathFollowerView:")]
     public PathFollowerModel pathFllowerModel;
 
+    private System.Action callbackFinished = null;
+
     private bool isMove = false;
 
     public override void LoadView()
@@ -25,6 +27,10 @@ public class PathFollowerView : SeekView
                                  pathFllowerModel.path.nodes[pathFllowerModel.path.nodes.Count - 1].transform.position) < pathFllowerModel.pathOffset)
             {
                 isMove = false; 
+                if (callbackFinished != null)
+                {
+                    callbackFinished();
+                }
 
             }
             else
@@ -39,13 +45,15 @@ public class PathFollowerView : SeekView
        
     }
 
-    public void StartMove(Path path)
+    public void StartMove(Path path, System.Action callbackToFinished)
     {
+
         if (path == null)
         {
             return;
         }
         pathFllowerModel.path = path;
+        this.callbackFinished = callbackToFinished;
         isMove = true;
     }
 

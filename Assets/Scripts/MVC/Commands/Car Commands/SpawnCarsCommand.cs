@@ -7,7 +7,8 @@ public class SpawnCarsCommand : BaseCommand
     [Inject]
     public ICoroutineExecutor coroutineExecutor { get; private set; }
 
-    private const float  SPACING = 5f;
+    [Inject]
+    public SettingsModel settingsModel { get; private set; }
 
     private GameObject carPrefab = null;
 
@@ -26,15 +27,16 @@ public class SpawnCarsCommand : BaseCommand
 
     private IEnumerator Spawn()
     {
-        //while(true)
-        //{
-            yield return new WaitForSeconds(SPACING);
+        while (true)
+        {
+            yield return new WaitForSeconds(settingsModel.carSpawnTime);
             GameObject instanceGO = GameObject.Instantiate<GameObject>(carPrefab);
+            yield return new WaitForEndOfFrame();
             if (instanceGO != null)
             {
                 instanceGO.name = "Car";
-                dispatcher.Dispatch(EventGlobal.E_InitCar, instanceGO);
+                dispatcher.Dispatch(EventGlobal.E_CarLogics, instanceGO);
             }
-        //}
+        }
     }
 }

@@ -21,6 +21,7 @@ public class MainContextRoot : MVCSContext
         injectionBinder.Bind<GraphModel>().ToSingleton();
         injectionBinder.Bind<TreeEntryModel>().ToSingleton();
         injectionBinder.Bind<PopulationsModel>().ToSingleton();
+        injectionBinder.Bind<SettingsModel>().ToSingleton();
     }
 
     // Commands and Bindings
@@ -35,6 +36,7 @@ public class MainContextRoot : MVCSContext
         mediationBinder.Bind<AgentBehaviurView>().To<AgentBehaviourMediator>();
         mediationBinder.Bind<SeekView>().To<SeekMediator>();
         mediationBinder.Bind<PathFollowerView>().To<FollowPathMediator>();
+        mediationBinder.Bind<CarView>().To<CarMediator>();
 
         commandBinder.Bind(ContextEvent.START).To<AppStartCommand>()
             .To<LoadLevelStartGameCommand>()
@@ -58,9 +60,13 @@ public class MainContextRoot : MVCSContext
                                                        .To<SpawnCarsCommand>().Pooled();
 
         //Car
-        commandBinder.Bind(EventGlobal.E_InitCar).To<InitCarCommand>();
+        commandBinder.Bind(EventGlobal.E_CarLogics).To<CarLogicCommand>();
+        commandBinder.Bind(EventGlobal.E_LeaveСity).To<LeaveСityCommand>();
 
         //Debug
         commandBinder.Bind(EventGlobal.E_Dubug_ShowPath).To<DebugBuilPuthCommand>();
+
+        //Other
+        commandBinder.Bind(EventGlobal.E_WaitTime).To<WaitTimeCommand>();
     }
 }
