@@ -15,13 +15,6 @@ using System;
 
 public class MainContextInput : MainContextRoot
 {
-    /// <summary>
-    /// LookAt
-    /// </summary>
-    private Vector3 middlePoint;
-    private RaycastHit hitLookAt;
-
-
     public MainContextInput(MonoBehaviour contextView) : base(contextView)
     {
     }
@@ -76,13 +69,19 @@ public class MainContextInput : MainContextRoot
 		}
 	}
   
-
     /// <summary>
     /// Обработка ввода с всей игры
     /// </summary>
 	public void UpdateInput()
-	{
-
-       
-	}
+    {
+        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject() )
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit mouseHit;
+            if (Physics.Raycast(ray, out mouseHit))
+            {
+                dispatcher.Dispatch(EventGlobal.E_CameraMove, mouseHit.point);
+            }
+        }
+    }
 }

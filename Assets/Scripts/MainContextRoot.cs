@@ -22,6 +22,7 @@ public class MainContextRoot : MVCSContext
         injectionBinder.Bind<TreeEntryModel>().ToSingleton();
         injectionBinder.Bind<PopulationsModel>().ToSingleton();
         injectionBinder.Bind<SettingsModel>().ToSingleton();
+        injectionBinder.Bind<CameraSettings>().ToSingleton();
     }
 
     // Commands and Bindings
@@ -37,10 +38,15 @@ public class MainContextRoot : MVCSContext
         mediationBinder.Bind<SeekView>().To<SeekMediator>();
         mediationBinder.Bind<PathFollowerView>().To<FollowPathMediator>();
         mediationBinder.Bind<CarView>().To<CarMediator>();
+        mediationBinder.Bind<CameraView>().To<CameraMediator>();
 
         commandBinder.Bind(ContextEvent.START).To<AppStartCommand>()
             .To<LoadLevelStartGameCommand>()
             .Pooled().InSequence().Once();
+
+        //Camera
+        commandBinder.Bind(EventGlobal.E_CameraMove).To<MoveCameraCommand>().To<UpdateSettingsCameraCommand>().InSequence().Pooled(); 
+        commandBinder.Bind(EventGlobal.E_CameraScale).To<ScaleCameraCommand>().To<UpdateSettingsCameraCommand>().InSequence().Pooled(); 
 
         //Roads Network
 
@@ -57,7 +63,8 @@ public class MainContextRoot : MVCSContext
                                                        .To<DisableNavigationColliderCommand>()
                                                        .To<InitTreeEntryCommand>()
                                                        .To<GeneradeGasStationCommand>()
-                                                       .To<SpawnCarsCommand>().Pooled();
+                                                       .To<ShowDrawLineRoadsCommand>()
+                                                       .To<SpawnCarsCommand>().InSequence().Pooled();
 
         //Car
         commandBinder.Bind(EventGlobal.E_CarLogics).To<CarLogicCommand>();

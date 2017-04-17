@@ -10,6 +10,9 @@ public class ShowDrawLineRoadsCommand : BaseCommand
     [Inject]
     public ICoroutineExecutor coroutineExecutor { get; private set; }
 
+    [Inject]
+    public CameraSettings cameraSettingsModel { get; private set; }
+
 
     public override void Execute()
     {
@@ -20,10 +23,12 @@ public class ShowDrawLineRoadsCommand : BaseCommand
     {
         while(true)
         {
-            foreach (RoadSegment segment in networkModel.roadSegments)
-            {
-                segment.DebugDriwLine();
-            }
+            Debug.DrawLine(cameraSettingsModel.constraint.constraintTopLeft, cameraSettingsModel.constraint.constraintTopRight, Color.red);
+            Debug.DrawLine(cameraSettingsModel.constraint.constraintBottomLeft, cameraSettingsModel.constraint.constraintBottomRight, Color.red);
+            //foreach (RoadSegment segment in networkModel.roadSegments)
+            //{
+            //    segment.DebugDriwLine();
+            //}
             yield return null;
         }
     }

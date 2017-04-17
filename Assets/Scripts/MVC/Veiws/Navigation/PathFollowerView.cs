@@ -14,7 +14,7 @@ public class PathFollowerView : SeekView
     public override void LoadView()
     {
         base.LoadView();
-        agentBehaviourModel.target = new GameObject();
+        agentBehaviourModel.target = new GameObject("Car Target");
         pathFllowerModel.currentParam = 0f;
     }
 
@@ -74,5 +74,13 @@ public class PathFollowerView : SeekView
             Gizmos.DrawRay(src, direction);
         }
         Gizmos.color = tmp;
+    }
+
+    private void OnDestroy()
+    {
+        if (agentBehaviourModel.target != null)
+        {
+            GameObject.Destroy(agentBehaviourModel.target);
+        }
     }
 }

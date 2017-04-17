@@ -21,6 +21,11 @@ public enum EventGlobal
     E_CarLogics,
     E_LeaveСity,
 
+    //Camera
+    E_CameraMove,
+    E_CameraScale,
+    E_CameraUpdateSettings,
+
     //Debug
     E_Dubug_ShowPath
 }

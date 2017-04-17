@@ -26,7 +26,7 @@ public class CarView : BaseView
         {
             return;
         }
-        dispatcher.Dispatch(EventGlobal.E_Dubug_ShowPath, path.nodes);
+        //dispatcher.Dispatch(EventGlobal.E_Dubug_ShowPath, path.nodes);
         followPath.StartMove(path, callbackFinished);
     }
 

@@ -17,10 +17,13 @@ public class SettingsModel
     /// </summary>
     public float stopGassStationTime;
 
+    public float scale;
+
     public SettingsModel()
     {
         carSpawnTime = 3;
         stopGassStationTime = 3;
+        scale = 25;
     }
 
 }

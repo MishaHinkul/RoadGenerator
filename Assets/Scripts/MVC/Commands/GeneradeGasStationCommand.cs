@@ -59,7 +59,7 @@ public class GeneradeGasStationCommand : BaseCommand
             {
                 build.transform.position = center;
                 build.name = "Gass Station " + i;
-                build.transform.localScale = new Vector3(distance, build.transform.lossyScale.y, build.transform.lossyScale.z);
+                build.transform.localScale = new Vector3(factor, build.transform.lossyScale.y, build.transform.lossyScale.z);
 
                 populationModel.buildings.Add(build);
             }       
