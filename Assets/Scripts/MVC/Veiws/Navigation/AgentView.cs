@@ -3,6 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Основной компонент, отвечающий за модель интелектуального поведения.
+/// С данным компонентом должны работать все кто реализует модель поведения
+/// </summary>
 public class AgentView : BaseView
 {
     public AgentModel model;

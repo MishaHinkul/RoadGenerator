@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Сегмент пути
+/// Путь, состоит из сегментов. Отрезок от точки А до точки B
 /// </summary>
 public class PathSegment
 {

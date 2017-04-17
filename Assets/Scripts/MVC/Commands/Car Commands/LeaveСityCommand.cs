@@ -21,13 +21,12 @@ public class LeaveСityCommand : BaseCommand
             return;
         }
 
-        Vector3 beginPosition = model.gameObject.transform.position;
+        Vector3 carPosition = model.gameObject.transform.position;
 
         int entryIndex = Random.Range(0, entryModel.Entrances.Count);
-        Vector3 endPosition = entryModel.Entrances[entryIndex];
+        Vector3 entryPosition = entryModel.Entrances[entryIndex];
 
-        List<Vertex> pathVertex = graphModel.graph.GetPathAstart(beginPosition, endPosition);
-        pathVertex.Reverse(); //Чтобы путь был от начала в конец
+        List<Vertex> pathVertex = graphModel.graph.GetPathAstart(entryPosition, carPosition);
         Path path = new Path(pathVertex);
         model.StarMove(path, () =>
         {

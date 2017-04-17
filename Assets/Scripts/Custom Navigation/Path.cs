@@ -2,10 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Класс представления маршрута 
+/// </summary>
 public class Path
 {
-
+    /// <summary>
+    /// Набор точек которые составляют маршрут
+    /// </summary>
     public List<Vertex> nodes;
+
     List<PathSegment> segments;
 
     public Path()

@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Базовый класс для любого графа
+/// </summary>
 public class Graph : MonoBehaviour
 {
     public GameObject vertexPrefab;
@@ -61,29 +64,27 @@ public class Graph : MonoBehaviour
         return vertices[id];
     }
 
-    public virtual Vertex[] GetNeighbours(Vertex v)
+    /// <summary>
+    /// Получить соседей
+    /// </summary>
+    /// <param name="vertex"></param>
+    /// <returns></returns>
+    public virtual Vertex[] GetNeighbours(Vertex vertex)
     {
         if (ReferenceEquals(neighbours, null) || neighbours.Count == 0)
         {
             return new Vertex[0];
         }
-        if (v.id < 0 || v.id >= neighbours.Count)
+        if (vertex.id < 0 || vertex.id >= neighbours.Count)
         {
             return new Vertex[0];
         }
-        return neighbours[v.id].ToArray();
+        return neighbours[vertex.id].ToArray();
     }
 
-    public virtual Edge[] GetEdges (Vertex v)
+    public virtual Edge[] GetEdges (Vertex vertex)
     {
-        return vertices[v.id].neighbours.ToArray();
-    }
-
-    //Алгорит DFS
-    public List<Vertex> GetPathDFS(GameObject srcObj , GameObject dstObj)
-    {
-            return new List<Vertex>();
-        
+        return vertices[vertex.id].neighbours.ToArray();
     }
 
     private List<Vertex> BuildPath(int srcId, int dstId, ref int[] prevList)
@@ -94,11 +95,12 @@ public class Graph : MonoBehaviour
         {
             path.Add(vertices[prev]);
             prev = prevList[prev];
-        } while (prev != srcId);
+        }
+        while (prev != srcId);
         return path;
     }
 
-    //AStart
+    //A*
     public delegate float Heuristic(Vertex а, Vertex b);
 
     public float EuclidDist(Vertex a, Vertex b)
@@ -119,7 +121,9 @@ public class Graph : MonoBehaviour
     public List<Vertex> GetPathAstart(Vector3 begin, Vector3 end, Heuristic h = null)
     {
         if (ReferenceEquals(h, null))
+        {
             h = EuclidDist;
+        }
 
         Vertex src = GetNearestVertex(begin);
         Vertex dst = GetNearestVertex(end);
@@ -136,7 +140,9 @@ public class Graph : MonoBehaviour
         for (int i = 0; i < size; i++)
         {
             if (i == src.id)
+            {
                 continue;
+            }
             distValue[i] = Mathf.Infinity;
             previous[i] = -1;
         }
@@ -153,7 +159,9 @@ public class Graph : MonoBehaviour
             {
                 int eId = e.vertex.id;
                 if (previous[eId] != -1)
+                {
                     continue;
+                }
                 float cost = distValue[nodeId] + e.cost;
                 // key point
                 cost += h(node.vertex, e.vertex);
@@ -170,12 +178,15 @@ public class Graph : MonoBehaviour
         return new List<Vertex>();
     }
 
-    public List<Vertex> GetPathDijkstra(Vector3 srcObj, Vector3 dstObj)
+    // Деикстрв
+    public List<Vertex> GetPathDijkstra(Vector3 begin, Vector3 end)
     {
-        if (srcObj == null || dstObj == null)
+        if (begin == null || end == null)
+        {
             return new List<Vertex>();
-        Vertex src = GetNearestVertex(srcObj);
-        Vertex dst = GetNearestVertex(dstObj);
+        }
+        Vertex src = GetNearestVertex(begin);
+        Vertex dst = GetNearestVertex(end);
         GPWiki.BinaryHeap<Edge> frontier = new GPWiki.BinaryHeap<Edge>();
         Edge[] edges;
         Edge node, child;
@@ -189,7 +200,9 @@ public class Graph : MonoBehaviour
         for (int i = 0; i < size; i++)
         {
             if (i == src.id)
+            {
                 continue;
+            }
             distValue[i] = Mathf.Infinity;
             previous[i] = -1;
         }
@@ -197,24 +210,26 @@ public class Graph : MonoBehaviour
         {
             node = frontier.Remove();
             int nodeId = node.vertex.id;
-            // exit if necessary
+            // выход при необходимости
             if (ReferenceEquals(node.vertex, dst))
             {
                 return BuildPath(src.id, node.vertex.id, ref previous);
             }
             edges = GetEdges(node.vertex);
-            foreach (Edge e in edges)
+            foreach (Edge edge in edges)
             {
-                int eId = e.vertex.id;
-                if (previous[eId] != -1)
-                    continue;
-                float cost = distValue[nodeId] + e.cost;
-                if (cost < distValue[e.vertex.id])
+                int edgeId = edge.vertex.id;
+                if (previous[edgeId] != -1)
                 {
-                    distValue[eId] = cost;
-                    previous[eId] = nodeId;
-                    frontier.Remove(e);
-                    child = new Edge(e.vertex, cost);
+                    continue;
+                }
+                float cost = distValue[nodeId] + edge.cost;
+                if (cost < distValue[edge.vertex.id])
+                {
+                    distValue[edgeId] = cost;
+                    previous[edgeId] = nodeId;
+                    frontier.Remove(edge);
+                    child = new Edge(edge.vertex, cost);
                     frontier.Add(child);
                 }
             }

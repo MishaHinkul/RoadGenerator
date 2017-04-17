@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Модель поведения, отслеживание маршрута
+/// </summary>
 public class PathFollowerView : SeekView
 {
     [Header("PathFollowerView:")]

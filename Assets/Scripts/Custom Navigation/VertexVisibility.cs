@@ -1,18 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// Клас для предствавления точки видимости, из которой потом сформируется Граф
+/// </summary>
 public class VertexVisibility : Vertex
 {
-
-    void Awake()
+    private void Awake()
     {
         neighbours = new List<Edge>();
     }
 
     public void FindNeighbours(List<Vertex> vertices)
     {
-        Collider c = gameObject.GetComponent<Collider>();
-        c.enabled = false;
+        Collider collider = gameObject.GetComponent<Collider>();
+        collider.enabled = false;
         Vector3 direction = Vector3.zero;
         Vector3 origin = transform.position;
         Vector3 target = Vector3.zero;
@@ -22,11 +24,14 @@ public class VertexVisibility : Vertex
         for (int i = 0; i < vertices.Count; i++)
         {
             if (vertices[i] == this)
+            {
                 continue;
+            }
             target = vertices[i].transform.position;
             direction = target - origin;
             distance = direction.magnitude;
             ray = new Ray(origin, direction);
+            //Ищем с помощью лучей соседей, если нам не мешает другая геометрия с коллайдерами
             hits = Physics.RaycastAll(ray, distance);
             if (hits.Length == 1)
             {
@@ -34,33 +39,20 @@ public class VertexVisibility : Vertex
                 {
                     if (hits[0].collider.gameObject.tag.Equals("Vertex"))
                     {
-                        Edge e = new Edge();
-                        e.cost = distance;
+                        Edge edge = new Edge();
+                        edge.cost = distance;
                         GameObject go = hits[0].collider.gameObject;
-                        Vertex v = go.GetComponent<Vertex>();
-                        if (v != vertices[i])
+                        Vertex vertex = go.GetComponent<Vertex>();
+                        if (vertex != vertices[i])
+                        {
                             continue;
-                        e.vertex = v;
-                        neighbours.Add(e);
+                        }
+                        edge.vertex = vertex;
+                        neighbours.Add(edge);
                     }
                 }            
             }
         }
-        c.enabled = true;
+        collider.enabled = true;
     }
-
-    /// <summary>
-    /// Not in book. This is for testing purposes only.
-    /// </summary>
-    //public void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.magenta;
-    //    Vector3 originPos, targetPos;
-    //    originPos = transform.position;
-    //    foreach (Edge e in neighbours)
-    //    {
-    //        targetPos = e.vertex.transform.position;
-    //        Gizmos.DrawLine(originPos, targetPos);
-    //    }
-    //}
 }

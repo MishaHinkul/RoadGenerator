@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Будет служить бпзой для будущих моделей поведения
+/// Будет служить базой для будущих моделей поведения.
+/// Т.е. сдесь мы реализуем только логику перемещения объекта, а все остальные расчеты делает Agent
 /// </summary>
 public class AgentBehaviurView : BaseView
 {

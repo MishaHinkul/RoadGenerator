@@ -1,5 +1,8 @@
 ﻿using System;
 
+/// <summary>
+/// Класс для хранения соседних вершин и их стоймости
+/// </summary>
 [System.Serializable]
 public class Edge : IComparable<Edge>
 {
@@ -18,7 +21,9 @@ public class Edge : IComparable<Edge>
         int idA = vertex.GetInstanceID();
         int idB = other.vertex.GetInstanceID();
         if (idA == idB)
+        {
             return 0;
+        }
         return (int)result;
     }
 
@@ -27,12 +32,18 @@ public class Edge : IComparable<Edge>
         return (other.vertex.id == this.vertex.id);
     }
 
+    /// <summary>
+    /// Сравнение двух объектов
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
     public override bool Equals(object obj)
     {
         Edge other = (Edge)obj;
         return (other.vertex.id == this.vertex.id);
     }
 
+    //Необходимо для Equals(Edge other)
     public override int GetHashCode()
     {
         return this.vertex.GetHashCode();
