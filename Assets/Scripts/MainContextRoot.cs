@@ -39,9 +39,11 @@ public class MainContextRoot : MVCSContext
         mediationBinder.Bind<PathFollowerView>().To<FollowPathMediator>();
         mediationBinder.Bind<CarView>().To<CarMediator>();
         mediationBinder.Bind<CameraView>().To<CameraMediator>();
+        mediationBinder.Bind<MainMenuView>().To<MainMenuMediator>();
 
-        commandBinder.Bind(ContextEvent.START).To<AppStartCommand>()
-            .To<LoadLevelStartGameCommand>()
+        commandBinder.Bind(ContextEvent.START)
+            .To<AppStartCommand>()
+            .To<ResourceLoadMainMenuCommand>()
             .Pooled().InSequence().Once();
 
         //Camera
@@ -55,7 +57,10 @@ public class MainContextRoot : MVCSContext
 
         commandBinder.Bind(EventGlobal.E_SplitSegmentForLevel).To<SplitSegmentForLevelCommand>();
         commandBinder.Bind(EventGlobal.E_SplitSegment).To<SplitSegmentCommand>();
-        commandBinder.Bind(EventGlobal.E_GeneradeRoads).To<GeneradeRoadsCommand>()
+
+        commandBinder.Bind(EventGlobal.E_GeneradeRoads).To<LoadLevelStartGameCommand>()
+                                                       .To<GeneradeRoadsCommand>()
+                                                       .To<SetCameraConstraintCommand>()
                                                        .To<SplitBaseConfigurationCommand>()
                                                        .To<ShowIntersectionCommand>()
                                                        .To<ShowRoadSegmentsCommands>()
@@ -63,7 +68,6 @@ public class MainContextRoot : MVCSContext
                                                        .To<DisableNavigationColliderCommand>()
                                                        .To<InitTreeEntryCommand>()
                                                        .To<GeneradeGasStationCommand>()
-                                                       .To<ShowDrawLineRoadsCommand>()
                                                        .To<SpawnCarsCommand>().InSequence().Pooled();
 
         //Car

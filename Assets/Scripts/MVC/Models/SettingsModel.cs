@@ -21,9 +21,9 @@ public class SettingsModel
 
     public SettingsModel()
     {
-        carSpawnTime = 3;
-        stopGassStationTime = 3;
-        scale = 25;
+        carSpawnTime = 1;
+        stopGassStationTime = 1;
+        scale = 30;
     }
 
 }

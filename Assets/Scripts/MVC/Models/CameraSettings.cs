@@ -6,7 +6,6 @@ public class CameraSettings
 {
     public CameraFocusPositionSettigs focus;
     public CameraScaleSettings distance;
-    public CameraAngleSettings cameraAngle;
     public CameraConstraint constraint;
 
     public bool lerpMove = false;
@@ -64,11 +63,11 @@ public struct CameraScaleSettings
     /// </summary>
     public float speedChangeDistance;
 
+    public float speed;
+
     public float currentDistance;
 
     public float stopLerpDistance;
-
-    public Vector3 localPosition;
 }
 
 

@@ -29,18 +29,26 @@ public class CarLogicCommand : BaseCommand
             return;
         }
 
-        //Определяем стартовую позицию
+        //Определяем ввъезд в город
         int indexEntry = Random.Range(0, entryModel.Entrances.Count);
-        Vector3 beginPosition = entryModel.Entrances[indexEntry];
-        model.transform.position = beginPosition;
+        Vector3 entryPosition = entryModel.Entrances[indexEntry];
+        model.transform.position = entryPosition;
 
-        //Определяем путь к одной из заправок
+        //К какой станции ехать
         int indexGasStation = Random.Range(0, populationModel.buildings.Count);
-        Vector3 endPosition = populationModel.buildings[indexGasStation].transform.position;
+        Vector3 gasStationPosition = populationModel.buildings[indexGasStation].transform.position;
 
-        List<Vertex> pathVertex = graphModel.graph.GetPathAstart(beginPosition, endPosition);
-        pathVertex.Reverse(); //Чтобы путь был от начала в конец
+        List<Vertex> pathVertex = graphModel.graph.GetPathAstart(gasStationPosition, entryPosition);
         Path path = new Path(pathVertex);
+        //Изначально выключен, для избежания мерцания. Так как
+            // 1. Создаем префаб в сцене 
+            // 2. Ждем конца кадра, чтобы стренж успел все запустить
+            // 3. И только потом устанавливаем позицию на одном из вьъездом 
+        MeshRenderer mesh = carView.GetComponent<MeshRenderer>();
+        if (mesh != null)
+        {
+            mesh.enabled = true;
+        }
         carView.StarMove(path, () => 
         {
             //По достижению конца пути

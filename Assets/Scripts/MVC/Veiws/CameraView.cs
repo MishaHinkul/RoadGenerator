@@ -37,7 +37,10 @@ public class CameraView : BaseView
             new Vector3(0, Screen.height, 0), //LeftTop
             new Vector3(Screen.width, 0, 0), //RightBottom
             Vector3.zero, //LeftBottom    
-        };     
+        };
+        cameraSettings.distance.currentDistance = cameraCache.orthographicSize;
+        cameraSettings.distance.desiredDistance = cameraCache.orthographicSize;
+
     }
 
     internal void RemoveView()
@@ -130,6 +133,7 @@ public class CameraView : BaseView
                 cameraSettings.distance.desiredDistance,
                 ref distanceVel,
                 cameraSettings.distance.speedChangeDistance); // сглаживание смены дистанции
+        cameraCache.orthographicSize = cameraSettings.distance.currentDistance;
     }
 
     /// <summary>

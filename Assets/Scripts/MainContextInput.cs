@@ -74,7 +74,7 @@ public class MainContextInput : MainContextRoot
     /// </summary>
 	public void UpdateInput()
     {
-        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject() )
+        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit mouseHit;
@@ -83,5 +83,6 @@ public class MainContextInput : MainContextRoot
                 dispatcher.Dispatch(EventGlobal.E_CameraMove, mouseHit.point);
             }
         }
+        dispatcher.Dispatch(EventGlobal.E_CameraScale, Input.GetAxis("Mouse ScrollWheel"));
     }
 }

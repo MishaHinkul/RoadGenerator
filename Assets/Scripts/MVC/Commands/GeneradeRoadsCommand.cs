@@ -26,27 +26,6 @@ public class GeneradeRoadsCommand : BaseCommand
                 if (networkModel.roadIntersectionTransform == null)
                 {
                     networkModel.roadIntersectionTransform = networkModel.roadNetworkTransform.FindChild("Road Intersections");
-
-                    //Определяем область ограничения движения камеры, в мире
-                    cameraSettingsModel.constraint.constraintTopRight = new Vector3(networkModel.roadIntersectionTransform.position.x - networkModel.Scale,
-                                                                                  networkModel.roadIntersectionTransform.position.y,
-                                                                                  networkModel.roadIntersectionTransform.position.z - networkModel.Scale
-                                                                                  );
-
-                    cameraSettingsModel.constraint.constraintTopLeft = new Vector3(networkModel.roadIntersectionTransform.position.x + networkModel.Scale,
-                                                              networkModel.roadIntersectionTransform.position.y,
-                                                              networkModel.roadIntersectionTransform.position.z - networkModel.Scale);
-
-                    cameraSettingsModel.constraint.constraintBottomRight = new Vector3(networkModel.roadIntersectionTransform.position.x - networkModel.Scale,
-                                                                                 networkModel.roadIntersectionTransform.position.y,
-                                                                                 networkModel.roadIntersectionTransform.position.z + networkModel.Scale
-                                                                                 );
-
-                    cameraSettingsModel.constraint.constraintBottomLeft = new Vector3(networkModel.roadIntersectionTransform.position.x + networkModel.Scale,
-                                                              networkModel.roadIntersectionTransform.position.y,
-                                                              networkModel.roadIntersectionTransform.position.z + networkModel.Scale);
-
-                    cameraSettingsModel.constraint.SetArr();
                 }       
             }
             else
