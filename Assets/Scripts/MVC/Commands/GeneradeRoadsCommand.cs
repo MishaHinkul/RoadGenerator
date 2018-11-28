@@ -25,7 +25,7 @@ public class GeneradeRoadsCommand : BaseCommand
                 networkModel.roadNetworkTransform = roadGO.transform;
                 if (networkModel.roadIntersectionTransform == null)
                 {
-                    networkModel.roadIntersectionTransform = networkModel.roadNetworkTransform.FindChild("Road Intersections");
+                    networkModel.roadIntersectionTransform = networkModel.roadNetworkTransform.Find("Road Intersections");
                 }       
             }
             else

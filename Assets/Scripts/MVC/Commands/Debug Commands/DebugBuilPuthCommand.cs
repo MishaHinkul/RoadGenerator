@@ -25,9 +25,9 @@ public class DebugBuilPuthCommand : BaseCommand
 
         List<Vertex> path = eventData.data as List<Vertex>;
 
-        line.numPositions = path.Count;
+        line.positionCount = path.Count;
 
-        for (int i = 0; i < line.numPositions; i++)
+        for (int i = 0; i < line.positionCount; i++)
         {
             line.SetPosition(i, (path[i] as VertexVisibility).transform.position);
         }
