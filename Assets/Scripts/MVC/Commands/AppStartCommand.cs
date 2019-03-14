@@ -4,8 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class AppStartCommand : BaseCommand
 {
-    public override void Execute()
-    {
-      
-    }
+  public override void Execute()
+  {
+  }
 }

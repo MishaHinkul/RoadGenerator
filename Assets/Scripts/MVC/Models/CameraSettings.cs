@@ -62,14 +62,6 @@ public class CameraConstraint
   public Vector3 ConstraintBottomLeft { get; set; }
   public Vector3 ConstraintBottomRight { get; set; }
   public Vector3[] ConstraintArr { get; set; }
-
-  /// <summary>
-  /// Направление в которой быыла заблокирована камера
-  /// </summary>
-  public Vector3 direction;
-
-  /// <summary>
-  /// Заблокирована ли камера
-  /// </summary>
-  public bool isConstraint;
+  public Vector3 Direction { get; set; }
+  public bool IsConstraint { get; set; }
 }

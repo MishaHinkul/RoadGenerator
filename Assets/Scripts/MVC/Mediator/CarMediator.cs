@@ -5,16 +5,17 @@ using UnityEngine;
 
 public class CarMediator : EventMediator
 {
-    [Inject]
-    public CarView view { get; set; }
+  public override void OnRegister()
+  {
+    CarView.LoadView();
+  }
 
-    public override void OnRegister()
-    {
-        view.LoadView();
-    }
+  public override void OnRemove()
+  {
+    CarView.RemoveView();
+  }
 
-    public override void OnRemove()
-    {
-        view.RemoveView();
-    }
+
+  [Inject]
+  public CarView CarView { get; set; }
 }

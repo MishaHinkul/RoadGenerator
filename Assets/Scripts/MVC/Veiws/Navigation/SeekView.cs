@@ -7,12 +7,13 @@ using UnityEngine;
 /// </summary>
 public class SeekView : AgentBehaviurView
 {
-    public override Steering GetSteering()
-    {
-        Steering steering = new Steering();
-        steering.linear = agentBehaviourModel.target.transform.position - transform.position;
-        steering.linear.Normalize();
-        steering.linear = steering.linear * agent.model.maxAccel;
-        return steering;
-    }
+  public override Steering GetSteering()
+  {
+    Steering steering = new Steering();
+    steering.linear = agentBehaviourModel.target.transform.position - transform.position;
+    steering.linear.Normalize();
+    steering.linear = steering.linear * agent.model.maxAccel;
+
+    return steering;
+  }
 }

@@ -36,7 +36,6 @@ public class CameraView : BaseView
 
   internal void RemoveView()
   {
-
   }
 
   private void LateUpdate()
@@ -79,16 +78,16 @@ public class CameraView : BaseView
                                            cameraSettings.Focus.DesiredPosition,
                                            ref moveVel,
                                            cameraSettings.Focus.SpeedChangePosition);
-    if (Constraint())
+    if (ConstraintMapRange())
     {
       Vector3 currentDirection = cameraSettings.Focus.DesiredPosition - cameraSettings.Focus.CurrentPosition;
       currentDirection.Normalize();
-      cameraSettings.Constraint.isConstraint = true;
-      cameraSettings.Constraint.direction = currentDirection;
+      cameraSettings.Constraint.IsConstraint = true;
+      cameraSettings.Constraint.Direction = currentDirection;
     }
     else
     {
-      cameraSettings.Constraint.isConstraint = false;
+      cameraSettings.Constraint.IsConstraint = false;
     }
     focus.position = cameraSettings.Focus.CurrentPosition;
 
@@ -124,11 +123,7 @@ public class CameraView : BaseView
     cameraCache.orthographicSize = cameraSettings.Distance.CurrentDistance;
   }
 
-  /// <summary>
-  /// Выходим ли за рамки карты 
-  /// </summary>
-  /// <returns></returns>
-  private bool Constraint()
+  private bool ConstraintMapRange()
   {
     Ray ray;
     RaycastHit hit;

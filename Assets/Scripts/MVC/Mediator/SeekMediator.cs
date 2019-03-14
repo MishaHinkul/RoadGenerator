@@ -5,16 +5,17 @@ using UnityEngine;
 
 public class SeekMediator : EventMediator
 {
-    [Inject]
-    public SeekView view { get; set; }
+  public override void OnRegister()
+  {
+    SeeView.LoadView();
+  }
 
-    public override void OnRegister()
-    {
-        view.LoadView();
-    }
+  public override void OnRemove()
+  {
+    SeeView.RemoveView();
+  }
 
-    public override void OnRemove()
-    {
-        view.RemoveView();
-    }
+
+  [Inject]
+  public SeekView SeeView { get; set; }
 }

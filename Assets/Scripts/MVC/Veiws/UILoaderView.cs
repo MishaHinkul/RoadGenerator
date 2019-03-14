@@ -6,14 +6,12 @@ using UnityEngine.Events;
 
 public class UILoaderView : BaseView
 {
+  public void LoadView()
+  {
+    DontDestroyOnLoad(gameObject);
+  }
 
-	public void LoadView()
-	{
-        DontDestroyOnLoad(gameObject);
-    }
-
-	public void RemoveView()
-	{
-
-	}
+  public void RemoveView()
+  {
+  }
 }

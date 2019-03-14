@@ -26,10 +26,10 @@ public class MoveCameraCommand : BaseCommand
     {
       Vector3 direction = hitPosition - hitCenter.point;
       direction.Normalize();
-      if (cameraSettings.Constraint.isConstraint)
+      if (cameraSettings.Constraint.IsConstraint)
       {
         //Если движемся в сторону блокировки
-        if (Vector3.Angle(direction, cameraSettings.Constraint.direction) < 15)
+        if (Vector3.Angle(direction, cameraSettings.Constraint.Direction) < 15)
         {
           return;
         }

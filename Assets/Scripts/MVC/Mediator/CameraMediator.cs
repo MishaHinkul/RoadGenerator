@@ -5,23 +5,24 @@ using UnityEngine;
 
 public class CameraMediator : EventMediator
 {
-    [Inject]
-    public CameraView view { get; set; }
+  public override void OnRegister()
+  {
+    dispatcher.AddListener(EventGlobal.E_CameraUpdateSettings, OnUpdateCameraSettings);
+    CameraView.LoadView();
+  }
 
-    public override void OnRegister()
-    {
-        dispatcher.AddListener(EventGlobal.E_CameraUpdateSettings, OnUpdateCameraSettings);
-        view.LoadView();
-    }
+  public override void OnRemove()
+  {
+    dispatcher.RemoveListener(EventGlobal.E_CameraUpdateSettings, OnUpdateCameraSettings);
+    CameraView.RemoveView();
+  }
 
-    public override void OnRemove()
-    {
-        dispatcher.RemoveListener(EventGlobal.E_CameraUpdateSettings, OnUpdateCameraSettings);
-        view.RemoveView();
-    }
+  public void OnUpdateCameraSettings()
+  {
+    CameraView.OnUpdateCameraSettings();
+  }
 
-    public void OnUpdateCameraSettings()
-    {
-        view.OnUpdateCameraSettings();
-    }
+
+  [Inject]
+  public CameraView CameraView { get; set; }
 }

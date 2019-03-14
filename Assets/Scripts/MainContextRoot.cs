@@ -42,9 +42,9 @@ public class MainContextRoot : MVCSContext
     mediationBinder.Bind<MainMenuView>().To<MainMenuMediator>();
 
     commandBinder.Bind(ContextEvent.START)
-        .To<AppStartCommand>()
-        .To<ResourceLoadMainMenuCommand>()
-        .Pooled().InSequence().Once();
+                 .To<AppStartCommand>()
+                 .To<ResourceLoadMainMenuCommand>()
+                 .Pooled().InSequence().Once();
 
     //Camera
     commandBinder.Bind(EventGlobal.E_CameraMove).To<MoveCameraCommand>().To<UpdateSettingsCameraCommand>().InSequence().Pooled();
