@@ -15,74 +15,84 @@ using System;
 
 public class MainContextInput : MainContextRoot
 {
-    public MainContextInput(MonoBehaviour contextView) : base(contextView)
+  public MainContextInput(MonoBehaviour contextView) : base(contextView)
+  {
+  }
+
+  public override IContext Start()
+  {
+    IContext c = base.Start();
+    return c;
+  }
+
+  public void Update()
+  {
+    if (dispatcher != null)
+    {
+      UpdateInput();
+      dispatcher.Dispatch(EventGlobal.E_AppUpdate, Time.deltaTime);
+    }
+    else
+    {
+      Debug.LogError("Update ERROR!!! dispatcher == null");
+    }
+  }
+
+  public void FixedUpdate()
+  {
+    if (dispatcher != null)
+    {
+      dispatcher.Dispatch(EventGlobal.E_AppFixedUpdate, Time.deltaTime);
+    }
+    else
+    {
+      Debug.LogError("FixedUpdate ERROR!!! dispatcher == null");
+    }
+  }
+
+  public void LateUpdate()
+  {
+    if (dispatcher != null)
+    {
+      dispatcher.Dispatch(EventGlobal.E_AppLateUpdate, Time.deltaTime);
+    }
+    else
+    {
+      Debug.LogError("LateUpdate ERROR!!! dispatcher == null");
+    }
+  }
+
+  public void OnApplicationFocus(bool focus)
+  {
+    if (!focus)
     {
     }
-
-    public override IContext Start()
-	{
-		IContext c =  base.Start();
-		return c;
-	}
-
-	public void Update()
-	{
-		if(dispatcher != null)
-		{
-			UpdateInput();
-			dispatcher.Dispatch(EventGlobal.E_AppUpdate, Time.deltaTime);
-		}
-		else
-		{
-			Debug.LogError("Update ERROR!!! dispatcher == null");
-		}
-	}
-
-	public void FixedUpdate()
-	{
-		if(dispatcher != null)
-		{
-			dispatcher.Dispatch(EventGlobal.E_AppFixedUpdate, Time.deltaTime);
-		}
-		else
-		{
-            Debug.LogError("FixedUpdate ERROR!!! dispatcher == null");
-		}
-	}
-
-	public void LateUpdate()
-	{
-		if(dispatcher != null)
-		{
-			dispatcher.Dispatch(EventGlobal.E_AppLateUpdate, Time.deltaTime);
-		}
-		else
-		{
-            Debug.LogError("LateUpdate ERROR!!! dispatcher == null");
-		}
-	}
-
-    public void OnApplicationFocus(bool focus)
-	{
-		if(!focus)
-		{         
-		}
-	}
-  
-    /// <summary>
-    /// Обработка ввода с всей игры
-    /// </summary>
-	public void UpdateInput()
+  }
+  public void UpdateInput()
+  {
+    if (TrackMouseDown())
     {
-        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit mouseHit;
-            if (Physics.Raycast(ray, out mouseHit))
-            {
-                dispatcher.Dispatch(EventGlobal.E_CameraMove, mouseHit.point);
-            }
-        }
-        dispatcher.Dispatch(EventGlobal.E_CameraScale, Input.GetAxis("Mouse ScrollWheel"));
+     RayCastToCameraMove();
     }
+    dispatcher.Dispatch(EventGlobal.E_CameraScale, Input.GetAxis("Mouse ScrollWheel"));
+  }
+
+  private bool TrackMouseDown()
+  {
+    return Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject();
+  }
+
+  private bool RayCastToCameraMove()
+  {
+    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    RaycastHit mouseHit;
+    if (Physics.Raycast(ray, out mouseHit))
+    {
+      dispatcher.Dispatch(EventGlobal.E_CameraMove, mouseHit.point);
+
+      return true;
+    }
+
+    return false;
+  }
 }
