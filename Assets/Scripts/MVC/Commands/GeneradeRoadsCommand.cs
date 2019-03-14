@@ -15,17 +15,17 @@ public class GeneradeRoadsCommand : BaseCommand
 
     public override void Execute()
     {
-        networkModel.Scale = settingsModel.scale;
+        networkModel.Scale = settingsModel.Scale;
 
-        if (networkModel.roadNetworkTransform == null)
+        if (networkModel.RoadNetworkTransform == null)
         {
             GameObject roadGO = GameObject.Find("Roads Network");
             if (roadGO != null)
             {
-                networkModel.roadNetworkTransform = roadGO.transform;
-                if (networkModel.roadIntersectionTransform == null)
+                networkModel.RoadNetworkTransform = roadGO.transform;
+                if (networkModel.RoadIntersectionTransform == null)
                 {
-                    networkModel.roadIntersectionTransform = networkModel.roadNetworkTransform.Find("Road Intersections");
+                    networkModel.RoadIntersectionTransform = networkModel.RoadNetworkTransform.Find("Road Intersections");
                 }       
             }
             else

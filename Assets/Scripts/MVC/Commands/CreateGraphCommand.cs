@@ -12,7 +12,7 @@ public class LoadGraphCommand : BaseCommand
         if (graph != null)
         {
             graph.Load();
-            graphModel.graph = graph;
+            graphModel.Graph = graph;
         }
     }
 }

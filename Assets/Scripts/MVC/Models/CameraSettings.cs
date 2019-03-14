@@ -2,133 +2,74 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraSettings 
+public class CameraSettings
 {
-    public CameraFocusPositionSettigs focus;
-    public CameraScaleSettings distance;
-    public CameraConstraint constraint;
+  public CameraSettings()
+  {
+    Constraint = new CameraConstraint();
+    Focus = new CameraFocusPositionSettigs();
+    Distance = new CameraScaleSettings();
+  }
 
-    public bool lerpMove = false;
-    public bool lerpScale = false;
 
-    public Camera cameraObj = null;
-
-    public CameraSettings()
-    {
-        constraint = new CameraConstraint();
-    }
-
+  public CameraConstraint Constraint { get; set; }
+  public CameraFocusPositionSettigs Focus { get; set; }
+  public CameraScaleSettings Distance { get; set; }
+  public bool LerpMove { get; set; }
+  public bool LerpScale { get; set; }
+  public Camera CameraObj { get; set; }
 }
 
 
 
-
-[System.Serializable]
-public struct CameraFocusPositionSettigs
+public class CameraFocusPositionSettigs
 {
-    [Header("Focus Motion:")]
-    /// <summary>
-    /// Скорость движение
-    /// </summary>
-    public float speedMove;
-
-    /// <summary>
-    /// Скорость с которой изменяется позиция
-    /// </summary>
-    public float speedChangePosition;
-
-    public Vector3 desiredPosition;
-
-    public Vector3 currentPosition;
-
-    public float stopLerpDistance;
+  public float SpeedMove { get; set; }
+  public float SpeedChangePosition { get; set; }
+  public float StopLerpDistance { get; set; }
+  public Vector3 DesiredPosition { get; set; }
+  public Vector3 CurrentPosition { get; set; }
 }
 
-[System.Serializable]
-public struct CameraScaleSettings
+public class CameraScaleSettings
 {
-    [Header("Camera Distance:")]
-    /// <summary>
-    /// Желаемая дистанция
-    /// </summary>
-    public float desiredDistance;
-
-    /// <summary>
-    /// Минимальная и максимальная допустимые дистанции
-    /// </summary>
-    public Vector2 min_max_Distance;
-
-    /// <summary>
-    /// Скорость с которой изменяется дистанция камеры
-    /// </summary>
-    public float speedChangeDistance;
-
-    public float speed;
-
-    public float currentDistance;
-
-    public float stopLerpDistance;
-}
-
-
-/// <summary>
-/// Структура, хранящяя настройки угла камеры
-/// </summary>
-[System.Serializable]
-public struct CameraAngleSettings
-{
-    [Header("Camera Angle:")]
-    /// <summary>
-    /// Желаемый угл наклона камеры
-    /// </summary>
-    public Vector3 desiredAngle;
-
-    /// <summary>
-    /// Минимальная и максимальная угл камеры
-    /// </summary>
-    public Vector2 min_max_Angle;
-
-    public Vector3 currentAngle;
-
-    /// <summary>
-    /// Скорость с которой изменяется угол камеры
-    /// </summary>
-    public float speedChangeAngle;
-
-    public float stopLerpAngle;
-
+  public float DesiredDistance { get; set; }
+  public float SpeedChangeDistance { get; set; }
+  public float Speed { get; set; }
+  public float CurrentDistance { get; set; }
+  public float StopLerpDistance { get; set; }
+  public Vector2 MinMaxDistance { get; set; }
 }
 
 public class CameraConstraint
 {
-    public Vector3 constraintTopLeft;
-    public Vector3 constraintTopRight;
+  public void SetArr()
+  {
+    ConstraintArr[0] = ConstraintTopRight;
+    ConstraintArr[1] = ConstraintTopLeft;
+    ConstraintArr[2] = ConstraintBottomRight;
+    ConstraintArr[3] = ConstraintBottomLeft;
+  }
 
-    public Vector3 constraintBottomLeft;
-    public Vector3 constraintBottomRight;
 
-    public Vector3[] constraintArr;
+  public CameraConstraint()
+  {
+    ConstraintArr = new Vector3[4];
+  }
 
-    public CameraConstraint()
-    {
-        constraintArr = new Vector3[4];
-    }
+  public Vector3 ConstraintTopLeft { get; set; }
+  public Vector3 ConstraintTopRight { get; set; }
+  public Vector3 ConstraintBottomLeft { get; set; }
+  public Vector3 ConstraintBottomRight { get; set; }
+  public Vector3[] ConstraintArr { get; set; }
 
-    public void SetArr()
-    {
-        constraintArr[0] = constraintTopRight;
-        constraintArr[1] = constraintTopLeft;
-        constraintArr[2] = constraintBottomRight;
-        constraintArr[3] = constraintBottomLeft;
-    }
+  /// <summary>
+  /// Направление в которой быыла заблокирована камера
+  /// </summary>
+  public Vector3 direction;
 
-    /// <summary>
-    /// Направление в которой быыла заблокирована камера
-    /// </summary>
-    public Vector3 direction;
-
-    /// <summary>
-    /// Заблокирована ли камера
-    /// </summary>
-    public bool isConstraint;
+  /// <summary>
+  /// Заблокирована ли камера
+  /// </summary>
+  public bool isConstraint;
 }

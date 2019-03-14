@@ -28,5 +28,5 @@ public class RoadPoint
             return true;
         }
         return false;
-    }
+    }  
 }

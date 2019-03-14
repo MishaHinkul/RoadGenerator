@@ -7,23 +7,22 @@ using UnityEngine;
 /// </summary>
 public class SettingsModel
 {
-    /// <summary>
-    /// Периодичность с которой будут появлятся машины 
-    /// </summary>
-    public float carSpawnTime;
+  public SettingsModel()
+  {
+    CarSpawnTime = 1;
+    StopGassStationTime = 1;
+    Scale = 30;
+  }
 
-    /// <summary>
-    /// Время остановки на заправке
-    /// </summary>
-    public float stopGassStationTime;
+  /// <summary>
+  /// Периодичность с которой будут появлятся машины 
+  /// </summary>
+  public float CarSpawnTime { get; set; }
 
-    public float scale;
+  /// <summary>
+  /// Время остановки на заправке
+  /// </summary>
+  public float StopGassStationTime { get; set; }
 
-    public SettingsModel()
-    {
-        carSpawnTime = 1;
-        stopGassStationTime = 1;
-        scale = 30;
-    }
-
+  public float Scale { get; set; }
 }

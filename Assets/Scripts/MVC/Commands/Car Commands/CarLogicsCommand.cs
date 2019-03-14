@@ -35,10 +35,10 @@ public class CarLogicCommand : BaseCommand
         model.transform.position = entryPosition;
 
         //К какой станции ехать
-        int indexGasStation = Random.Range(0, populationModel.buildings.Count);
-        Vector3 gasStationPosition = populationModel.buildings[indexGasStation].transform.position;
+        int indexGasStation = Random.Range(0, populationModel.Buildings.Count);
+        Vector3 gasStationPosition = populationModel.Buildings[indexGasStation].transform.position;
 
-        List<Vertex> pathVertex = graphModel.graph.GetPathAstart(gasStationPosition, entryPosition);
+        List<Vertex> pathVertex = graphModel.Graph.GetPathAstart(gasStationPosition, entryPosition);
         Path path = new Path(pathVertex);
         //Изначально выключен, для избежания мерцания. Так как
             // 1. Создаем префаб в сцене 
@@ -53,7 +53,7 @@ public class CarLogicCommand : BaseCommand
         {
             //По достижению конца пути
             WaitTimeModel waitTimeModel = new WaitTimeModel();
-            waitTimeModel.time = settingsModel.stopGassStationTime;
+            waitTimeModel.time = settingsModel.StopGassStationTime;
             waitTimeModel.callback = () =>
             {
                 //По окончанию ожидания 

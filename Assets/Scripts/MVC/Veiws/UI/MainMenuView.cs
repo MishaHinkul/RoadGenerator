@@ -105,20 +105,20 @@ public class MainMenuView : BaseView
         tabMainMenu.SetActive(true);
         tabSettings.SetActive(false);
 
-        PlayerPrefs.SetInt(PLAYERS_PREFS_TIME_SPAWN, (int)settingsModel.carSpawnTime);
-        PlayerPrefs.SetInt(PLAYERS_PREFS_TIEME_STOP, (int)settingsModel.stopGassStationTime);
+        PlayerPrefs.SetInt(PLAYERS_PREFS_TIME_SPAWN, (int)settingsModel.CarSpawnTime);
+        PlayerPrefs.SetInt(PLAYERS_PREFS_TIEME_STOP, (int)settingsModel.StopGassStationTime);
     }
 
     //Sliders
     private void ChangeValueSpawnTime(float value)
     {
         spawnText.text = spawnTitle + "<b> " + value + " </b> с.";
-        settingsModel.carSpawnTime = value;
+        settingsModel.CarSpawnTime = value;
     }
 
     private void ChangeValueStopTime(float value)
     {
         stopText.text = stopTitle + "<b> " + value + " </b> с.";
-        settingsModel.stopGassStationTime = value;
+        settingsModel.StopGassStationTime = value;
     }
 }

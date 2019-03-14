@@ -26,7 +26,7 @@ public class LeaveСityCommand : BaseCommand
         int entryIndex = Random.Range(0, entryModel.Entrances.Count);
         Vector3 entryPosition = entryModel.Entrances[entryIndex];
 
-        List<Vertex> pathVertex = graphModel.graph.GetPathAstart(entryPosition, carPosition);
+        List<Vertex> pathVertex = graphModel.Graph.GetPathAstart(entryPosition, carPosition);
         Path path = new Path(pathVertex);
         model.StarMove(path, () =>
         {

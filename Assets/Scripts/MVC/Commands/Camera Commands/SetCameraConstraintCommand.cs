@@ -13,24 +13,24 @@ public class SetCameraConstraintCommand : BaseCommand
     public override void Execute()
     {
         //Определяем область ограничения движения камеры, в мире
-        cameraSettingsModel.constraint.constraintTopRight = new Vector3(networkModel.roadIntersectionTransform.position.x - networkModel.Scale,
-                                                                      networkModel.roadIntersectionTransform.position.y,
-                                                                      networkModel.roadIntersectionTransform.position.z - networkModel.Scale
+        cameraSettingsModel.Constraint.ConstraintTopRight = new Vector3(networkModel.RoadIntersectionTransform.position.x - networkModel.Scale,
+                                                                      networkModel.RoadIntersectionTransform.position.y,
+                                                                      networkModel.RoadIntersectionTransform.position.z - networkModel.Scale
                                                                       );
 
-        cameraSettingsModel.constraint.constraintTopLeft = new Vector3(networkModel.roadIntersectionTransform.position.x + networkModel.Scale,
-                                                  networkModel.roadIntersectionTransform.position.y,
-                                                  networkModel.roadIntersectionTransform.position.z - networkModel.Scale);
+        cameraSettingsModel.Constraint.ConstraintTopLeft = new Vector3(networkModel.RoadIntersectionTransform.position.x + networkModel.Scale,
+                                                  networkModel.RoadIntersectionTransform.position.y,
+                                                  networkModel.RoadIntersectionTransform.position.z - networkModel.Scale);
 
-        cameraSettingsModel.constraint.constraintBottomRight = new Vector3(networkModel.roadIntersectionTransform.position.x - networkModel.Scale,
-                                                                     networkModel.roadIntersectionTransform.position.y,
-                                                                     networkModel.roadIntersectionTransform.position.z + networkModel.Scale
+        cameraSettingsModel.Constraint.ConstraintBottomRight = new Vector3(networkModel.RoadIntersectionTransform.position.x - networkModel.Scale,
+                                                                     networkModel.RoadIntersectionTransform.position.y,
+                                                                     networkModel.RoadIntersectionTransform.position.z + networkModel.Scale
                                                                      );
 
-        cameraSettingsModel.constraint.constraintBottomLeft = new Vector3(networkModel.roadIntersectionTransform.position.x + networkModel.Scale,
-                                                  networkModel.roadIntersectionTransform.position.y,
-                                                  networkModel.roadIntersectionTransform.position.z + networkModel.Scale);
+        cameraSettingsModel.Constraint.ConstraintBottomLeft = new Vector3(networkModel.RoadIntersectionTransform.position.x + networkModel.Scale,
+                                                  networkModel.RoadIntersectionTransform.position.y,
+                                                  networkModel.RoadIntersectionTransform.position.z + networkModel.Scale);
 
-        cameraSettingsModel.constraint.SetArr();
+        cameraSettingsModel.Constraint.SetArr();
     }
 }

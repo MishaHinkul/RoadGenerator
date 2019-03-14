@@ -33,7 +33,7 @@ public class OCenterTemplateCommand : BaseCommand
             b.point = rotationB * (new Vector2(networkModel.Scale / 2.5f, 0) + model.Center);
 
             RoadSegment rA = new RoadSegment(a, b, 0);
-            networkModel.roadSegments.Add(rA);
+            networkModel.RoadSegments.Add(rA);
             if (first == null)
                 first = rA;
 

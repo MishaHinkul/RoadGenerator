@@ -11,7 +11,7 @@ public class SplitSegmentForLevelCommand : BaseCommand
     {
         int level = (int)eventData.data;
 
-        List<RoadSegment> segments = new List<RoadSegment>(networkModel.roadSegments);
+        List<RoadSegment> segments = new List<RoadSegment>(networkModel.RoadSegments);
         for (int i = 0; i < segments.Count; i++)
         {
             if (segments[i].Level == level)

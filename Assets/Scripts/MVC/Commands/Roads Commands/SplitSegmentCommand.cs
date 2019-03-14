@@ -80,8 +80,8 @@ public class SplitSegmentCommand : BaseCommand
 
             if (intersectionCount <= 1)
             {
-                networkModel.roadSegments.RemoveAll(p => p.IsEqual(newSegment));
-                networkModel.roadSegments.Add(newSegment);
+                networkModel.RoadSegments.RemoveAll(p => p.IsEqual(newSegment));
+                networkModel.RoadSegments.Add(newSegment);
                 segment1 = true;
             }
 
@@ -103,7 +103,7 @@ public class SplitSegmentCommand : BaseCommand
                 }
                 else
                 {
-                    networkModel.roadSegments.RemoveAll(p => p.IsEqual(segmentsA[0]));
+                    networkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsA[0]));
                 }
 
                 if (patchB)
@@ -112,7 +112,7 @@ public class SplitSegmentCommand : BaseCommand
                 }
                 else
                 {
-                    networkModel.roadSegments.RemoveAll(p => p.IsEqual(segmentsA[1]));
+                    networkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsA[1]));
                 }
 
                 if (patchC)
@@ -121,7 +121,7 @@ public class SplitSegmentCommand : BaseCommand
                 }
                 else
                 {
-                    networkModel.roadSegments.RemoveAll(p => p.IsEqual(segmentsB[0]));
+                    networkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsB[0]));
                 }
 
                 if (patchD)
@@ -130,7 +130,7 @@ public class SplitSegmentCommand : BaseCommand
                 }
                 else
                 {
-                    networkModel.roadSegments.RemoveAll(p => p.IsEqual(segmentsB[1]));
+                    networkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsB[1]));
                 }
 
                 Intersection inter = new Intersection(points);
@@ -150,10 +150,10 @@ public class SplitSegmentCommand : BaseCommand
             if (intersectionCount <= 1)
             {
                 //Удаляем все сегменты из сети, которые точно такие же как только что созданый 
-                networkModel.roadSegments.RemoveAll(p => p.IsEqual(newSegmentInversion));
+                networkModel.RoadSegments.RemoveAll(p => p.IsEqual(newSegmentInversion));
 
                 //Добавляем новосозданый сегмент в нашу сеть дорог
-                networkModel.roadSegments.Add(newSegmentInversion);
+                networkModel.RoadSegments.Add(newSegmentInversion);
                 segment2 = true;
             }
 
@@ -175,7 +175,7 @@ public class SplitSegmentCommand : BaseCommand
                 }
                 else
                 {
-                    networkModel.roadSegments.RemoveAll(p => p.IsEqual(segmentsA[0]));
+                    networkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsA[0]));
                 }
 
                 if (patchB)
@@ -184,7 +184,7 @@ public class SplitSegmentCommand : BaseCommand
                 }
                 else
                 {
-                    networkModel.roadSegments.RemoveAll(p => p.IsEqual(segmentsA[1]));
+                    networkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsA[1]));
                 }
 
                 if (patchC)
@@ -193,7 +193,7 @@ public class SplitSegmentCommand : BaseCommand
                 }
                 else
                 {
-                    networkModel.roadSegments.RemoveAll(p => p.IsEqual(segmentsB[0]));
+                    networkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsB[0]));
                 }
 
                 if (patchD)
@@ -202,7 +202,7 @@ public class SplitSegmentCommand : BaseCommand
                 }
                 else
                 {
-                    networkModel.roadSegments.RemoveAll(p => p.IsEqual(segmentsB[1]));
+                    networkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsB[1]));
                 }
                 Intersection inter = new Intersection(points);
                 networkModel.RoadIntersections.Add(inter);
@@ -250,13 +250,13 @@ public class SplitSegmentCommand : BaseCommand
     /// </returns>
 	private RoadSegment[] PatchSegment(RoadSegment segment, RoadPoint newPoint)
     {
-        networkModel.roadSegments.RemoveAll(p => p.IsEqual(segment));
+        networkModel.RoadSegments.RemoveAll(p => p.IsEqual(segment));
 
         RoadSegment left = new RoadSegment(segment.PointA, new RoadPoint(newPoint.point), segment.Level);
         RoadSegment right = new RoadSegment(segment.PointB, new RoadPoint(newPoint.point), segment.Level);
 
-        networkModel.roadSegments.Add(left);
-        networkModel.roadSegments.Add(right);
+        networkModel.RoadSegments.Add(left);
+        networkModel.RoadSegments.Add(right);
 
         return new RoadSegment[] { left, right };
     }
@@ -269,7 +269,7 @@ public class SplitSegmentCommand : BaseCommand
     /// <returns></returns>
     private bool SegmentWithin(RoadSegment segment, float max)
     {
-        foreach (RoadSegment seg in networkModel.roadSegments)
+        foreach (RoadSegment seg in networkModel.RoadSegments)
         {
             bool amax = DistPointSegment(seg.PointA, segment) < max;
             bool bmax = DistPointSegment(seg.PointB, segment) < max;
@@ -372,9 +372,9 @@ public class SplitSegmentCommand : BaseCommand
         RoadSegment currentSegment = null;
 
         float ignoreDistance = 0.01f;
-        for (int i = 0; i < networkModel.roadSegments.Count; i++)
+        for (int i = 0; i < networkModel.RoadSegments.Count; i++)
         {
-            currentSegment = networkModel.roadSegments[i];
+            currentSegment = networkModel.RoadSegments[i];
             if (currentSegment.IsEqual(skipInFound))
             {
                 continue;

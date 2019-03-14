@@ -20,14 +20,14 @@ public class ScaleCameraCommand : BaseCommand
 
 
 
-        cameraSettings.distance.min_max_Distance = new Vector2(6, 14);
-        cameraSettings.distance.speed = 25;
-        model *= cameraSettings.distance.speed;
-        cameraSettings.distance.desiredDistance = cameraSettings.distance.currentDistance + model;
-        cameraSettings.distance.desiredDistance = Mathf.Clamp(cameraSettings.distance.desiredDistance, 
-                                                              cameraSettings.distance.min_max_Distance.x, 
-                                                              cameraSettings.distance.min_max_Distance.y);
-        cameraSettings.distance.speedChangeDistance = 0.15f;
-        cameraSettings.lerpScale = true;
+        cameraSettings.Distance.MinMaxDistance = new Vector2(6, 14);
+        cameraSettings.Distance.Speed = 25;
+        model *= cameraSettings.Distance.Speed;
+        cameraSettings.Distance.DesiredDistance = cameraSettings.Distance.CurrentDistance + model;
+        cameraSettings.Distance.DesiredDistance = Mathf.Clamp(cameraSettings.Distance.DesiredDistance, 
+                                                              cameraSettings.Distance.MinMaxDistance.x, 
+                                                              cameraSettings.Distance.MinMaxDistance.y);
+        cameraSettings.Distance.SpeedChangeDistance = 0.15f;
+        cameraSettings.LerpScale = true;
     }
 }

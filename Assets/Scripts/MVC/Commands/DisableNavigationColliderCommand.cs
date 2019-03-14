@@ -8,11 +8,11 @@ public class DisableNavigationColliderCommand : BaseCommand
     public GraphModel graphModel { get; private set; }
     public override void Execute()
     {
-        for (int i = 0; i < graphModel.graph.vertices.Count; i++)
+        for (int i = 0; i < graphModel.Graph.vertices.Count; i++)
         {
-            if (graphModel.graph.vertices[i] != null)
+            if (graphModel.Graph.vertices[i] != null)
             {
-                Collider collider = graphModel.graph.vertices[i].GetComponent<Collider>();
+                Collider collider = graphModel.Graph.vertices[i].GetComponent<Collider>();
                 if (collider != null)
                 {
                     collider.enabled = false;

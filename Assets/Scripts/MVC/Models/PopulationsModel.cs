@@ -7,10 +7,10 @@ using UnityEngine;
 /// </summary>
 public class PopulationsModel
 {
-	public List<GameObject> buildings { get; set; }
+  public PopulationsModel()
+  {
+    Buildings = new List<GameObject>();
+  }
 
-    public PopulationsModel()
-    {
-        buildings = new List<GameObject>();
-    }
+  public List<GameObject> Buildings { get; set; }
 }

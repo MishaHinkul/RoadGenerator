@@ -21,8 +21,8 @@ public class GeneradeGasStationCommand : BaseCommand
             bool addEntry = false;
             do
             {
-                int randomIndex = Random.Range(0, networkModel.roadSegments.Count);
-                RoadSegment segment = networkModel.roadSegments[randomIndex];
+                int randomIndex = Random.Range(0, networkModel.RoadSegments.Count);
+                RoadSegment segment = networkModel.RoadSegments[randomIndex];
                 if (!gasSegment.Contains(segment))
                 {
                     gasSegment.Add(segment);
@@ -61,7 +61,7 @@ public class GeneradeGasStationCommand : BaseCommand
                 build.name = "Gass Station " + i;
                 build.transform.localScale = new Vector3(factor, height, wight);
 
-                populationModel.buildings.Add(build);
+                populationModel.Buildings.Add(build);
             }       
         }
     }

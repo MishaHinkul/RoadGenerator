@@ -4,6 +4,5 @@ using UnityEngine;
 
 public class GraphModel
 {
-
-	public Graph graph { get; set; }
+  public Graph Graph { get; set; }
 }

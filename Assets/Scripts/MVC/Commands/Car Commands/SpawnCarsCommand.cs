@@ -29,7 +29,7 @@ public class SpawnCarsCommand : BaseCommand
     {
         while (true)
         {
-            yield return new WaitForSeconds(settingsModel.carSpawnTime);
+            yield return new WaitForSeconds(settingsModel.CarSpawnTime);
             GameObject instanceGO = GameObject.Instantiate<GameObject>(carPrefab);
             yield return new WaitForEndOfFrame();
             if (instanceGO != null)

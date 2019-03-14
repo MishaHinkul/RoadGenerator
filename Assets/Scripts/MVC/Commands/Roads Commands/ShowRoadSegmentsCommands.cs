@@ -12,20 +12,20 @@ public class ShowRoadSegmentsCommands : BaseCommand
         GameObject roadPrefab = Resources.Load<GameObject>("ROAD_straight");
      
 
-        if (roadPrefab == null || networkModel.roadNetworkTransform == null)
+        if (roadPrefab == null || networkModel.RoadNetworkTransform == null)
         {
             return;
         }
         networkModel.WithRoad = roadPrefab.transform.lossyScale.z;
 
-        for (int i = 0; i < networkModel.roadSegments.Count; i++)
+        for (int i = 0; i < networkModel.RoadSegments.Count; i++)
         {
-            RoadPoint roadPointA = networkModel.roadSegments[i].PointA;
-            RoadPoint roadPointB = networkModel.roadSegments[i].PointB;
+            RoadPoint roadPointA = networkModel.RoadSegments[i].PointA;
+            RoadPoint roadPointB = networkModel.RoadSegments[i].PointB;
 
-            Vector3 globalPosition = new Vector3(roadPointA.point.x, networkModel.roadIntersectionTransform.position.y, roadPointA.point.y);
+            Vector3 globalPosition = new Vector3(roadPointA.point.x, networkModel.RoadIntersectionTransform.position.y, roadPointA.point.y);
             Vector2 directionSegment = roadPointB.point - roadPointA.point;
-            Vector3 forward = new Vector3(directionSegment.x, networkModel.roadIntersectionTransform.position.y, directionSegment.y);
+            Vector3 forward = new Vector3(directionSegment.x, networkModel.RoadIntersectionTransform.position.y, directionSegment.y);
 
             float step = roadPrefab.transform.lossyScale.z;
             float iteration = Vector2.Distance(roadPointA.point, roadPointB.point) / step;
@@ -39,7 +39,7 @@ public class ShowRoadSegmentsCommands : BaseCommand
                 if (!Contains(instPosition))
                 {
                     GameObject instacGO = GameObject.Instantiate<GameObject>(roadPrefab, instPosition, Quaternion.LookRotation(forward));
-                    instacGO.transform.parent = networkModel.roadNetworkTransform;
+                    instacGO.transform.parent = networkModel.RoadNetworkTransform;
                 }
             }
         }
@@ -52,9 +52,9 @@ public class ShowRoadSegmentsCommands : BaseCommand
     /// <returns></returns>
     public bool Contains(Vector3 pos)
     {
-        for (int i = 0; i < networkModel.viewIntersection.Count; i++)
+        for (int i = 0; i < networkModel.ViewIntersection.Count; i++)
         {
-            if (networkModel.viewIntersection[i] == pos)
+            if (networkModel.ViewIntersection[i] == pos)
             {
                 return true;
             }

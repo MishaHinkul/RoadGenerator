@@ -12,7 +12,7 @@ public class ShowIntersectionCommand : BaseCommand
         GameObject intersection = Resources.Load<GameObject>("ROAD_intersection");
         GameObject intersectionT = Resources.Load<GameObject>("ROAD_intersection_T");
 
-        if (intersection == null || intersectionT == null || networkModel.roadIntersectionTransform == null)
+        if (intersection == null || intersectionT == null || networkModel.RoadIntersectionTransform == null)
         {
             return;
         }
@@ -24,8 +24,8 @@ public class ShowIntersectionCommand : BaseCommand
 
             RoadPoint roadPointA = networkModel.RoadIntersections[i].Points[0];
             RoadPoint roadPointB = roadPointA.mySegement.GetOther(roadPointA);
-            Vector3 position = new Vector3(roadPointA.point.x, networkModel.roadIntersectionTransform.position.y, roadPointA.point.y);
-            networkModel.viewIntersection.Add(position);
+            Vector3 position = new Vector3(roadPointA.point.x, networkModel.RoadIntersectionTransform.position.y, roadPointA.point.y);
+            networkModel.ViewIntersection.Add(position);
             Quaternion rotation;
 
             //Перекресток
@@ -46,7 +46,7 @@ public class ShowIntersectionCommand : BaseCommand
 
             if (intersectionGO != null)
             {
-                intersectionGO.transform.parent = networkModel.roadIntersectionTransform;
+                intersectionGO.transform.parent = networkModel.RoadIntersectionTransform;
             }
         }
     }
@@ -62,7 +62,7 @@ public class ShowIntersectionCommand : BaseCommand
         RoadPoint roadPointB = roadPointA.mySegement.GetOther(roadPointA);
 
         Vector2 direction = roadPointB.point - roadPointA.point;
-        Vector3 forward = new Vector3(direction.x, networkModel.roadIntersectionTransform.position.y, direction.y);
+        Vector3 forward = new Vector3(direction.x, networkModel.RoadIntersectionTransform.position.y, direction.y);
 
         return Quaternion.LookRotation(forward);
     }

@@ -7,26 +7,38 @@ using UnityEngine;
 /// </summary>
 public class Intersection
 {
-    public List<RoadPoint> Points; //список должен быть отсортирован в круговом порядке
+  private List<RoadPoint> points = null; //список должен быть отсортирован в круговом порядке
+ 
 
-    public Intersection(List<RoadPoint> points)
+  public bool IsThisOne(Intersection inter)
+  {
+    int c = 0;
+    foreach (RoadPoint p in inter.Points)
     {
-        this.Points = points;
+      if (points.Exists(f => f == p))
+      {
+        c++;
+      }
     }
-    public bool IsThisOne(Intersection inter)
+    if (c == points.Count && c == inter.Points.Count)
     {
-        int c = 0;
-        foreach (RoadPoint p in inter.Points)
-        {
-            if (this.Points.Exists(f => f == p))
-            {
-                c++;
-            }
-        }
-        if (c == this.Points.Count && c == inter.Points.Count)
-        {
-            return true;
-        }
-        return false;
+      return true;
     }
+
+    return false;
+  }
+
+
+  public Intersection(List<RoadPoint> points)
+  {
+    this.points = points;
+  }
+
+  public List<RoadPoint> Points
+  {
+    get
+    {
+      return points;
+    }
+  }
 }

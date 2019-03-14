@@ -5,157 +5,157 @@ using UnityEngine;
 
 public class CameraView : BaseView
 {
-    private Transform focus;
-    private Camera cameraCache;
-
-    private Vector3 moveVel;
-    private float distanceVel;
-
-    private bool lerpMove = false;
-    private bool lerpScale = false;
-
-    //Cosntraint
-    private Vector3[] screenPoints;
-   
+  private Transform focus = null;
+  private Camera cameraCache = null;
+  private Vector3 moveVel;
+  private float distanceVel;
+  private bool lerpMove = false;
+  private bool lerpScale = false;
+  private Vector3[] screenPoints = null;   //Cosntraint
 
 
-    [Inject]
-    public CameraSettings cameraSettings { get; private set; }
+  internal void LoadView()
+  {
+    cameraCache = GetComponent<Camera>();
+    focus = transform.parent;
 
+    cameraSettings.CameraObj = cameraCache;
+    cameraSettings.Focus.CurrentPosition = focus.position;
+    cameraSettings.Distance.CurrentDistance = cameraCache.orthographicSize;
+    cameraSettings.Distance.DesiredDistance = cameraCache.orthographicSize;
 
-    internal void LoadView()
+    screenPoints = new Vector3[]
     {
-        cameraCache = GetComponent<Camera>();
-        focus = transform.parent;
-        cameraSettings.cameraObj = cameraCache;
-        cameraSettings.focus.currentPosition = focus.position;
+      //Порядок должен быть точно такой как у массива констрэинтов
+      new Vector3(Screen.width, Screen.height, 0), //RightTop
+      new Vector3(0, Screen.height, 0), //LeftTop
+      new Vector3(Screen.width, 0, 0), //RightBottom
+      Vector3.zero, //LeftBottom
+    };
+  }
 
-        screenPoints = new Vector3[] 
-        {
-            //Порядок должен быть точно такой как у массива констреинтов
-            new Vector3(Screen.width, Screen.height, 0), //RightTop
-            new Vector3(0, Screen.height, 0), //LeftTop
-            new Vector3(Screen.width, 0, 0), //RightBottom
-            Vector3.zero, //LeftBottom    
-        };
-        cameraSettings.distance.currentDistance = cameraCache.orthographicSize;
-        cameraSettings.distance.desiredDistance = cameraCache.orthographicSize;
+  internal void RemoveView()
+  {
 
+  }
+
+  private void LateUpdate()
+  {
+    if (cameraCache == null || focus == null)
+    {
+      return;
     }
 
-    internal void RemoveView()
+    Move();
+    Scale();
+  }
+
+  private void Move()
+  {
+    if (!lerpMove)
     {
-       
+      return;
     }
-
-    private void LateUpdate()
+    if (DefaultStopMoveLerp())
     {
-        if (cameraCache != null && focus != null)
+      LerpMove();
+    }
+    else
+    {
+      lerpMove = false;
+    }
+  }
+
+  //Методы применимые по умолчанию, определяющие остановку Lerp
+  private bool DefaultStopMoveLerp()
+  {
+    return Vector3.Distance(cameraSettings.Focus.CurrentPosition, cameraSettings.Focus.DesiredPosition) > cameraSettings.Focus.StopLerpDistance;
+  }
+
+  /// Сглаживание данных камеры между текущими и желаемыми
+  private void LerpMove()
+  {
+    cameraSettings.Focus.CurrentPosition = Vector3.SmoothDamp(cameraSettings.Focus.CurrentPosition,
+                                           cameraSettings.Focus.DesiredPosition,
+                                           ref moveVel,
+                                           cameraSettings.Focus.SpeedChangePosition);
+    if (Constraint())
+    {
+      Vector3 currentDirection = cameraSettings.Focus.DesiredPosition - cameraSettings.Focus.CurrentPosition;
+      currentDirection.Normalize();
+      cameraSettings.Constraint.isConstraint = true;
+      cameraSettings.Constraint.direction = currentDirection;
+    }
+    else
+    {
+      cameraSettings.Constraint.isConstraint = false;
+    }
+    focus.position = cameraSettings.Focus.CurrentPosition;
+
+  }
+
+  private void Scale()
+  {
+    if (!lerpScale)
+    {
+      return;
+    }
+    if (DefaultStopScaleLerp())
+    {
+      LerpScale();
+    }
+    else
+    {
+      lerpScale = false;
+    }
+  }
+
+  private bool DefaultStopScaleLerp()
+  {
+    return Mathf.Abs(cameraSettings.Distance.DesiredDistance - cameraSettings.Distance.CurrentDistance) > cameraSettings.Distance.StopLerpDistance;
+  }
+
+  private void LerpScale()
+  {
+    cameraSettings.Distance.CurrentDistance = Mathf.SmoothDamp(cameraSettings.Distance.CurrentDistance,
+                                              cameraSettings.Distance.DesiredDistance,
+                                              ref distanceVel,
+                                              cameraSettings.Distance.SpeedChangeDistance); // сглаживание смены дистанции
+    cameraCache.orthographicSize = cameraSettings.Distance.CurrentDistance;
+  }
+
+  /// <summary>
+  /// Выходим ли за рамки карты 
+  /// </summary>
+  /// <returns></returns>
+  private bool Constraint()
+  {
+    Ray ray;
+    RaycastHit hit;
+    for (int i = 0; i < screenPoints.Length; i++)
+    {
+      ray = cameraSettings.CameraObj.ScreenPointToRay(screenPoints[i]);
+      if (Physics.Raycast(ray, out hit))
+      {
+        //Если выходим за рамки карты
+        if (hit.point.sqrMagnitude > cameraSettings.Constraint.ConstraintArr[0].sqrMagnitude)
         {
-
-            #region Move
-            if (lerpMove)
-            {
-                if (DefaultStopMoveLerp())
-                {
-                    LerpMove();
-                }
-                else
-                {
-                    lerpMove = false;
-                }
-            }
-            #endregion
-
-            #region Scale
-            if (lerpScale)
-            {
-                if (DefaultStopScaleLerp())
-                {
-                    LerpScale();
-                }
-                else
-                {
-                    lerpScale = false;
-                }
-            }
-            #endregion
+          return true;
         }
+      }
     }
 
-    /// <summary>
-    /// Обновить данный камеры
-    /// </summary>
-    public void OnUpdateCameraSettings()
-    {
-        focus.position = cameraSettings.focus.currentPosition;
+    return false;
+  }
 
-        lerpMove = cameraSettings.lerpMove;
-        lerpScale = cameraSettings.lerpScale;
-    }
+  public void OnUpdateCameraSettings()
+  {
+    focus.position = cameraSettings.Focus.CurrentPosition;
+    lerpMove = cameraSettings.LerpMove;
+    lerpScale = cameraSettings.LerpScale;
+  }
 
-    //Методы применимые по умолчанию, определяющие остановку Lerp
-    private bool DefaultStopMoveLerp()
-    {
-        return Vector3.Distance(cameraSettings.focus.currentPosition, cameraSettings.focus.desiredPosition) > cameraSettings.focus.stopLerpDistance;
-    }
 
-    private bool DefaultStopScaleLerp()
-    {
-        return Mathf.Abs(cameraSettings.distance.desiredDistance - cameraSettings.distance.currentDistance) > cameraSettings.distance.stopLerpDistance;
-    }
-
-    /// Сглаживание данных камеры между текущими и желаемыми
-    private void LerpMove()
-    {
-        cameraSettings.focus.currentPosition = Vector3.SmoothDamp(cameraSettings.focus.currentPosition,
-                                               cameraSettings.focus.desiredPosition,
-                                               ref moveVel,
-                                               cameraSettings.focus.speedChangePosition);
-        if (Constraint())
-        {
-            Vector3 currentDirection = cameraSettings.focus.desiredPosition - cameraSettings.focus.currentPosition;
-            currentDirection.Normalize();
-            cameraSettings.constraint.isConstraint = true;
-            cameraSettings.constraint.direction = currentDirection;
-        }
-        else
-        {
-            cameraSettings.constraint.isConstraint = false;
-        }
-        focus.position = cameraSettings.focus.currentPosition;
-       
-    }
-
-    private void LerpScale()
-    {
-        cameraSettings.distance.currentDistance = Mathf.SmoothDamp(cameraSettings.distance.currentDistance,
-                cameraSettings.distance.desiredDistance,
-                ref distanceVel,
-                cameraSettings.distance.speedChangeDistance); // сглаживание смены дистанции
-        cameraCache.orthographicSize = cameraSettings.distance.currentDistance;
-    }
-
-    /// <summary>
-    /// Выходим ли за рамки карты 
-    /// </summary>
-    /// <returns></returns>
-    private bool Constraint()
-    {
-        Ray ray;
-        RaycastHit hit;
-        for (int i = 0; i < screenPoints.Length; i++)
-        {
-            ray = cameraSettings.cameraObj.ScreenPointToRay(screenPoints[i]);
-            if (Physics.Raycast(ray, out hit))
-            {
-                //Если выходим за рамки карты
-                if (hit.point.sqrMagnitude > cameraSettings.constraint.constraintArr[0].sqrMagnitude)
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }          
+  [Inject]
+  public CameraSettings cameraSettings { get; private set; }
 }
