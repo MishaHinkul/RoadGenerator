@@ -4,33 +4,32 @@ using UnityEngine;
 
 public class SetCameraConstraintCommand : BaseCommand
 {
-    [Inject]
-    public RoadNetworkModel networkModel { get; private set; }
+  public override void Execute()
+  {
+    //Определяем область ограничения движения камеры, в мире
+    CameraSettingsModel.Constraint.ConstraintTopRight = new Vector3(NetworkModel.RoadIntersectionTransform.position.x - NetworkModel.Scale,
+                                                                    NetworkModel.RoadIntersectionTransform.position.y,
+                                                                    NetworkModel.RoadIntersectionTransform.position.z - NetworkModel.Scale);
 
-    [Inject]
-    public CameraSettings cameraSettingsModel { get; private set; }
+    CameraSettingsModel.Constraint.ConstraintTopLeft = new Vector3(NetworkModel.RoadIntersectionTransform.position.x + NetworkModel.Scale,
+                                                                   NetworkModel.RoadIntersectionTransform.position.y,
+                                                                   NetworkModel.RoadIntersectionTransform.position.z - NetworkModel.Scale);
 
-    public override void Execute()
-    {
-        //Определяем область ограничения движения камеры, в мире
-        cameraSettingsModel.Constraint.ConstraintTopRight = new Vector3(networkModel.RoadIntersectionTransform.position.x - networkModel.Scale,
-                                                                      networkModel.RoadIntersectionTransform.position.y,
-                                                                      networkModel.RoadIntersectionTransform.position.z - networkModel.Scale
-                                                                      );
+    CameraSettingsModel.Constraint.ConstraintBottomRight = new Vector3(NetworkModel.RoadIntersectionTransform.position.x - NetworkModel.Scale,
+                                                                       NetworkModel.RoadIntersectionTransform.position.y,
+                                                                       NetworkModel.RoadIntersectionTransform.position.z + NetworkModel.Scale);
 
-        cameraSettingsModel.Constraint.ConstraintTopLeft = new Vector3(networkModel.RoadIntersectionTransform.position.x + networkModel.Scale,
-                                                  networkModel.RoadIntersectionTransform.position.y,
-                                                  networkModel.RoadIntersectionTransform.position.z - networkModel.Scale);
+    CameraSettingsModel.Constraint.ConstraintBottomLeft = new Vector3(NetworkModel.RoadIntersectionTransform.position.x + NetworkModel.Scale,
+                                                                      NetworkModel.RoadIntersectionTransform.position.y,
+                                                                      NetworkModel.RoadIntersectionTransform.position.z + NetworkModel.Scale);
 
-        cameraSettingsModel.Constraint.ConstraintBottomRight = new Vector3(networkModel.RoadIntersectionTransform.position.x - networkModel.Scale,
-                                                                     networkModel.RoadIntersectionTransform.position.y,
-                                                                     networkModel.RoadIntersectionTransform.position.z + networkModel.Scale
-                                                                     );
+    CameraSettingsModel.Constraint.SetArr();
+  }
 
-        cameraSettingsModel.Constraint.ConstraintBottomLeft = new Vector3(networkModel.RoadIntersectionTransform.position.x + networkModel.Scale,
-                                                  networkModel.RoadIntersectionTransform.position.y,
-                                                  networkModel.RoadIntersectionTransform.position.z + networkModel.Scale);
 
-        cameraSettingsModel.Constraint.SetArr();
-    }
+  [Inject]
+  public RoadNetworkModel NetworkModel { get; private set; }
+
+  [Inject]
+  public CameraSettings CameraSettingsModel { get; private set; }
 }

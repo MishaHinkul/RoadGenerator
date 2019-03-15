@@ -49,34 +49,7 @@ public class SplitSegmentCommand : BaseCommand
     {
       segment2 = ClearWidthSegment(rootSegment, newSegmentInversion);
     }
-
-    if (segment1 || segment2)
-    {
-      RoadSegment[] rootPatchs = this.PatchSegment(rootSegment, new RoadPoint(new Vector2(pointBeginNewSegment.x, pointBeginNewSegment.z), rootSegment));
-
-      if (segment1 && segment2)
-      {
-        Intersection inter = new Intersection(new List<RoadPoint>{rootPatchs[0].End,
-                                                                  rootPatchs [1].End,
-                                                                  newSegment.Begin,
-                                                                  newSegmentInversion.Begin});
-        NetworkModel.RoadIntersections.Add(inter);
-      }
-      else if (segment1)
-      {
-        Intersection inter = new Intersection(new List<RoadPoint>{rootPatchs[0].End,
-                                                                           rootPatchs[1].End,
-                                                                           newSegment.Begin});
-        NetworkModel.RoadIntersections.Add(inter);
-      }
-      else if (segment2)
-      {
-        Intersection inter = new Intersection(new List<RoadPoint>{rootPatchs[0].End,
-                                                                           rootPatchs[1].End,
-                                                                           newSegmentInversion.Begin});
-        NetworkModel.RoadIntersections.Add(inter);
-      }
-    }
+    AddIntersection(rootSegment, newSegment, newSegmentInversion, pointBeginNewSegment, segment1, segment2);
   }
 
   private Vector3 GetBeginNewSegment(Vector3 pBegin, Vector3 pEnd)
@@ -189,6 +162,42 @@ public class SplitSegmentCommand : BaseCommand
     }
 
     return segment;
+  }
+
+  private void AddIntersection(RoadSegment rootSegment, 
+                               RoadSegment newSegment,
+                               RoadSegment newSegmentInversion,
+                               Vector3 pointBeginNewSegment,
+                               bool segment1, 
+                               bool segment2)
+  {
+    if (segment1 || segment2)
+    {
+      RoadSegment[] rootPatchs = PatchSegment(rootSegment, new RoadPoint(new Vector2(pointBeginNewSegment.x, pointBeginNewSegment.z), rootSegment));
+
+      if (segment1 && segment2)
+      {
+        Intersection inter = new Intersection(new List<RoadPoint>{rootPatchs[0].End,
+                                                                  rootPatchs [1].End,
+                                                                  newSegment.Begin,
+                                                                  newSegmentInversion.Begin});
+        NetworkModel.RoadIntersections.Add(inter);
+      }
+      else if (segment1)
+      {
+        Intersection inter = new Intersection(new List<RoadPoint>{rootPatchs[0].End,
+                                                                  rootPatchs[1].End,
+                                                                  newSegment.Begin});
+        NetworkModel.RoadIntersections.Add(inter);
+      }
+      else if (segment2)
+      {
+        Intersection inter = new Intersection(new List<RoadPoint>{rootPatchs[0].End,
+                                                                  rootPatchs[1].End,
+                                                                  newSegmentInversion.Begin});
+        NetworkModel.RoadIntersections.Add(inter);
+      }
+    }
   }
 
 
@@ -387,7 +396,7 @@ public class SplitSegmentCommand : BaseCommand
     {
       if (Perp(u, w) != 0 || Perp(v, w) != 0)
       {
-        return 0;                    // Они не коллинеарны (не лежат на одной прамой, или паралельных прямых)
+        return 0; // Они не коллинеарны (не лежат на одной прамой, или паралельных прямых)
       }
 
       // они коллинеарны или вырождены

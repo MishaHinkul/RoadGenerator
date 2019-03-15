@@ -5,21 +5,21 @@ using UnityEngine;
 
 public class DebugMediator : EventMediator
 {
-    [Inject]
-    public DebugView view { get; set; }
+  public override void PreRegister()
+  {
+  }
 
-    public override void PreRegister()
-    {
+  public override void OnRegister()
+  {
+    DebugView.LoadView();
+  }
 
-    }
-    public override void OnRegister()
-    {
-        view.LoadView();
-    }
+  public override void OnRemove()
+  {
+    DebugView.RemoveView();
+  }
 
-    public override void OnRemove()
-    {
-        view.RemoveView();
-    }
 
+  [Inject]
+  public DebugView DebugView { get; set; }
 }

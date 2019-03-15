@@ -4,36 +4,37 @@ using UnityEngine;
 
 public class GeneradeRoadsCommand : BaseCommand
 {
-    [Inject]
-    public RoadNetworkModel networkModel { get; private set; }
+  public override void Execute()
+  {
+    NetworkModel.Scale = SettingsModel.Scale;
 
-    [Inject]
-    public SettingsModel settingsModel { get; private set; }
-
-    [Inject]
-    public CameraSettings cameraSettingsModel { get; private set; }
-
-    public override void Execute()
+    if (NetworkModel.RoadNetworkTransform == null)
     {
-        networkModel.Scale = settingsModel.Scale;
-
-        if (networkModel.RoadNetworkTransform == null)
+      GameObject roadGO = GameObject.Find("Roads Network");
+      if (roadGO != null)
+      {
+        NetworkModel.RoadNetworkTransform = roadGO.transform;
+        if (NetworkModel.RoadIntersectionTransform == null)
         {
-            GameObject roadGO = GameObject.Find("Roads Network");
-            if (roadGO != null)
-            {
-                networkModel.RoadNetworkTransform = roadGO.transform;
-                if (networkModel.RoadIntersectionTransform == null)
-                {
-                    networkModel.RoadIntersectionTransform = networkModel.RoadNetworkTransform.Find("Road Intersections");
-                }       
-            }
-            else
-            {
-                Debug.LogError("GameObject: Roads Network - not found");
-            }
-        }    
-        CenterTemplateModel templateModel = new CenterTemplateModel(Vector2.zero, 270);
-        dispatcher.Dispatch(EventGlobal.E_SetTemplate, templateModel);
+          NetworkModel.RoadIntersectionTransform = NetworkModel.RoadNetworkTransform.Find("Road Intersections");
+        }
+      }
+      else
+      {
+        Debug.LogError("GameObject: Roads Network - not found");
+      }
     }
+    CenterTemplateModel templateModel = new CenterTemplateModel(Vector2.zero, 270);
+    dispatcher.Dispatch(EventGlobal.E_SetTemplate, templateModel);
+  }
+
+
+  [Inject]
+  public RoadNetworkModel NetworkModel { get; private set; }
+
+  [Inject]
+  public SettingsModel SettingsModel { get; private set; }
+
+  [Inject]
+  public CameraSettings CameraSettingsModel { get; private set; }
 }
