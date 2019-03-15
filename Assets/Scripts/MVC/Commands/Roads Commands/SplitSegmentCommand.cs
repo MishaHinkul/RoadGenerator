@@ -20,179 +20,34 @@ public class SplitSegmentCommand : BaseCommand
 
     Vector3 pBegin = rootSegment.Begin.WorldPosition;
     Vector3 pEnd = rootSegment.End.WorldPosition;
-    float length = GetLenght(pBegin, pEnd);
-    Vector3 pointBeginNewSegment = GetBeginNewSegment(pBegin, pEnd, length);
+    Vector3 pointBeginNewSegment = GetBeginNewSegment(pBegin, pEnd);
 
-    //Получили направление для новой точки (перепендикуляр)
-    Vector3 per = Vector3.Cross(pBegin - pEnd, Vector3.down).normalized;// * (Random.Range (0f, 1f) < 0.5f ? -1 : 1);
+    float lenghtSegment = GetLenghtEnd(rootSegment.Level);
+    Vector3 perp = rootSegment.GetWorldPerp();
+    Vector3 pointEndNewSegment = GetEndNewSegment(lenghtSegment, perp, pointBeginNewSegment);
 
-    //Например: scale = 100, segment.Level = 0, рендом = 1.5
-    // Длинна будущего сегмента = 66.66
-    float newLength = NetworkModel.Scale / ((rootSegment.Level + 1) * Random.Range(1f, 2f));
-    newLength = (int)newLength; // пусть будут только целые числа, чтобы правильно наложить меш и не масштабировать его
-
-    //Определяем где будет конец нового сегмента
-    Vector3 pointEndNewSegment = pointBeginNewSegment + (per * newLength);
-
-    //Создаем новый сегмент
-    RoadSegment newSegment = new RoadSegment(new RoadPoint(new Vector2(pointBeginNewSegment.x, pointBeginNewSegment.z), null),
-                                             new RoadPoint(new Vector2(pointEndNewSegment.x, pointEndNewSegment.z), null),
-                                             rootSegment.Level + 1);
+    RoadSegment newSegment = GetNewSegment(pointBeginNewSegment, pointEndNewSegment, rootSegment.Level);
 
 
     //Теперь создадим сегмент в противоположнем направлении
+    Vector3 newPointEndInversion = GetEndNewSegment(lenghtSegment, -perp, pointBeginNewSegment);
+    RoadSegment newSegmentInversion = GetNewSegment(pointBeginNewSegment, newPointEndInversion, rootSegment.Level);
 
-    Vector3 perA = Vector3.Cross(pBegin - pEnd, Vector3.down).normalized * -1;
-    Vector3 newPointEndOther = pointBeginNewSegment + (perA * newLength);
-
-    RoadSegment newSegmentInversion = new RoadSegment(new RoadPoint(new Vector2(pointBeginNewSegment.x, pointBeginNewSegment.z), null),
-                                                      new RoadPoint(new Vector2(newPointEndOther.x, newPointEndOther.z), null),
-                                                      rootSegment.Level + 1);
+    bool withinSegment = SegmentWithin(newSegment, NetworkModel.CloseCutoff);
+    bool withinInversionSegment = SegmentWithin(newSegmentInversion, NetworkModel.CloseCutoff);
 
     //Проверить, какие сегменты добавлять и добавлять
     bool segment1 = false;
     bool segment2 = false;
 
-    bool withinSegment = SegmentWithin(newSegment, NetworkModel.CloseCutoff);
-    bool withinInversionSegment = SegmentWithin(newSegmentInversion, NetworkModel.CloseCutoff);
-
     //Если мы не влазим в шасштабы сети
     if (!withinSegment)
     {
-      Vector2 intersectionPoint = Vector3.zero;
-      RoadSegment intersectionSegment = null;
-
-      int intersectionCount = SegmentIntersection(newSegment, out intersectionPoint, out intersectionSegment, rootSegment);
-
-      if (intersectionCount <= 1)
-      {
-        NetworkModel.RoadSegments.RemoveAll(p => p.IsEqual(newSegment));
-        NetworkModel.RoadSegments.Add(newSegment);
-        segment1 = true;
-      }
-
-      if (intersectionCount == 1)
-      {
-        RoadSegment[] segmentsA = PatchSegment(intersectionSegment, new RoadPoint(intersectionPoint, intersectionSegment));
-        RoadSegment[] segmentsB = PatchSegment(newSegment, new RoadPoint(intersectionPoint, newSegment));
-
-        //Убираем короткие сегменты дороги
-        bool patchA = segmentsA[0].SegmentLength() > NetworkModel.ShortCutOff;
-        bool patchB = segmentsA[1].SegmentLength() > NetworkModel.ShortCutOff;
-        bool patchC = segmentsB[0].SegmentLength() > NetworkModel.ShortCutOff;
-        bool patchD = segmentsB[1].SegmentLength() > NetworkModel.ShortCutOff;
-
-        List<RoadPoint> points = new List<RoadPoint>();
-        if (patchA)
-        {
-          points.Add(segmentsA[0].End);
-        }
-        else
-        {
-          NetworkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsA[0]));
-        }
-
-        if (patchB)
-        {
-          points.Add(segmentsA[1].End);
-        }
-        else
-        {
-          NetworkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsA[1]));
-        }
-
-        if (patchC)
-        {
-          points.Add(segmentsB[0].End);
-        }
-        else
-        {
-          NetworkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsB[0]));
-        }
-
-        if (patchD)
-        {
-          points.Add(segmentsB[1].End);
-        }
-        else
-        {
-          NetworkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsB[1]));
-        }
-
-        Intersection inter = new Intersection(points);
-        //Все оставшиеся точки, и формируют перекрестки и т.д и состовляют пересечения в нашей сети
-        NetworkModel.RoadIntersections.Add(inter);
-      }
+      segment1 = ClearWidthSegment(rootSegment, newSegment);
     }
-
-    //Сегмент в противоположную сторону
     if (!withinInversionSegment)
     {
-      Vector2 intersection = Vector3.zero;
-      RoadSegment other = null;
-
-      int intersectionCount = SegmentIntersection(newSegmentInversion, out intersection, out other, rootSegment);
-
-      if (intersectionCount <= 1)
-      {
-        //Удаляем все сегменты из сети, которые точно такие же как только что созданый 
-        NetworkModel.RoadSegments.RemoveAll(p => p.IsEqual(newSegmentInversion));
-
-        //Добавляем новосозданый сегмент в нашу сеть дорог
-        NetworkModel.RoadSegments.Add(newSegmentInversion);
-        segment2 = true;
-      }
-
-      if (intersectionCount == 1)
-      {
-        RoadSegment[] segmentsA = PatchSegment(other, new RoadPoint(intersection, other));
-        RoadSegment[] segmentsB = PatchSegment(newSegmentInversion, new RoadPoint(intersection, newSegmentInversion));
-
-        //Убираем короткие сегменты дороги
-        bool patchA = segmentsA[0].SegmentLength() > NetworkModel.ShortCutOff;
-        bool patchB = segmentsA[1].SegmentLength() > NetworkModel.ShortCutOff;
-        bool patchC = segmentsB[0].SegmentLength() > NetworkModel.ShortCutOff;
-        bool patchD = segmentsB[1].SegmentLength() > NetworkModel.ShortCutOff;
-
-        List<RoadPoint> points = new List<RoadPoint>();
-        if (patchA)
-        {
-          points.Add(segmentsA[0].End);
-        }
-        else
-        {
-          NetworkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsA[0]));
-        }
-
-        if (patchB)
-        {
-          points.Add(segmentsA[1].End);
-        }
-        else
-        {
-          NetworkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsA[1]));
-        }
-
-        if (patchC)
-        {
-          points.Add(segmentsB[0].End);
-        }
-        else
-        {
-          NetworkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsB[0]));
-        }
-
-        if (patchD)
-        {
-          points.Add(segmentsB[1].End);
-        }
-        else
-        {
-          NetworkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsB[1]));
-        }
-        Intersection inter = new Intersection(points);
-        NetworkModel.RoadIntersections.Add(inter);
-      }
+      segment2 = ClearWidthSegment(rootSegment, newSegmentInversion);
     }
 
     if (segment1 || segment2)
@@ -202,9 +57,9 @@ public class SplitSegmentCommand : BaseCommand
       if (segment1 && segment2)
       {
         Intersection inter = new Intersection(new List<RoadPoint>{rootPatchs[0].End,
-                                                                           rootPatchs [1].End,
-                                                                           newSegment.Begin,
-                                                                           newSegmentInversion.Begin});
+                                                                  rootPatchs [1].End,
+                                                                  newSegment.Begin,
+                                                                  newSegmentInversion.Begin});
         NetworkModel.RoadIntersections.Add(inter);
       }
       else if (segment1)
@@ -224,7 +79,16 @@ public class SplitSegmentCommand : BaseCommand
     }
   }
 
-  private float GetLenght(Vector3 pBegin, Vector3 pEnd)
+  private Vector3 GetBeginNewSegment(Vector3 pBegin, Vector3 pEnd)
+  {
+    float length = GetLenghtBegin(pBegin, pEnd);
+    //Получили направление сегмента дороги
+    Vector3 direction = (pBegin - pEnd).normalized;
+    //Получить новую точку, относмтельно которой начнется новый сегмент
+    return pEnd + (direction * length);
+  }
+
+  private float GetLenghtBegin(Vector3 pBegin, Vector3 pEnd)
   {
     float splitDistance = Random.Range(RANGE_MIN, RANGE_MAX);
 
@@ -235,13 +99,98 @@ public class SplitSegmentCommand : BaseCommand
     return length;
   }
 
-  private Vector3 GetBeginNewSegment(Vector3 pBegin, Vector3 pEnd, float length)
+  private float GetLenghtEnd(int level)
   {
-    //Получили направление сегмента дороги
-    Vector3 direction = (pBegin - pEnd).normalized;
-    //Получить новую точку, относмтельно которой начнется новый сегмент
-    return pEnd + (direction * length);
+    //Например: scale = 100, segment.Level = 0, рендом = 1.5
+    // Длинна будущего сегмента = 66.66
+    float newLength = NetworkModel.Scale / ((level + 1) * Random.Range(1f, 2f));
+    return (int)newLength; // пусть будут только целые числа, чтобы правильно наложить меш и не масштабировать его
   }
+
+  private Vector3 GetEndNewSegment(float newLength, Vector3 per, Vector3 pointBeginNewSegment)
+  {
+    //Определяем где будет конец нового сегмента
+    return pointBeginNewSegment + (per * newLength);
+  }
+
+  private RoadSegment GetNewSegment(Vector3 pointBeginNewSegment, Vector3 pointEndNewSegment, int level)
+  {
+    //Создаем новый сегмент
+    return new RoadSegment(new RoadPoint(new Vector2(pointBeginNewSegment.x, pointBeginNewSegment.z), null),
+                                         new RoadPoint(new Vector2(pointEndNewSegment.x, pointEndNewSegment.z), null),
+                                         level + 1);
+  }
+
+  private bool ClearWidthSegment(RoadSegment rootSegment, RoadSegment newSegment)
+  {
+    bool segment = false;
+    Vector2 intersectionPoint = Vector3.zero;
+    RoadSegment intersectionSegment = null;
+    int intersectionCount = SegmentIntersection(newSegment, out intersectionPoint, out intersectionSegment, rootSegment);
+
+    if (intersectionCount <= 1)
+    {
+      NetworkModel.RoadSegments.RemoveAll(p => p.IsEqual(newSegment));
+      NetworkModel.RoadSegments.Add(newSegment);
+      segment = true;
+    }
+
+    if (intersectionCount == 1)
+    {
+      RoadSegment[] segmentsA = PatchSegment(intersectionSegment, new RoadPoint(intersectionPoint, intersectionSegment));
+      RoadSegment[] segmentsB = PatchSegment(newSegment, new RoadPoint(intersectionPoint, newSegment));
+
+      //Убираем короткие сегменты дороги
+      bool patchA = segmentsA[0].SegmentLength() > NetworkModel.ShortCutOff;
+      bool patchB = segmentsA[1].SegmentLength() > NetworkModel.ShortCutOff;
+      bool patchC = segmentsB[0].SegmentLength() > NetworkModel.ShortCutOff;
+      bool patchD = segmentsB[1].SegmentLength() > NetworkModel.ShortCutOff;
+
+      List<RoadPoint> points = new List<RoadPoint>();
+      if (patchA)
+      {
+        points.Add(segmentsA[0].End);
+      }
+      else
+      {
+        NetworkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsA[0]));
+      }
+
+      if (patchB)
+      {
+        points.Add(segmentsA[1].End);
+      }
+      else
+      {
+        NetworkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsA[1]));
+      }
+
+      if (patchC)
+      {
+        points.Add(segmentsB[0].End);
+      }
+      else
+      {
+        NetworkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsB[0]));
+      }
+
+      if (patchD)
+      {
+        points.Add(segmentsB[1].End);
+      }
+      else
+      {
+        NetworkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsB[1]));
+      }
+
+      Intersection inter = new Intersection(points);
+      //Все оставшиеся точки, и формируют перекрестки и т.д и состовляют пересечения в нашей сети
+      NetworkModel.RoadIntersections.Add(inter);
+    }
+
+    return segment;
+  }
+
 
   /// <summary>
   /// Разбить один сигмент, на 2, и заменить его в нашей сети дорог

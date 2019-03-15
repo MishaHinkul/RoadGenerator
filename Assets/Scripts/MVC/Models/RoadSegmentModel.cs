@@ -14,20 +14,26 @@ public class RoadSegment
     return Vector2.Distance(this.Begin.Point, this.End.Point);
   }
 
-  public Vector3 GetPoint(bool first)
+  public Vector3 GetWorldPosition(bool first)
   {
     if (first)
     {
-      return new Vector3(this.Begin.Point.x, 0, this.Begin.Point.y);
+      return Begin.WorldPosition;
     }
-    return new Vector3(this.End.Point.x, 0, this.End.Point.y);
+    return End.WorldPosition;
+  }
+
+  public Vector3 GetWorldPerp()
+  {
+    //Получили направление для новой точки (перепендикуляр)
+    return Vector3.Cross(Begin.WorldPosition - End.WorldPosition, Vector3.down).normalized;// * (Random.Range (0f, 1f) < 0.5f ? -1 : 1);
   }
 
   public void DebugDriwLine()
   {
-    Debug.DrawLine(GetPoint(true), GetPoint(false), Color.blue);
-    Debug.DrawRay(GetPoint(true), Vector3.up, Color.red);
-    Debug.DrawRay(GetPoint(false), Vector3.up, Color.red);
+    Debug.DrawLine(GetWorldPosition(true), GetWorldPosition(false), Color.blue);
+    Debug.DrawRay(GetWorldPosition(true), Vector3.up, Color.red);
+    Debug.DrawRay(GetWorldPosition(false), Vector3.up, Color.red);
   }
 
   public bool IsEqual(RoadSegment segment)
