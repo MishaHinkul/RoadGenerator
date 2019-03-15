@@ -28,9 +28,9 @@ public class OCenterTemplateCommand : BaseCommand
             Quaternion rotationB = Quaternion.Euler(0, 0, model.Angle * (i + 1));
 
             RoadPoint a = new RoadPoint();
-            a.point = rotationA * (new Vector2(networkModel.Scale / 2.5f, 0) + model.Center);
+            a.Point = rotationA * (new Vector2(networkModel.Scale / 2.5f, 0) + model.Center);
             RoadPoint b = new RoadPoint();
-            b.point = rotationB * (new Vector2(networkModel.Scale / 2.5f, 0) + model.Center);
+            b.Point = rotationB * (new Vector2(networkModel.Scale / 2.5f, 0) + model.Center);
 
             RoadSegment rA = new RoadSegment(a, b, 0);
             networkModel.RoadSegments.Add(rA);
@@ -39,13 +39,13 @@ public class OCenterTemplateCommand : BaseCommand
 
             if (last != null)
             {
-                Intersection iA = new Intersection(new List<RoadPoint>() { rA.PointA, last.PointA });
+                Intersection iA = new Intersection(new List<RoadPoint>() { rA.Begin, last.Begin });
                 networkModel.RoadIntersections.Add(iA);
             }
             last = rA;
         }
 
-        Intersection iB = new Intersection(new List<RoadPoint>() { first.PointA, last.PointA });
+        Intersection iB = new Intersection(new List<RoadPoint>() { first.Begin, last.Begin });
         networkModel.RoadIntersections.Add(iB);
     }
 }

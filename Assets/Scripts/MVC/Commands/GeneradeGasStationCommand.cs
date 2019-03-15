@@ -36,8 +36,8 @@ public class GeneradeGasStationCommand : BaseCommand
         
         for (int i = 0; i < gasSegment.Count; i++)
         {
-            Vector2 start = gasSegment[i].PointA.point;
-            Vector2 end = gasSegment[i].PointB.point;
+            Vector2 start = gasSegment[i].Begin.Point;
+            Vector2 end = gasSegment[i].End.Point;
             Vector2 dir = (end - start).normalized;
             float distance = Vector2.Distance(start, end);
 

@@ -23,8 +23,8 @@ public class ShowIntersectionCommand : BaseCommand
             //networkModel.roadIntersections[i].Points - координаты у всех одинаковые
 
             RoadPoint roadPointA = networkModel.RoadIntersections[i].Points[0];
-            RoadPoint roadPointB = roadPointA.mySegement.GetOther(roadPointA);
-            Vector3 position = new Vector3(roadPointA.point.x, networkModel.RoadIntersectionTransform.position.y, roadPointA.point.y);
+            RoadPoint roadPointB = roadPointA.MySegement.GetOther(roadPointA);
+            Vector3 position = new Vector3(roadPointA.Point.x, networkModel.RoadIntersectionTransform.position.y, roadPointA.Point.y);
             networkModel.ViewIntersection.Add(position);
             Quaternion rotation;
 
@@ -59,9 +59,9 @@ public class ShowIntersectionCommand : BaseCommand
     private Quaternion LookRotation(RoadPoint roadPoint)
     {
         RoadPoint roadPointA = roadPoint;
-        RoadPoint roadPointB = roadPointA.mySegement.GetOther(roadPointA);
+        RoadPoint roadPointB = roadPointA.MySegement.GetOther(roadPointA);
 
-        Vector2 direction = roadPointB.point - roadPointA.point;
+        Vector2 direction = roadPointB.Point - roadPointA.Point;
         Vector3 forward = new Vector3(direction.x, networkModel.RoadIntersectionTransform.position.y, direction.y);
 
         return Quaternion.LookRotation(forward);
@@ -86,14 +86,14 @@ public class ShowIntersectionCommand : BaseCommand
         for (int j = 0; j < intersectionList.Count - 1; j++)
         {
             segment1PointA = intersectionList[j];
-            segment1PointB = segment1PointA.mySegement.GetOther(segment1PointA);
+            segment1PointB = segment1PointA.MySegement.GetOther(segment1PointA);
 
             segment2PointA = intersectionList[j + 1];
-            segment2PointB = segment2PointA.mySegement.GetOther(segment2PointA);
+            segment2PointB = segment2PointA.MySegement.GetOther(segment2PointA);
 
             //2 вектора должны смотреть в разные стороны
-            vectorSegment1 = segment1PointB.point - segment1PointA.point;
-            vectorSegment2 = segment2PointA.point - segment2PointB.point;
+            vectorSegment1 = segment1PointB.Point - segment1PointA.Point;
+            vectorSegment2 = segment2PointA.Point - segment2PointB.Point;
 
             //Если между двумя векторами угл 180 градусов, значит относительно 3 точки мы поворачиваем правильно префаб перекрестка
             if (Vector2.Dot(vectorSegment1.normalized, vectorSegment2.normalized) == 1)

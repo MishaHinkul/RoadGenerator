@@ -22,21 +22,21 @@ public class YCenterTemplateCommand : BaseCommand
         Quaternion rotation = Quaternion.Euler(0, 0, model.Angle);
 
         RoadPoint a = new RoadPoint();
-        a.point = rotation * model.Center;
+        a.Point = rotation * model.Center;
         RoadPoint b = new RoadPoint();
-        b.point = rotation * (new Vector2(networkModel.Scale, 0) + model.Center);
+        b.Point = rotation * (new Vector2(networkModel.Scale, 0) + model.Center);
 
         Quaternion localA = Quaternion.Euler(0, 0, 120f);
         RoadPoint c = new RoadPoint();
-        c.point = rotation * model.Center;
+        c.Point = rotation * model.Center;
         RoadPoint d = new RoadPoint();
-        d.point = localA * rotation * (new Vector2(networkModel.Scale, 0) + model.Center);
+        d.Point = localA * rotation * (new Vector2(networkModel.Scale, 0) + model.Center);
 
         Quaternion localB = Quaternion.Euler(0, 0, 240f);
         RoadPoint e = new RoadPoint();
-        e.point = rotation * model.Center;
+        e.Point = rotation * model.Center;
         RoadPoint f = new RoadPoint();
-        f.point = localB * rotation * (new Vector2(networkModel.Scale, 0) + model.Center);
+        f.Point = localB * rotation * (new Vector2(networkModel.Scale, 0) + model.Center);
 
         RoadSegment rA = new RoadSegment(a, b, 0);
         RoadSegment rB = new RoadSegment(c, d, 0);
@@ -44,7 +44,7 @@ public class YCenterTemplateCommand : BaseCommand
 
         networkModel.RoadSegments.AddRange(new RoadSegment[] { rA, rB, rC });
 
-        Intersection iA = new Intersection(new List<RoadPoint>() { rA.PointA, rB.PointA, rC.PointA });
+        Intersection iA = new Intersection(new List<RoadPoint>() { rA.Begin, rB.Begin, rC.Begin });
         networkModel.RoadIntersections.Add(iA);
     }
 }

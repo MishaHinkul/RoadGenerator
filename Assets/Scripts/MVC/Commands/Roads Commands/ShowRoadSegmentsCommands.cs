@@ -20,15 +20,15 @@ public class ShowRoadSegmentsCommands : BaseCommand
 
         for (int i = 0; i < networkModel.RoadSegments.Count; i++)
         {
-            RoadPoint roadPointA = networkModel.RoadSegments[i].PointA;
-            RoadPoint roadPointB = networkModel.RoadSegments[i].PointB;
+            RoadPoint roadPointA = networkModel.RoadSegments[i].Begin;
+            RoadPoint roadPointB = networkModel.RoadSegments[i].End;
 
-            Vector3 globalPosition = new Vector3(roadPointA.point.x, networkModel.RoadIntersectionTransform.position.y, roadPointA.point.y);
-            Vector2 directionSegment = roadPointB.point - roadPointA.point;
+            Vector3 globalPosition = new Vector3(roadPointA.Point.x, networkModel.RoadIntersectionTransform.position.y, roadPointA.Point.y);
+            Vector2 directionSegment = roadPointB.Point - roadPointA.Point;
             Vector3 forward = new Vector3(directionSegment.x, networkModel.RoadIntersectionTransform.position.y, directionSegment.y);
 
             float step = roadPrefab.transform.lossyScale.z;
-            float iteration = Vector2.Distance(roadPointA.point, roadPointB.point) / step;
+            float iteration = Vector2.Distance(roadPointA.Point, roadPointB.Point) / step;
 
             forward = forward.normalized; //Направление в котором будм создавать тайлы дороги
 

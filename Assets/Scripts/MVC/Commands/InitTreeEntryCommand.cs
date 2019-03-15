@@ -25,8 +25,8 @@ public class InitTreeEntryCommand : BaseCommand
             {
                 int randomIndex = Random.Range(0, mainIntersection.Points.Count);
                 RoadPoint pointA = mainIntersection.Points[randomIndex];
-                RoadPoint pointB = pointA.mySegement.GetOther(pointA);
-                Vector3 position = new Vector3(pointB.point.x, networkMode.RoadNetworkTransform.position.y, pointB.point.y);
+                RoadPoint pointB = pointA.MySegement.GetOther(pointA);
+                Vector3 position = new Vector3(pointB.Point.x, networkMode.RoadNetworkTransform.position.y, pointB.Point.y);
                 if (!entryModel.Entrances.Contains(position))
                 {
                     entryModel.Entrances.Add(position);
