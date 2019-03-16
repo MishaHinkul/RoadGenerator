@@ -4,61 +4,67 @@ using UnityEngine;
 
 public class ShowRoadSegmentsCommands : BaseCommand
 {
-    [Inject]
-    public RoadNetworkModel networkModel { get; private set; }
+  private GameObject roadPrefab = null;
 
-    public override void Execute()
+  public override void Execute()
+  {
+    LoadResources();
+    if (!Validation())
     {
-        GameObject roadPrefab = Resources.Load<GameObject>("ROAD_straight");
-     
-
-        if (roadPrefab == null || networkModel.RoadNetworkTransform == null)
-        {
-            return;
-        }
-        networkModel.WithRoad = roadPrefab.transform.lossyScale.z;
-
-        for (int i = 0; i < networkModel.RoadSegments.Count; i++)
-        {
-            RoadPoint roadPointA = networkModel.RoadSegments[i].Begin;
-            RoadPoint roadPointB = networkModel.RoadSegments[i].End;
-
-            Vector3 globalPosition = new Vector3(roadPointA.Point.x, networkModel.RoadIntersectionTransform.position.y, roadPointA.Point.y);
-            Vector2 directionSegment = roadPointB.Point - roadPointA.Point;
-            Vector3 forward = new Vector3(directionSegment.x, networkModel.RoadIntersectionTransform.position.y, directionSegment.y);
-
-            float step = roadPrefab.transform.lossyScale.z;
-            float iteration = Vector2.Distance(roadPointA.Point, roadPointB.Point) / step;
-
-            forward = forward.normalized; //Направление в котором будм создавать тайлы дороги
-
-            for (float pos = step; pos < iteration; pos += step)
-            {
-                Vector3 instPosition = globalPosition + (forward * pos);
-                //Проверка для того чтобы не создать объект на пересечении
-                if (!Contains(instPosition))
-                {
-                    GameObject instacGO = GameObject.Instantiate<GameObject>(roadPrefab, instPosition, Quaternion.LookRotation(forward));
-                    instacGO.transform.parent = networkModel.RoadNetworkTransform;
-                }
-            }
-        }
+      return;
     }
+    NetworkModel.WithRoad = roadPrefab.transform.lossyScale.z;
 
-    /// <summary>
-    /// Есть ли объект пересечения в заданых координатах
-    /// </summary>
-    /// <param name="pos"></param>
-    /// <returns></returns>
-    public bool Contains(Vector3 pos)
+    for (int i = 0; i < NetworkModel.RoadSegments.Count; i++)
     {
-        for (int i = 0; i < networkModel.ViewIntersection.Count; i++)
+      RoadPoint roadPointA = NetworkModel.RoadSegments[i].Begin;
+      RoadPoint roadPointB = NetworkModel.RoadSegments[i].End;
+
+      Vector3 globalPosition = new Vector3(roadPointA.Point.x, NetworkModel.RoadIntersectionTransform.position.y, roadPointA.Point.y);
+      Vector2 directionSegment = roadPointB.Point - roadPointA.Point;
+      Vector3 forward = new Vector3(directionSegment.x, NetworkModel.RoadIntersectionTransform.position.y, directionSegment.y);
+
+      float step = roadPrefab.transform.lossyScale.z;
+      float iteration = Vector2.Distance(roadPointA.Point, roadPointB.Point) / step;
+
+      forward = forward.normalized; //Направление в котором будм создавать тайлы дороги
+
+      for (float pos = step; pos < iteration; pos += step)
+      {
+        Vector3 instPosition = globalPosition + (forward * pos);
+        //Проверка для того чтобы не создать объект на пересечении
+        if (!Contains(instPosition))
         {
-            if (networkModel.ViewIntersection[i] == pos)
-            {
-                return true;
-            }
+          GameObject.Instantiate<GameObject>(roadPrefab, 
+                                             instPosition, 
+                                             Quaternion.LookRotation(forward), 
+                                             NetworkModel.RoadNetworkTransform);
         }
-        return false;
+      }
     }
+  }
+
+  private void LoadResources()
+  {
+    roadPrefab = Resources.Load<GameObject>("ROAD_straight");
+  }
+
+  private bool Validation()
+  {
+    return !(roadPrefab == null || NetworkModel.RoadNetworkTransform == null);
+  }
+
+  /// <summary>
+  /// Есть ли объект пересечения в заданых координатах
+  /// </summary>
+  /// <param name="pos"></param>
+  /// <returns></returns>
+  public bool Contains(Vector3 pos)
+  {
+    return NetworkModel.ViewIntersection.Contains(new HVector3(pos));
+  }
+
+
+  [Inject]
+  public RoadNetworkModel NetworkModel { get; private set; }
 }

@@ -8,8 +8,7 @@ public class RoadNetworkModel
   {
     RoadIntersections = new List<Intersection>();
     RoadSegments = new List<RoadSegment>();
-    ViewRoads = new List<Vector3>();
-    ViewIntersection = new List<Vector3>();
+    ViewIntersection = new List<HVector3>();
     ShortCutOff = 5f;
     CloseCutoff = 7f;
   }
@@ -35,14 +34,7 @@ public class RoadNetworkModel
   /// </summary>
   public Transform RoadIntersectionTransform { get; set; }
 
-
-  /// <summary>
-  /// Храним координаты точек которые уже учавствовали в визуализайии сети дорог
-  /// Чтобы не создать меш дважды для одного и того же места
-  /// </summary>
-  public List<Vector3> ViewRoads { get; private set; }
-
-  public List<Vector3> ViewIntersection { get; private set; }
+  public List<HVector3> ViewIntersection { get; private set; }
 
   /// <summary>
   /// Масштаб сети дорог

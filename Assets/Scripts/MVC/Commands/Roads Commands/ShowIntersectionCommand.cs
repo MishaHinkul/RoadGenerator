@@ -28,16 +28,17 @@ public class ShowIntersectionCommand : BaseCommand
       roadPointB = roadPointA.MySegement.GetOther(roadPointA);
       position = new Vector3(roadPointA.Point.x, NetworkModel.RoadIntersectionTransform.position.y, roadPointA.Point.y);
 
-      NetworkModel.ViewIntersection.Add(position);
       switch (NetworkModel.RoadIntersections[i].Points.Count)
       {
         case 3: //T - образный перекресток
           rotation = LookRotationForTIntersection(NetworkModel.RoadIntersections[i].Points);
           intersectionGO = GameObject.Instantiate<GameObject>(intersectionT, position, rotation, NetworkModel.RoadIntersectionTransform);
+          NetworkModel.ViewIntersection.Add(new HVector3(position));
           break;
         case 4: //Перекресток
           rotation = LookRotation(roadPointA);
           intersectionGO = GameObject.Instantiate<GameObject>(intersection, position, rotation, NetworkModel.RoadIntersectionTransform);
+          NetworkModel.ViewIntersection.Add(new HVector3(position));
           break;
       }
     }
