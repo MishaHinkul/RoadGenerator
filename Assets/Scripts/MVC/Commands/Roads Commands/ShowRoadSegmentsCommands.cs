@@ -5,6 +5,7 @@ using UnityEngine;
 public class ShowRoadSegmentsCommands : BaseCommand
 {
   private GameObject roadPrefab = null;
+  private GameObject roadPrefabEnd = null;
 
   public override void Execute()
   {
@@ -15,10 +16,13 @@ public class ShowRoadSegmentsCommands : BaseCommand
     }
     NetworkModel.WithRoad = roadPrefab.transform.lossyScale.z;
 
+    RoadPoint roadPointA = null;
+    RoadPoint roadPointB = null;
+
     for (int i = 0; i < NetworkModel.RoadSegments.Count; i++)
     {
-      RoadPoint roadPointA = NetworkModel.RoadSegments[i].Begin;
-      RoadPoint roadPointB = NetworkModel.RoadSegments[i].End;
+      roadPointA = NetworkModel.RoadSegments[i].Begin;
+      roadPointB = NetworkModel.RoadSegments[i].End;
 
       Vector3 globalPosition = new Vector3(roadPointA.Point.x, NetworkModel.RoadIntersectionTransform.position.y, roadPointA.Point.y);
       Vector2 directionSegment = roadPointB.Point - roadPointA.Point;
@@ -29,16 +33,16 @@ public class ShowRoadSegmentsCommands : BaseCommand
 
       forward = forward.normalized; //Направление в котором будм создавать тайлы дороги
 
+      InstanceDeadLock(roadPointA, roadPointB, forward);
+
       for (float pos = step; pos < iteration; pos += step)
       {
         Vector3 instPosition = globalPosition + (forward * pos);
+
         //Проверка для того чтобы не создать объект на пересечении
         if (!Contains(instPosition))
         {
-          GameObject.Instantiate<GameObject>(roadPrefab, 
-                                             instPosition, 
-                                             Quaternion.LookRotation(forward), 
-                                             NetworkModel.RoadNetworkTransform);
+          InstancePrefab(roadPrefab, instPosition, forward);
         }
       }
     }
@@ -47,11 +51,35 @@ public class ShowRoadSegmentsCommands : BaseCommand
   private void LoadResources()
   {
     roadPrefab = Resources.Load<GameObject>("ROAD_straight");
+    roadPrefabEnd = Resources.Load<GameObject>("ROAD_deadlock");
   }
 
   private bool Validation()
   {
     return !(roadPrefab == null || NetworkModel.RoadNetworkTransform == null);
+  }
+
+  private void InstanceDeadLock(RoadPoint roadPointA, RoadPoint roadPointB, Vector3 forward)
+  {
+    Vector3 worldPosA = roadPointA.WorldPosition;
+    Vector3 worldPosB = roadPointB.WorldPosition;
+
+    if (!Contains(worldPosA))
+    {
+      InstancePrefab(roadPrefabEnd, worldPosA, forward);
+    }
+    if (!Contains(worldPosB))
+    {
+      InstancePrefab(roadPrefabEnd, worldPosB, -forward);
+    }
+  }
+
+  private void InstancePrefab(GameObject template, Vector3 position, Vector3 forward)
+  {
+    GameObject.Instantiate<GameObject>(template,
+                                       position,
+                                       Quaternion.LookRotation(forward),
+                                       NetworkModel.RoadNetworkTransform);
   }
 
   /// <summary>
