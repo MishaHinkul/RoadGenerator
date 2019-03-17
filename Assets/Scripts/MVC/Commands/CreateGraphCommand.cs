@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class LoadGraphCommand : BaseCommand
 {
-    [Inject]
-    public GraphModel graphModel { get; private set; }
-    public override void Execute()
+  public override void Execute()
+  {
+    GraphVisiЬility graph = GameObject.FindObjectOfType<GraphVisiЬility>();
+    if (graph != null)
     {
-        GraphVisiЬility graph = GameObject.FindObjectOfType<GraphVisiЬility>();
-        if (graph != null)
-        {
-            graph.Load();
-            graphModel.Graph = graph;
-        }
+      graph.Load();
+      GraphModel.Graph = graph;
     }
+  }
+
+  [Inject]
+  public GraphModel GraphModel { get; private set; }
 }
