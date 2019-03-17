@@ -18,29 +18,26 @@ public class ShowRoadSegmentsCommands : BaseCommand
 
     RoadPoint roadPointA = null;
     RoadPoint roadPointB = null;
+    Vector3 forward;
+    Vector3 instPosition;
+    Vector3 globalPosition;
+    float iteration;
+    float step = NetworkModel.WithRoad;
 
     for (int i = 0; i < NetworkModel.RoadSegments.Count; i++)
     {
       roadPointA = NetworkModel.RoadSegments[i].Begin;
       roadPointB = NetworkModel.RoadSegments[i].End;
-
-      Vector3 globalPosition = new Vector3(roadPointA.Point.x, NetworkModel.RoadIntersectionTransform.position.y, roadPointA.Point.y);
-      Vector2 directionSegment = roadPointB.Point - roadPointA.Point;
-      Vector3 forward = new Vector3(directionSegment.x, NetworkModel.RoadIntersectionTransform.position.y, directionSegment.y);
-
-      float step = roadPrefab.transform.lossyScale.z;
-      float iteration = Vector2.Distance(roadPointA.Point, roadPointB.Point) / step;
-
-      forward = forward.normalized; //Направление в котором будм создавать тайлы дороги
+      forward = GetForward(roadPointA, roadPointB);
+      globalPosition = new Vector3(roadPointA.Point.x, NetworkModel.RoadIntersectionTransform.position.y, roadPointA.Point.y);
+      iteration = Vector2.Distance(roadPointA.Point, roadPointB.Point) / step;
 
       InstanceDeadLock(roadPointA, roadPointB, forward);
 
       for (float pos = step; pos < iteration; pos += step)
       {
-        Vector3 instPosition = globalPosition + (forward * pos);
-
-        //Проверка для того чтобы не создать объект на пересечении
-        if (!Contains(instPosition))
+        instPosition = globalPosition + (forward * pos);
+        if (!Contains(instPosition))  //Проверка для того чтобы не создать объект на перекрестке, они созданы ранее
         {
           InstancePrefab(roadPrefab, instPosition, forward);
         }
@@ -57,6 +54,15 @@ public class ShowRoadSegmentsCommands : BaseCommand
   private bool Validation()
   {
     return !(roadPrefab == null || NetworkModel.RoadNetworkTransform == null);
+  }
+
+  private Vector3 GetForward(RoadPoint pointA, RoadPoint pointB)
+  {
+    Vector2 directionSegment = pointB.Point - pointA.Point;
+    Vector3 forward = new Vector3(directionSegment.x, NetworkModel.RoadIntersectionTransform.position.y, directionSegment.y);
+    forward = forward.normalized; //Направление в котором будем создавать тайлы дороги
+
+    return forward;
   }
 
   private void InstanceDeadLock(RoadPoint roadPointA, RoadPoint roadPointB, Vector3 forward)
