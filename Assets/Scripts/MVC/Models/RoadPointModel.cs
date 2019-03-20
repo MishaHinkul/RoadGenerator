@@ -25,6 +25,11 @@ public class RoadPoint
     return false;
   }
 
+  public override int GetHashCode()
+  {
+    return Point.GetHashCode();
+  }
+
 
   public RoadPoint()
   {

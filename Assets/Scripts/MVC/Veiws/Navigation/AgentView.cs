@@ -107,7 +107,6 @@ public class AgentView : BaseView
   private Steering GetPrioritySteering()
   {
     Steering steering = new Steering();
-    float sqrThreshold = model.priorityThreshold * model.priorityThreshold;
     List<int> gIdList = new List<int>(model.groups.Keys);
     gIdList.Sort();
 

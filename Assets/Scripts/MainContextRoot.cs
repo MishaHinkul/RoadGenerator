@@ -74,9 +74,6 @@ public class MainContextRoot : MVCSContext
     commandBinder.Bind(EventGlobal.E_CarLogics).To<CarLogicCommand>();
     commandBinder.Bind(EventGlobal.E_LeaveСity).To<LeaveСityCommand>();
 
-    //Debug
-    commandBinder.Bind(EventGlobal.E_Dubug_ShowPath).To<DebugBuilPuthCommand>();
-
     //Other
     commandBinder.Bind(EventGlobal.E_WaitTime).To<WaitTimeCommand>();
   }

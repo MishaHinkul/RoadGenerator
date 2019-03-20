@@ -48,8 +48,6 @@ public class GeneradeGasStationCommand : BaseCommand
     Vector2 dir = (end - start).normalized;
     float distance = Vector2.Distance(start, end);
 
-    Vector2 current = start;
-
     float level = 2.0f - (segment.Level / 3f);//0,0.33,0.66,1
     float length = Random.Range(1.5f, 2f) * level;
     float height = Random.Range(3f, 6f) * level;
