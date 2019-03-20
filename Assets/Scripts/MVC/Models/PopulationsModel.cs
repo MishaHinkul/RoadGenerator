@@ -7,6 +7,13 @@ using UnityEngine;
 /// </summary>
 public class PopulationsModel
 {
+  public Vector3 GetRendomeBuilding()
+  {
+    int index = Random.Range(0, Buildings.Count);
+    return Buildings[index].transform.position;
+  }
+
+
   public PopulationsModel()
   {
     Buildings = new List<GameObject>();

@@ -19,7 +19,7 @@ public class MainContextRoot : MVCSContext
     //Model
     injectionBinder.Bind<RoadNetworkModel>().ToSingleton();
     injectionBinder.Bind<GraphModel>().ToSingleton();
-    injectionBinder.Bind<TreeEntryModel>().ToSingleton();
+    injectionBinder.Bind<EntryModel>().ToSingleton();
     injectionBinder.Bind<PopulationsModel>().ToSingleton();
     injectionBinder.Bind<SettingsModel>().ToSingleton();
     injectionBinder.Bind<CameraSettings>().ToSingleton();

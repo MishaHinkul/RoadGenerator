@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class WaitTimeModel
 {
-
-    public float time;
-    public System.Action callback;
+  public float Time { get; set; }
+  public System.Action Callback { get; set; }
 }

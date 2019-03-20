@@ -7,31 +7,31 @@ using UnityEngine;
 /// </summary>
 public class LeaveСityCommand : BaseCommand
 {
-    [Inject]
-    public TreeEntryModel entryModel { get; private set; }
+  private CarView carView = null;
 
-    [Inject]
-    public GraphModel graphModel { get; private set; }
-
-    public override void Execute()
+  public override void Execute()
+  {
+    carView = eventData.data as CarView;
+    if (carView == null)
     {
-        CarView model = eventData.data as CarView;
-        if (model == null)
-        {
-            return;
-        }
-
-        Vector3 carPosition = model.gameObject.transform.position;
-
-        int entryIndex = Random.Range(0, entryModel.Entrances.Count);
-        Vector3 entryPosition = entryModel.Entrances[entryIndex];
-
-        List<Vertex> pathVertex = graphModel.Graph.GetPathAstart(entryPosition, carPosition);
-        Path path = new Path(pathVertex);
-        model.StarMove(path, () =>
-        {
-            //По достижению конца пути
-            GameObject.Destroy(model.gameObject);
-        });
+      return;
     }
+
+    Vector3 carPosition = carView.gameObject.transform.position;
+    Vector3 entryPosition = EmptryMode.GetRendomeEntry();
+    Path path = GraphModel.CalculatePath(entryPosition, carPosition);
+
+    carView.StarMove(path, DestroyCar);
+  }
+
+  private void DestroyCar()
+  {
+    GameObject.Destroy(carView.gameObject);
+  }
+
+  [Inject]
+  public EntryModel EmptryMode { get; private set; }
+
+  [Inject]
+  public GraphModel GraphModel { get; private set; }
 }

@@ -48,5 +48,5 @@ public class InitTreeEntryCommand : BaseCommand
   public RoadNetworkModel NetworkMode { get; private set; }
 
   [Inject]
-  public TreeEntryModel EntryModel { get; private set; }
+  public EntryModel EntryModel { get; private set; }
 }

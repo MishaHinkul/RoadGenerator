@@ -11,7 +11,7 @@ public class DebugBuilPuthCommand : BaseCommand
     public RoadNetworkModel roadNetwork { get; private set; }
 
     [Inject]
-    public TreeEntryModel entryMode { get; private set; }
+    public EntryModel entryMode { get; private set; }
 
     public override void Execute()
     {

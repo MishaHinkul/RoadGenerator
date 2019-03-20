@@ -4,39 +4,58 @@ using UnityEngine;
 
 public class SpawnCarsCommand : BaseCommand
 {
-    [Inject]
-    public ICoroutineExecutor coroutineExecutor { get; private set; }
+  private GameObject carPrefab = null;
 
-    [Inject]
-    public SettingsModel settingsModel { get; private set; }
-
-    private GameObject carPrefab = null;
-
-    public override void Execute()
+  public override void Execute()
+  {
+    LoadResource();
+    if (Validation())
     {
-        carPrefab = Resources.Load<GameObject>("Car");
-        if (carPrefab != null)
-        {
-            coroutineExecutor.StartCoroutine(Spawn());
-        }
-        else
-        {
-            Debug.LogError("Car Prefub - not found");
-        }
+      CoroutineExecutor.StartCoroutine(Spawn());
+    }
+    else
+    {
+      Debug.LogError("Car Prefub - not found");
+    }
+  }
+
+  private IEnumerator Spawn()
+  {
+    WaitForSeconds waitTime = new WaitForSeconds(SettingsModel.CarSpawnTime);
+    WaitForEndOfFrame waitFrame = new WaitForEndOfFrame();
+    while (true)
+    {
+      yield return waitTime;
+      GameObject instanceGO = InstanceCar();
+      yield return waitFrame;
+      dispatcher.Dispatch(EventGlobal.E_CarLogics, instanceGO);
+    }
+  }
+
+  private GameObject InstanceCar()
+  {
+    GameObject instanceGO = GameObject.Instantiate<GameObject>(carPrefab);
+    if (instanceGO != null)
+    {
+      instanceGO.name = "Car";
     }
 
-    private IEnumerator Spawn()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(settingsModel.CarSpawnTime);
-            GameObject instanceGO = GameObject.Instantiate<GameObject>(carPrefab);
-            yield return new WaitForEndOfFrame();
-            if (instanceGO != null)
-            {
-                instanceGO.name = "Car";
-                dispatcher.Dispatch(EventGlobal.E_CarLogics, instanceGO);
-            }
-        }
-    }
+    return instanceGO;
+  }
+
+  private void LoadResource()
+  {
+    carPrefab = Resources.Load<GameObject>("Car");
+  }
+
+  private bool Validation()
+  {
+    return carPrefab != null;
+  }
+
+  [Inject]
+  public ICoroutineExecutor CoroutineExecutor { get; private set; }
+
+  [Inject]
+  public SettingsModel SettingsModel { get; private set; }
 }

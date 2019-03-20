@@ -4,29 +4,33 @@ using UnityEngine;
 
 public class WaitTimeCommand : BaseCommand
 {
-    [Inject]
-    public ICoroutineExecutor coroutineExecutor { get; private set; }
+  private WaitTimeModel model = null;
 
-    private WaitTimeModel model = null;
-
-    public override void Execute()
+  public override void Execute()
+  {
+    model = eventData.data as WaitTimeModel;
+    if (!Validation())
     {
-        model = eventData.data as WaitTimeModel;
-        if (model == null || model.time <= 0)
-        {
-            return;
-        }
-        coroutineExecutor.StartCoroutine(Wait());
-
-
+      return;
     }
+    CoroutineExecutor.StartCoroutine(Wait());
+  }
 
-    private IEnumerator Wait()
+  private bool Validation()
+  {
+    return model != null && model.Callback != null;
+  }
+
+  private IEnumerator Wait()
+  {
+    if (model.Time >= 0)
     {
-        yield return new WaitForSeconds(model.time);
-        if (model.callback != null)
-        {
-            model.callback();
-        }
+      yield return new WaitForSeconds(model.Time);
     }
+    model.Callback();
+  }
+
+
+  [Inject]
+  public ICoroutineExecutor CoroutineExecutor { get; private set; }
 }

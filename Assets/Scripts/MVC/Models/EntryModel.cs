@@ -2,9 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TreeEntryModel
+public class EntryModel
 {
-  public TreeEntryModel()
+  public Vector3 GetRendomeEntry()
+  {
+    int indexEntry = Random.Range(0, Entrances.Count);
+    return Entrances[indexEntry];
+  }
+
+  public EntryModel()
   {
     Entrances = new List<Vector3>();
   }
