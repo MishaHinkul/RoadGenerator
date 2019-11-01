@@ -33,6 +33,18 @@ public class CameraFocusPositionSettigs
 
 public class CameraScaleSettings
 {
+  public const float MAX_DISTANCE = 14f;
+  public const float SPEED_CHANGE_DISTANCE = 0.15f;
+  public const float MIN_DISTANCE = 6f;
+  public const float SPEED = 25;
+
+  public CameraScaleSettings()
+  {
+    SpeedChangeDistance = SPEED_CHANGE_DISTANCE;
+    MinMaxDistance = new Vector2(MIN_DISTANCE, MAX_DISTANCE);
+    Speed = SPEED;
+  }
+
   public float DesiredDistance { get; set; }
   public float SpeedChangeDistance { get; set; }
   public float Speed { get; set; }

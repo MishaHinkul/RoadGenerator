@@ -7,38 +7,48 @@ public class ShowIntersectionCommand : BaseCommand
   private GameObject intersection = null;
   private GameObject intersectionT = null;
 
-  public override void Execute()
-  {
-    LoadResources();
-    if (!Validation())
+    public override void Execute()
     {
-      return;
+        LoadResources();
+        if (!Validation())
+        {
+            return;
+        }
+        Retain();
+        Executor.StartCoroutine(Visual());
     }
-    RoadPoint roadPointA = null;
-    Quaternion rotation;
-    Vector3 position;
 
-    for (int i = 0; i < NetworkModel.RoadIntersections.Count; i++)
+    private IEnumerator Visual()
     {
-      //networkModel.roadIntersections[i].Points - координаты у всех одинаковые
-      roadPointA = NetworkModel.RoadIntersections[i].Points[0];
-      position = new Vector3(roadPointA.Point.x, NetworkModel.RoadIntersectionTransform.position.y, roadPointA.Point.y);
+        RoadPoint roadPointA = null;
+        Quaternion rotation;
+        Vector3 position;
 
-      switch (NetworkModel.RoadIntersections[i].Points.Count)
-      {
-        case 3: //T - образный перекресток
-          rotation = LookRotationForTIntersection(NetworkModel.RoadIntersections[i].Points);
-          GameObject.Instantiate<GameObject>(intersectionT, position, rotation, NetworkModel.RoadIntersectionTransform);
-          NetworkModel.ViewIntersection.Add(new HVector3(position));
-          break;
-        case 4: //Перекресток
-          rotation = LookRotation(roadPointA);
-          GameObject.Instantiate<GameObject>(intersection, position, rotation, NetworkModel.RoadIntersectionTransform);
-          NetworkModel.ViewIntersection.Add(new HVector3(position));
-          break;
-      }
+        WaitForSeconds wait = new WaitForSeconds(1f);
+        for (int i = 0; i < NetworkModel.RoadIntersections.Count; i++)
+        {
+            //networkModel.roadIntersections[i].Points - координаты у всех одинаковые
+            roadPointA = NetworkModel.RoadIntersections[i].Points[0];
+            position = new Vector3(roadPointA.Point.x, NetworkModel.RoadIntersectionTransform.position.y, roadPointA.Point.y);
+
+            switch (NetworkModel.RoadIntersections[i].Points.Count)
+            {
+                case 3: //T - образный перекресток
+                    rotation = LookRotationForTIntersection(NetworkModel.RoadIntersections[i].Points);
+                    GameObject.Instantiate<GameObject>(intersectionT, position, rotation, NetworkModel.RoadIntersectionTransform);
+                    NetworkModel.ViewIntersection.Add(new HVector3(position));
+                    yield return wait;
+                    break;
+                case 4: //Перекресток
+                    rotation = LookRotation(roadPointA);
+                    GameObject.Instantiate<GameObject>(intersection, position, rotation, NetworkModel.RoadIntersectionTransform);
+                    NetworkModel.ViewIntersection.Add(new HVector3(position));
+                    yield return wait;
+                    break;
+            }
+        }
+        Release();
     }
-  }
 
   private void LoadResources()
   {
@@ -111,4 +121,7 @@ public class ShowIntersectionCommand : BaseCommand
 
   [Inject]
   public RoadNetworkModel NetworkModel { get; private set; }
+
+  [Inject]
+  public ICoroutineExecutor Executor { get; private set; }
 }

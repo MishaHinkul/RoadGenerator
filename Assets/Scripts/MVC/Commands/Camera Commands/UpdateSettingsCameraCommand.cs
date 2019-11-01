@@ -8,8 +8,4 @@ public class UpdateSettingsCameraCommand : BaseCommand
   {
     dispatcher.Dispatch(EventGlobal.E_CameraUpdateSettings);
   }
-
-
-  [Inject]
-  public CameraSettings CameraSettings { get; private set; }
 }

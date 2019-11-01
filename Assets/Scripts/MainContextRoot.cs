@@ -60,7 +60,8 @@ public class MainContextRoot : MVCSContext
 
     commandBinder.Bind(EventGlobal.E_GeneradeRoads).To<LoadLevelStartGameCommand>()
                                                    .To<GeneradeRoadsCommand>()
-                                                   .To<SetCameraConstraintCommand>()
+                                                   .To<SetCameraDefaultSettingsCommand>()
+                                                   .To<UpdateSettingsCameraCommand>()
                                                    .To<SplitBaseConfigurationCommand>()
                                                    .To<ShowIntersectionCommand>()
                                                    .To<ShowRoadSegmentsCommands>()

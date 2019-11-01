@@ -2,9 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SetCameraConstraintCommand : BaseCommand
+public class SetCameraDefaultSettingsCommand : BaseCommand
 {
   public override void Execute()
+  {
+    SetScale();
+    SetConstraints();
+  }
+
+  private void SetScale()
+  {
+    CameraSettingsModel.Distance.DesiredDistance = CameraSettingsModel.Distance.MinMaxDistance.y;
+    CameraSettingsModel.LerpScale = true;
+  }
+
+  private void SetConstraints()
   {
     //Определяем область ограничения движения камеры, в мире
     CameraSettingsModel.Constraint.ConstraintTopRight = new Vector3(NetworkModel.RoadIntersectionTransform.position.x - NetworkModel.Scale,
