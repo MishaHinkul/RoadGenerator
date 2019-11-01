@@ -16,6 +16,8 @@ public enum EventGlobal
   E_SplitSegmentForLevel,
   E_SplitSegment,
   E_SetTemplate,
+  E_ShowSegment,
+  E_ShowIntersection,
 
   //Car
   E_CarLogics,

@@ -8,7 +8,7 @@ public class RoadNetworkModel
   {
     RoadIntersections = new List<Intersection>();
     RoadSegments = new List<RoadSegment>();
-    ViewIntersection = new List<HVector3>();
+    ViewIntersection = new LinkedList<HVector3>();
     ShortCutOff = 5f;
     CloseCutoff = 7f;
   }
@@ -34,7 +34,7 @@ public class RoadNetworkModel
   /// </summary>
   public Transform RoadIntersectionTransform { get; set; }
 
-  public List<HVector3> ViewIntersection { get; private set; }
+  public LinkedList<HVector3> ViewIntersection { get; private set; }
 
   /// <summary>
   /// Масштаб сети дорог

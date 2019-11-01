@@ -52,8 +52,9 @@ public class MainContextRoot : MVCSContext
 
     //Roads Network
 
-    //От базовой фигуры зависит вид всей дорожной сети
-    commandBinder.Bind(EventGlobal.E_SetTemplate).To<XCenterTemplateCommand>();
+    commandBinder.Bind(EventGlobal.E_ShowIntersection).To<ShowIntersectionCommand>();
+    commandBinder.Bind(EventGlobal.E_ShowSegment).To<ShowRoadSegmentCommand>();
+    commandBinder.Bind(EventGlobal.E_SetTemplate).To<XCenterTemplateCommand>();  //От базовой фигуры зависит вид всей дорожной сети
 
     commandBinder.Bind(EventGlobal.E_SplitSegmentForLevel).To<SplitSegmentForLevelCommand>();
     commandBinder.Bind(EventGlobal.E_SplitSegment).To<SplitSegmentCommand>();
@@ -63,13 +64,13 @@ public class MainContextRoot : MVCSContext
                                                    .To<SetCameraDefaultSettingsCommand>()
                                                    .To<UpdateSettingsCameraCommand>()
                                                    .To<SplitBaseConfigurationCommand>()
-                                                   .To<ShowIntersectionCommand>()
-                                                   .To<ShowRoadSegmentsCommands>()
-                                                   .To<LoadGraphCommand>()
-                                                   .To<DisableNavigationColliderCommand>()
-                                                   .To<InitTreeEntryCommand>()
-                                                   .To<GeneradeGasStationCommand>()
-                                                   .To<SpawnCarsCommand>().InSequence().Pooled();
+                                                   //.To<ShowIntersectionCommand>()
+                                                   //.To<ShowRoadSegmentsCommands>()
+                                                   //.To<LoadGraphCommand>()
+                                                   //.To<DisableNavigationColliderCommand>()
+                                                   //.To<InitTreeEntryCommand>()
+                                                   //.To<GeneradeGasStationCommand>()
+                                                   /*.To<SpawnCarsCommand>()*/.InSequence().Pooled();
 
     //Car
     commandBinder.Bind(EventGlobal.E_CarLogics).To<CarLogicCommand>();

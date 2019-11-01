@@ -44,8 +44,22 @@ public class XCenterTemplateCommand : BaseCommand
 
     NetworkModel.RoadSegments.AddRange(new RoadSegment[] { rA, rB, rC, rD });
 
-    Intersection iA = new Intersection(new List<RoadPoint>() { rA.Begin, rB.Begin, rC.Begin, rD.Begin });
-    NetworkModel.RoadIntersections.Add(iA);
+    Intersection i = new Intersection(new List<RoadPoint>() { rA.Begin, rB.Begin, rC.Begin, rD.Begin });
+    NetworkModel.RoadIntersections.Add(i);
+
+    //Show
+    ShowSegmentnModel modelA = new ShowSegmentnModel(rA);
+    ShowSegmentnModel modelB = new ShowSegmentnModel(rB);
+    ShowSegmentnModel modelC = new ShowSegmentnModel(rC);
+    ShowSegmentnModel modelD = new ShowSegmentnModel(rD);
+
+    dispatcher.Dispatch(EventGlobal.E_ShowSegment, modelA);
+    dispatcher.Dispatch(EventGlobal.E_ShowSegment, modelB);
+    dispatcher.Dispatch(EventGlobal.E_ShowSegment, modelC);
+    dispatcher.Dispatch(EventGlobal.E_ShowSegment, modelD);
+
+    ShowIntersectionModel modelI = new ShowIntersectionModel(i);
+    dispatcher.Dispatch(EventGlobal.E_ShowIntersection, modelI);
   }
 
 

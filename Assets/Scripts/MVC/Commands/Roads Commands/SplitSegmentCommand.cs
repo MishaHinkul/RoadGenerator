@@ -9,29 +9,35 @@ public class SplitSegmentCommand : BaseCommand
 {
   private const float RANGE_MIN = 0.3f;
   private const float RANGE_MAX = 0.6f;
+  private SplitSegmentModel model = null; 
 
   public override void Execute()
   {
-    RoadSegment rootSegment = eventData.data as RoadSegment;
-    if (rootSegment == null)
+    model = eventData.data as SplitSegmentModel;
+    if (model == null)
     {
       return;
     }
+    Retain();
+    Executor.StartCoroutine(Split());
+  }
 
-    Vector3 pBegin = rootSegment.Begin.WorldPosition;
-    Vector3 pEnd = rootSegment.End.WorldPosition;
+  private IEnumerator Split()
+  {
+    Vector3 pBegin = model.Segment.Begin.WorldPosition;
+    Vector3 pEnd = model.Segment.End.WorldPosition;
     Vector3 pointBeginNewSegment = GetBeginNewSegment(pBegin, pEnd);
 
-    float lenghtSegment = GetLenghtEnd(rootSegment.Level);
-    Vector3 perp = rootSegment.GetWorldPerp();
+    float lenghtSegment = GetLenghtEnd(model.Segment.Level);
+    Vector3 perp = model.Segment.GetWorldPerp();
     Vector3 pointEndNewSegment = GetEndNewSegment(lenghtSegment, perp, pointBeginNewSegment);
 
-    RoadSegment newSegment = GetNewSegment(pointBeginNewSegment, pointEndNewSegment, rootSegment.Level);
+    RoadSegment newSegment = GetNewSegment(pointBeginNewSegment, pointEndNewSegment, model.Segment.Level);
 
 
     //Теперь создадим сегмент в противоположнем направлении
     Vector3 newPointEndInversion = GetEndNewSegment(lenghtSegment, -perp, pointBeginNewSegment);
-    RoadSegment newSegmentInversion = GetNewSegment(pointBeginNewSegment, newPointEndInversion, rootSegment.Level);
+    RoadSegment newSegmentInversion = GetNewSegment(pointBeginNewSegment, newPointEndInversion, model.Segment.Level);
 
     bool withinSegment = SegmentWithin(newSegment, NetworkModel.CloseCutoff);
     bool withinInversionSegment = SegmentWithin(newSegmentInversion, NetworkModel.CloseCutoff);
@@ -39,17 +45,71 @@ public class SplitSegmentCommand : BaseCommand
     //Проверить, какие сегменты добавлять и добавлять
     bool segment1 = false;
     bool segment2 = false;
+    Intersection newIntersection = null;
 
     //Если мы не влазим в шасштабы сети
     if (!withinSegment)
     {
-      segment1 = ClearWidthSegment(rootSegment, newSegment);
+      segment1 = ClearWidthSegment(model.Segment, newSegment, out newIntersection);
     }
     if (!withinInversionSegment)
     {
-      segment2 = ClearWidthSegment(rootSegment, newSegmentInversion);
+      segment2 = ClearWidthSegment(model.Segment, newSegmentInversion, out newIntersection);
     }
-    AddIntersection(rootSegment, newSegment, newSegmentInversion, pointBeginNewSegment, segment1, segment2);
+
+    WaitUntil wait = new WaitUntil(ShowCallback);
+
+    if (segment1)
+    {
+      ShowSegmentnModel model = new ShowSegmentnModel(newSegment, ShowCallback);
+      dispatcher.Dispatch(EventGlobal.E_ShowSegment, model);
+      yield return wait;
+    }
+
+    if (newIntersection != null)
+    {
+      ShowIntersectionModel model = new ShowIntersectionModel(newIntersection, ShowCallback);
+      dispatcher.Dispatch(EventGlobal.E_ShowIntersection, model);
+      yield return wait;
+    }
+
+    if (segment2)
+    {
+      ShowSegmentnModel model = new ShowSegmentnModel()
+      {
+        Segment = newSegmentInversion,
+        Callback = ShowCallback
+      };
+      dispatcher.Dispatch(EventGlobal.E_ShowSegment, model);
+
+      yield return wait;
+    }
+
+    if (newIntersection != null)
+    {
+      ShowIntersectionModel model = new ShowIntersectionModel(newIntersection, ShowCallback);
+      dispatcher.Dispatch(EventGlobal.E_ShowIntersection, model);
+      yield return wait;
+    }
+
+    Intersection intersection = AddIntersection(model.Segment, newSegment, newSegmentInversion, pointBeginNewSegment, segment1, segment2);
+    if (intersection != null)
+    {
+      ShowIntersectionModel model = new ShowIntersectionModel(intersection, ShowCallback);
+      dispatcher.Dispatch(EventGlobal.E_ShowIntersection, model);
+      yield return wait;
+    }
+
+    if (model.Callback != null)
+    {
+      model.Callback();
+    }
+    Release();
+  }
+
+  private bool ShowCallback()
+  {
+    return true;
   }
 
   private Vector3 GetBeginNewSegment(Vector3 pBegin, Vector3 pEnd)
@@ -94,9 +154,10 @@ public class SplitSegmentCommand : BaseCommand
                                          level + 1);
   }
 
-  private bool ClearWidthSegment(RoadSegment rootSegment, RoadSegment newSegment)
+  private bool ClearWidthSegment(RoadSegment rootSegment, RoadSegment newSegment, out Intersection newIntersection)
   {
     bool segment = false;
+    newIntersection = null;
     Vector2 intersectionPoint = Vector3.zero;
     RoadSegment intersectionSegment = null;
     int intersectionCount = SegmentIntersection(newSegment, out intersectionPoint, out intersectionSegment, rootSegment);
@@ -156,48 +217,52 @@ public class SplitSegmentCommand : BaseCommand
         NetworkModel.RoadSegments.RemoveAll(p => p.IsEqual(segmentsB[1]));
       }
 
-      Intersection inter = new Intersection(points);
+      newIntersection = new Intersection(points);
       //Все оставшиеся точки, и формируют перекрестки и т.д и состовляют пересечения в нашей сети
-      NetworkModel.RoadIntersections.Add(inter);
+      NetworkModel.RoadIntersections.Add(newIntersection);
     }
 
     return segment;
   }
 
-  private void AddIntersection(RoadSegment rootSegment, 
-                               RoadSegment newSegment,
-                               RoadSegment newSegmentInversion,
-                               Vector3 pointBeginNewSegment,
-                               bool segment1, 
-                               bool segment2)
+  private Intersection AddIntersection(RoadSegment rootSegment, 
+                                       RoadSegment newSegment,
+                                       RoadSegment newSegmentInversion,
+                                       Vector3 pointBeginNewSegment,
+                                       bool segment1, 
+                                       bool segment2)
   {
-    if (segment1 || segment2)
+    if (!segment1 && !segment2)
     {
-      RoadSegment[] rootPatchs = PatchSegment(rootSegment, new RoadPoint(new Vector2(pointBeginNewSegment.x, pointBeginNewSegment.z), rootSegment));
-
-      if (segment1 && segment2)
-      {
-        Intersection inter = new Intersection(new List<RoadPoint>{rootPatchs[0].End,
-                                                                  rootPatchs [1].End,
-                                                                  newSegment.Begin,
-                                                                  newSegmentInversion.Begin});
-        NetworkModel.RoadIntersections.Add(inter);
-      }
-      else if (segment1)
-      {
-        Intersection inter = new Intersection(new List<RoadPoint>{rootPatchs[0].End,
-                                                                  rootPatchs[1].End,
-                                                                  newSegment.Begin});
-        NetworkModel.RoadIntersections.Add(inter);
-      }
-      else if (segment2)
-      {
-        Intersection inter = new Intersection(new List<RoadPoint>{rootPatchs[0].End,
-                                                                  rootPatchs[1].End,
-                                                                  newSegmentInversion.Begin});
-        NetworkModel.RoadIntersections.Add(inter);
-      }
+      return null;
     }
+
+    Intersection inter = null;
+    RoadSegment[] rootPatchs = PatchSegment(rootSegment, new RoadPoint(new Vector2(pointBeginNewSegment.x, pointBeginNewSegment.z), rootSegment));
+
+    if (segment1 && segment2)
+    {
+       inter = new Intersection(new List<RoadPoint>{rootPatchs[0].End,
+                                                    rootPatchs [1].End,
+                                                    newSegment.Begin,
+                                                    newSegmentInversion.Begin});
+    }
+    else if (segment1)
+    {
+      inter = new Intersection(new List<RoadPoint>{rootPatchs[0].End,
+                                                   rootPatchs[1].End,
+                                                   newSegment.Begin});
+    }
+    else if (segment2)
+    {
+      inter = new Intersection(new List<RoadPoint>{rootPatchs[0].End,
+                                                   rootPatchs[1].End,
+                                                   newSegmentInversion.Begin});
+      
+    }
+    NetworkModel.RoadIntersections.Add(inter);
+
+    return inter;
   }
 
 
@@ -539,4 +604,7 @@ public class SplitSegmentCommand : BaseCommand
 
   [Inject]
   public RoadNetworkModel NetworkModel { get; private set; }
+
+  [Inject]
+  public ICoroutineExecutor Executor { get; private set; }
 }

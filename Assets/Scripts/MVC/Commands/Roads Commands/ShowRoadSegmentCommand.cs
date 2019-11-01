@@ -2,15 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShowRoadSegmentsCommands : BaseCommand
+public class ShowRoadSegmentCommand : BaseCommand
 {
   private GameObject roadPrefab = null;
   private GameObject roadPrefabEnd = null;
+  private ShowSegmentnModel model = null;
 
   public override void Execute()
   {
     LoadResources();
-    if (!Validation())
+    if (!ValidationPrefab())
+    {
+      return;
+    }
+    model = eventData.data as ShowSegmentnModel;
+    if (model == null)
     {
       return;
     }
@@ -30,29 +36,29 @@ public class ShowRoadSegmentsCommands : BaseCommand
     float iteration;
     float step = NetworkModel.WithRoad;
 
-    WaitForSeconds wait = new WaitForSeconds(1f);
+    WaitForSeconds wait = new WaitForSeconds(0.5f);
 
-    for (int i = 0; i < NetworkModel.RoadSegments.Count; i++)
+    roadPointA = model.Segment.Begin;
+    roadPointB = model.Segment.End;
+    forward = GetForward(roadPointA, roadPointB);
+    globalPosition = new Vector3(roadPointA.Point.x, NetworkModel.RoadIntersectionTransform.position.y, roadPointA.Point.y);
+    iteration = Vector2.Distance(roadPointA.Point, roadPointB.Point) / step;
+
+    for (float pos = step; pos < iteration; pos += step)
     {
-      roadPointA = NetworkModel.RoadSegments[i].Begin;
-      roadPointB = NetworkModel.RoadSegments[i].End;
-      forward = GetForward(roadPointA, roadPointB);
-      globalPosition = new Vector3(roadPointA.Point.x, NetworkModel.RoadIntersectionTransform.position.y, roadPointA.Point.y);
-      iteration = Vector2.Distance(roadPointA.Point, roadPointB.Point) / step;
-
-      InstanceDeadLock(roadPointA, roadPointB, forward);
-
-      for (float pos = step; pos < iteration; pos += step)
+      instPosition = globalPosition + (forward * pos);
+      if (!Contains(instPosition))  //Проверка для того чтобы не создать объект на перекрестке, они созданы ранее
       {
-        instPosition = globalPosition + (forward * pos);
-        if (!Contains(instPosition))  //Проверка для того чтобы не создать объект на перекрестке, они созданы ранее
-        {
-          InstancePrefab(roadPrefab, instPosition, forward);
-        }
+        InstancePrefab(roadPrefab, instPosition, forward);
       }
       yield return wait;
     }
+    InstanceDeadLock(roadPointA, roadPointB, forward);
 
+    if (model.Callback != null)
+    {
+      model.Callback();
+    }
     Release();
   }
 
@@ -62,7 +68,7 @@ public class ShowRoadSegmentsCommands : BaseCommand
     roadPrefabEnd = Resources.Load<GameObject>("ROAD_deadlock");
   }
 
-  private bool Validation()
+  private bool ValidationPrefab()
   {
     return !(roadPrefab == null || NetworkModel.RoadNetworkTransform == null);
   }
