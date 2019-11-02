@@ -15,19 +15,24 @@ public class SplitSegmentForLevelCommand : BaseCommand
     SplitSegmentForLevelModel model = eventData.data as SplitSegmentForLevelModel;
 
     SplitSegmentModel segmentModel = null;
-    WaitUntil wait = new WaitUntil(CallbackUnlit.Unlit);
+    
+
     List<RoadSegment> segments = new List<RoadSegment>(NetworkModel.RoadSegments);
+
 
     for (int i = 0; i < segments.Count; i++)
     {
       if (segments[i].Level == model.Level)
       {
+        CallbackUnlit.FlagValue flagValue = CallbackUnlit.PushFlag();
+        WaitUntil wait = new WaitUntil(CallbackUnlit.PeekFlagAnonym());
+
+        CallbackUnlit.FlagValue newFlag = CallbackUnlit.PushFlag();
         segmentModel = new SplitSegmentModel();
         segmentModel.Segment = segments[i];
-        segmentModel.Callback = CallbackUnlit.Unlit;
-
+        segmentModel.Callback = CallbackUnlit.PeekFlagTrue;
+      
         dispatcher.Dispatch(EventGlobal.E_SplitSegment, segmentModel);
-
         yield return wait;
       }
     }

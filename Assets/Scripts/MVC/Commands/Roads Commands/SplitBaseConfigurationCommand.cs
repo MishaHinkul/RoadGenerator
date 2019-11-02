@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SplitBaseConfigurationCommand : BaseCommand
 {
+  private CallbackUnlit.FlagValue waitFalg;
   public override void Execute()
   {
     Retain();
@@ -12,29 +13,30 @@ public class SplitBaseConfigurationCommand : BaseCommand
 
   private IEnumerator SplitForLevel()
   {
-    SplitSegmentForLevelModel level0 = new SplitSegmentForLevelModel(0, CallbackUnlit.Unlit);
-    SplitSegmentForLevelModel level1 = new SplitSegmentForLevelModel(1, CallbackUnlit.Unlit);
-    SplitSegmentForLevelModel level2 = new SplitSegmentForLevelModel(2, CallbackUnlit.Unlit);
-    SplitSegmentForLevelModel level3 = new SplitSegmentForLevelModel(3, CallbackUnlit.Unlit);
+    yield return Executor.StartCoroutine(SplitLevel(0));
+    yield return Executor.StartCoroutine(SplitLevel(1));
+    yield return Executor.StartCoroutine(SplitLevel(2));
+    yield return Executor.StartCoroutine(SplitLevel(3));
 
-    WaitUntil waitUntil = new WaitUntil(CallbackUnlit.Unlit);
-
-    dispatcher.Dispatch(EventGlobal.E_SplitSegmentForLevel, level0);
-    yield return waitUntil;
-    //dispatcher.Dispatch(EventGlobal.E_SplitSegmentForLevel, level0);
-    //yield return waitUntil;
-
-    dispatcher.Dispatch(EventGlobal.E_SplitSegmentForLevel, level1);
-    yield return waitUntil;
-    //dispatcher.Dispatch(EventGlobal.E_SplitSegmentForLevel, level1);
-    //yield return waitUntil;
-
-    dispatcher.Dispatch(EventGlobal.E_SplitSegmentForLevel, level2);
-    yield return waitUntil;
-
-    dispatcher.Dispatch(EventGlobal.E_SplitSegmentForLevel, level3);
-    yield return waitUntil;
     Release();
+  }
+
+  private IEnumerator SplitLevel(int level)
+  {
+
+    CallbackUnlit.PushFlag();
+    WaitUntil waitUntil = new WaitUntil(CallbackUnlit.PeekFlagAnonym());
+
+    SplitSegmentForLevelModel segmentForLevelModel = new SplitSegmentForLevelModel(level, CallbackUnlit.PeekFlagTrue);
+    dispatcher.Dispatch(EventGlobal.E_SplitSegmentForLevel, segmentForLevelModel);
+
+    yield return waitUntil;
+    CallbackUnlit.PopFlag();
+  }
+
+  private bool GetWaitFlagValue()
+  {
+    return waitFalg.Value;
   }
 
   [Inject]

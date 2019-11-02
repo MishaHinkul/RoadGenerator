@@ -49,6 +49,11 @@ public class RoadSegment
     return false;
   }
 
+  public Vector2 GetForward()
+  {
+    return End.Point - Begin.Point;
+  }
+
 
   public RoadSegment(RoadPoint a, RoadPoint b, int level)
   {

@@ -28,37 +28,30 @@ public class ShowRoadSegmentCommand : BaseCommand
 
   private IEnumerator Visualization()
   {
-    RoadPoint roadPointA = null;
-    RoadPoint roadPointB = null;
     Vector3 forward;
     Vector3 instPosition;
     Vector3 globalPosition;
     float iteration;
     float step = NetworkModel.WithRoad;
 
-    WaitForSeconds wait = new WaitForSeconds(0.5f);
+    WaitForSeconds wait = new WaitForSeconds(SettingsModel.SpeedVisualizeAlgorithm);
 
-    roadPointA = model.Segment.Begin;
-    roadPointB = model.Segment.End;
-    forward = GetForward(roadPointA, roadPointB);
-    globalPosition = new Vector3(roadPointA.Point.x, NetworkModel.RoadIntersectionTransform.position.y, roadPointA.Point.y);
-    iteration = Vector2.Distance(roadPointA.Point, roadPointB.Point) / step;
+    forward = NetworkModel.GetWorldForwad(model.Segment);
+    globalPosition = NetworkModel.GetWorldPositionBeginSegment(model.Segment);
+    iteration = NetworkModel.GetWithSegment(model.Segment);
 
     for (float pos = step; pos < iteration; pos += step)
     {
       instPosition = globalPosition + (forward * pos);
-      if (!Contains(instPosition))  //Проверка для того чтобы не создать объект на перекрестке, они созданы ранее
+      if (!NetworkModel.CointainsViewSegmentPoint(instPosition))  //Проверка для того чтобы не создать объект на перекрестке, они созданы ранее
       {
         InstancePrefab(roadPrefab, instPosition, forward);
       }
       yield return wait;
     }
-    InstanceDeadLock(roadPointA, roadPointB, forward);
+    InstanceDeadLock(model.Segment, forward);
 
-    if (model.Callback != null)
-    {
-      model.Callback();
-    }
+    CallbackUnlit.Execute(model.Callback);
     Release();
   }
 
@@ -73,27 +66,15 @@ public class ShowRoadSegmentCommand : BaseCommand
     return !(roadPrefab == null || NetworkModel.RoadNetworkTransform == null);
   }
 
-  private Vector3 GetForward(RoadPoint pointA, RoadPoint pointB)
+  private void InstanceDeadLock(RoadSegment roadSegment, Vector3 forward)
   {
-    Vector2 directionSegment = pointB.Point - pointA.Point;
-    Vector3 forward = new Vector3(directionSegment.x, NetworkModel.RoadIntersectionTransform.position.y, directionSegment.y);
-    forward = forward.normalized; //Направление в котором будем создавать тайлы дороги
-
-    return forward;
-  }
-
-  private void InstanceDeadLock(RoadPoint roadPointA, RoadPoint roadPointB, Vector3 forward)
-  {
-    Vector3 worldPosA = roadPointA.WorldPosition;
-    Vector3 worldPosB = roadPointB.WorldPosition;
-
-    if (!Contains(worldPosA))
+    if (!NetworkModel.ContainsViewBeginSegment(roadSegment))
     {
-      InstancePrefab(roadPrefabEnd, worldPosA, forward);
+      InstancePrefab(roadPrefabEnd, NetworkModel.GetWorldPositionBeginSegment(roadSegment), forward);
     }
-    if (!Contains(worldPosB))
+    if (!NetworkModel.ContainsViewEndSegment(roadSegment))
     {
-      InstancePrefab(roadPrefabEnd, worldPosB, -forward);
+      InstancePrefab(roadPrefabEnd, NetworkModel.GetWorldPositionEndSegment(roadSegment), -forward);
     }
   }
 
@@ -105,15 +86,6 @@ public class ShowRoadSegmentCommand : BaseCommand
                                        NetworkModel.RoadNetworkTransform);
   }
 
-  /// <summary>
-  /// Есть ли объект пересечения в заданых координатах
-  /// </summary>
-  /// <param name="pos"></param>
-  /// <returns></returns>
-  public bool Contains(Vector3 pos)
-  {
-    return NetworkModel.ViewIntersection.Contains(new HVector3(pos));
-  }
 
 
   [Inject]
@@ -121,4 +93,7 @@ public class ShowRoadSegmentCommand : BaseCommand
 
   [Inject]
   public ICoroutineExecutor Executor { get; private set; }
+
+  [Inject]
+  public SettingsModel SettingsModel { get; private set; }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GeneradeRoadsCommand : BaseCommand
+public class RoadSettingsCommand : BaseCommand
 {
   public override void Execute()
   {
@@ -24,8 +24,6 @@ public class GeneradeRoadsCommand : BaseCommand
         Debug.LogError("GameObject: Roads Network - not found");
       }
     }
-    CenterTemplateModel templateModel = new CenterTemplateModel(Vector2.zero, 270);
-    dispatcher.Dispatch(EventGlobal.E_SetTemplate, templateModel);
   }
 
 

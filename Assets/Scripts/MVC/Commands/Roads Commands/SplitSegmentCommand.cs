@@ -57,59 +57,54 @@ public class SplitSegmentCommand : BaseCommand
       segment2 = ClearWidthSegment(model.Segment, newSegmentInversion, out newIntersection);
     }
 
-    WaitUntil wait = new WaitUntil(ShowCallback);
+    WaitUntil wait = new WaitUntil(CallbackUnlit.PeekFlag);
 
     if (segment1)
     {
-      ShowSegmentnModel model = new ShowSegmentnModel(newSegment, ShowCallback);
+      CallbackUnlit.PushFlag();
+      ShowSegmentnModel model = new ShowSegmentnModel(newSegment, CallbackUnlit.PeekFlagTrue);
       dispatcher.Dispatch(EventGlobal.E_ShowSegment, model);
       yield return wait;
+      CallbackUnlit.PopFlag();
     }
-
     if (newIntersection != null)
     {
-      ShowIntersectionModel model = new ShowIntersectionModel(newIntersection, ShowCallback);
+      CallbackUnlit.PushFlag();
+      ShowIntersectionModel model = new ShowIntersectionModel(newIntersection, CallbackUnlit.PeekFlagTrue);
       dispatcher.Dispatch(EventGlobal.E_ShowIntersection, model);
       yield return wait;
+      CallbackUnlit.PopFlag();
     }
 
     if (segment2)
     {
-      ShowSegmentnModel model = new ShowSegmentnModel()
-      {
-        Segment = newSegmentInversion,
-        Callback = ShowCallback
-      };
+      CallbackUnlit.PushFlag();
+      ShowSegmentnModel model = new ShowSegmentnModel(newSegmentInversion, CallbackUnlit.PeekFlagTrue);
       dispatcher.Dispatch(EventGlobal.E_ShowSegment, model);
-
       yield return wait;
+      CallbackUnlit.PopFlag();
     }
-
     if (newIntersection != null)
     {
-      ShowIntersectionModel model = new ShowIntersectionModel(newIntersection, ShowCallback);
+      CallbackUnlit.PushFlag();
+      ShowIntersectionModel model = new ShowIntersectionModel(newIntersection, CallbackUnlit.PeekFlagTrue);
       dispatcher.Dispatch(EventGlobal.E_ShowIntersection, model);
       yield return wait;
+      CallbackUnlit.PopFlag();
     }
 
     Intersection intersection = AddIntersection(model.Segment, newSegment, newSegmentInversion, pointBeginNewSegment, segment1, segment2);
     if (intersection != null)
     {
-      ShowIntersectionModel model = new ShowIntersectionModel(intersection, ShowCallback);
+      CallbackUnlit.PushFlag();
+      ShowIntersectionModel model = new ShowIntersectionModel(intersection, CallbackUnlit.PeekFlagTrue);
       dispatcher.Dispatch(EventGlobal.E_ShowIntersection, model);
       yield return wait;
+      CallbackUnlit.PopFlag();
     }
 
-    if (model.Callback != null)
-    {
-      model.Callback();
-    }
+    CallbackUnlit.Execute(model.Callback);
     Release();
-  }
-
-  private bool ShowCallback()
-  {
-    return true;
   }
 
   private Vector3 GetBeginNewSegment(Vector3 pBegin, Vector3 pEnd)
@@ -123,7 +118,7 @@ public class SplitSegmentCommand : BaseCommand
 
   private float GetLenghtBegin(Vector3 pBegin, Vector3 pEnd)
   {
-    float splitDistance = Random.Range(RANGE_MIN, RANGE_MAX);
+    float splitDistance = RANGE_MAX; Random.Range(RANGE_MIN, RANGE_MAX);
 
     float length = Vector3.Distance(pBegin, pEnd);
     length *= splitDistance; // длинна, части сегмента
@@ -136,7 +131,7 @@ public class SplitSegmentCommand : BaseCommand
   {
     //Например: scale = 100, segment.Level = 0, рендом = 1.5
     // Длинна будущего сегмента = 66.66
-    float newLength = NetworkModel.Scale / ((level + 1) * Random.Range(1f, 2f));
+    float newLength = NetworkModel.Scale / ((level + 1) * 1); Random.Range(1f, 2f);
     return (int)newLength; // пусть будут только целые числа, чтобы правильно наложить меш и не масштабировать его
   }
 

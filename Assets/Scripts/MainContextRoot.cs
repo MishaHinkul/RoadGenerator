@@ -60,10 +60,11 @@ public class MainContextRoot : MVCSContext
     commandBinder.Bind(EventGlobal.E_SplitSegment).To<SplitSegmentCommand>();
 
     commandBinder.Bind(EventGlobal.E_GeneradeRoads).To<LoadLevelStartGameCommand>()
-                                                   .To<GeneradeRoadsCommand>()
-                                                   .To<SetCameraDefaultSettingsCommand>()
+                                                   .To<RoadSettingsCommand>()
+                                                   .To<SetCameraSettingsCommand>()
                                                    .To<UpdateSettingsCameraCommand>()
-                                                   .To<SplitBaseConfigurationCommand>()
+                                                   .To<XCenterTemplateCommand>()
+                                                   //.To<SplitBaseConfigurationCommand>()
                                                    //.To<ShowIntersectionCommand>()
                                                    //.To<ShowRoadSegmentsCommands>()
                                                    //.To<LoadGraphCommand>()

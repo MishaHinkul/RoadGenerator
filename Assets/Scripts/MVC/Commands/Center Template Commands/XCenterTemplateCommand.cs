@@ -7,14 +7,21 @@ using UnityEngine;
 /// </summary>
 public class XCenterTemplateCommand : BaseCommand
 {
+  private CenterTemplateModel model = null;
   public override void Execute()
   {
-    CenterTemplateModel model = eventData.data as CenterTemplateModel;
+     model = eventData.data as CenterTemplateModel;
     if (model == null)
     {
-      return;
+      model = GetDefaultMode();
     }
 
+    Retain();
+    Executor.StartCoroutine(SetX());
+  }
+
+  private IEnumerator SetX()
+  {
     Quaternion rotation = Quaternion.Euler(0, 0, model.Angle);
 
     RoadPoint a = new RoadPoint();
@@ -48,21 +55,51 @@ public class XCenterTemplateCommand : BaseCommand
     NetworkModel.RoadIntersections.Add(i);
 
     //Show
-    ShowSegmentnModel modelA = new ShowSegmentnModel(rA);
-    ShowSegmentnModel modelB = new ShowSegmentnModel(rB);
-    ShowSegmentnModel modelC = new ShowSegmentnModel(rC);
-    ShowSegmentnModel modelD = new ShowSegmentnModel(rD);
+    WaitUntil wait = new WaitUntil(CallbackUnlit.PeekFlag);
 
+    ShowSegmentnModel modelA = new ShowSegmentnModel(rA, CallbackUnlit.PeekFlagTrue);
+    ShowSegmentnModel modelB = new ShowSegmentnModel(rB, CallbackUnlit.PeekFlagTrue);
+    ShowSegmentnModel modelC = new ShowSegmentnModel(rC, CallbackUnlit.PeekFlagTrue);
+    ShowSegmentnModel modelD = new ShowSegmentnModel(rD, CallbackUnlit.PeekFlagTrue);
+    ShowIntersectionModel modelI = new ShowIntersectionModel(i, CallbackUnlit.PeekFlagTrue);
+
+    CallbackUnlit.PushFlag();
     dispatcher.Dispatch(EventGlobal.E_ShowSegment, modelA);
-    dispatcher.Dispatch(EventGlobal.E_ShowSegment, modelB);
-    dispatcher.Dispatch(EventGlobal.E_ShowSegment, modelC);
-    dispatcher.Dispatch(EventGlobal.E_ShowSegment, modelD);
+    yield return wait;
+    CallbackUnlit.PopFlag();
 
-    ShowIntersectionModel modelI = new ShowIntersectionModel(i);
+    CallbackUnlit.PushFlag();
+    dispatcher.Dispatch(EventGlobal.E_ShowSegment, modelB);
+    yield return wait;
+    CallbackUnlit.PopFlag();
+
+    CallbackUnlit.PushFlag();
+    dispatcher.Dispatch(EventGlobal.E_ShowSegment, modelC);
+    yield return wait;
+    CallbackUnlit.PopFlag();
+
+    CallbackUnlit.PushFlag();
+    dispatcher.Dispatch(EventGlobal.E_ShowSegment, modelD);
+    yield return wait;
+    CallbackUnlit.PopFlag();
+
+    CallbackUnlit.PushFlag();
     dispatcher.Dispatch(EventGlobal.E_ShowIntersection, modelI);
+    yield return wait;
+    CallbackUnlit.PopFlag();
+
+    Release();
+  }
+
+  private CenterTemplateModel GetDefaultMode()
+  {
+    return new CenterTemplateModel(Vector2.zero, 270);
   }
 
 
   [Inject]
   public RoadNetworkModel NetworkModel { get; private set; }
+
+  [Inject]
+  public ICoroutineExecutor Executor { get; private set; }
 }

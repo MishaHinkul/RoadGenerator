@@ -32,7 +32,7 @@ public class ShowIntersectionCommand : BaseCommand
     Quaternion rotation;
     Vector3 position;
 
-    WaitForSeconds wait = new WaitForSeconds(0.5f);
+    WaitForSeconds wait = new WaitForSeconds(SettingsModel.SpeedVisualizeAlgorithm);
     //networkModel.roadIntersections[i].Points - координаты у всех одинаковые
     roadPointA = model.Intersection.Points[0];
     position = new Vector3(roadPointA.Point.x, NetworkModel.RoadIntersectionTransform.position.y, roadPointA.Point.y);
@@ -133,4 +133,7 @@ public class ShowIntersectionCommand : BaseCommand
 
   [Inject]
   public ICoroutineExecutor Executor { get; private set; }
+
+  [Inject]
+  public SettingsModel SettingsModel { get; private set; }
 }
