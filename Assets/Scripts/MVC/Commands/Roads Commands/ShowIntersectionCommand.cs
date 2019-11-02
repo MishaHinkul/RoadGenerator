@@ -4,18 +4,10 @@ using UnityEngine;
 
 public class ShowIntersectionCommand : BaseCommand
 {
-  private GameObject intersection = null;
-  private GameObject intersectionT = null;
   private ShowIntersectionModel model = null;
 
   public override void Execute()
   {
-    LoadResources();
-    if (!ValidationPrefab())
-    {
-      return;
-    }
-
     model = eventData.data as ShowIntersectionModel;
     if (model == null)
     {
@@ -28,112 +20,49 @@ public class ShowIntersectionCommand : BaseCommand
 
   private IEnumerator Visual()
   {
-    RoadPoint roadPointA = null;
-    Quaternion rotation;
-    Vector3 position;
-
+    Quaternion rotation = NetworkModel.LookRotationWorldIntersection(model.Intersection);
+    Vector3 position = NetworkModel.GetWorldPositionIntersection(model.Intersection);
     WaitForSeconds wait = new WaitForSeconds(SettingsModel.SpeedVisualizeAlgorithm);
-    //networkModel.roadIntersections[i].Points - координаты у всех одинаковые
-    roadPointA = model.Intersection.Points[0];
-    position = new Vector3(roadPointA.Point.x, NetworkModel.RoadIntersectionTransform.position.y, roadPointA.Point.y);
+    RoadNetworkModel.KindIntersection kindIntersection = NetworkModel.GetKindIntersection(model.Intersection);
 
-    switch (model.Intersection.Points.Count)
+    HVector3 hPos = new HVector3(position);
+    if (NetworkModel.ViewObjects.Count > 0 && NetworkModel.ViewObjects.ContainsKey(hPos))
     {
-      case 3: //T - образный перекресток
-        rotation = LookRotationForTIntersection(model.Intersection.Points);
-        GameObject.Instantiate<GameObject>(intersectionT, position, rotation, NetworkModel.RoadIntersectionTransform);
-        NetworkModel.ViewIntersection.AddLast(new HVector3(position));
+      GameObject oldObj = NetworkModel.ViewObjects[hPos];
+      if (oldObj != null)
+      {
+        GameObject.Destroy(oldObj);
+      }
+    }
+
+    switch (kindIntersection)
+    {
+      case RoadNetworkModel.KindIntersection.T:
+        GameObject t = GameObject.Instantiate<GameObject>(Prefabs.IntersectionT, position, rotation, NetworkModel.RoadIntersectionTransform);
+        NetworkModel.ViewObjects.Add(hPos, t);
         yield return wait;
         break;
-      case 4: //Перекресток
-        rotation = LookRotation(roadPointA);
-        GameObject.Instantiate<GameObject>(intersection, position, rotation, NetworkModel.RoadIntersectionTransform);
-        NetworkModel.ViewIntersection.AddLast(new HVector3(position));
+      case RoadNetworkModel.KindIntersection.Four:
+        GameObject four = GameObject.Instantiate<GameObject>(Prefabs.IntersectionFour, position, rotation, NetworkModel.RoadIntersectionTransform);
+        NetworkModel.ViewObjects.Add(hPos, four);
         yield return wait;
         break;
     }
-    if (model.Callback != null)
-    {
-      model.Callback();
-    }
+
+    CallbackUnlit.Execute(model.Callback);
     Release();
   }
 
-  private void LoadResources()
-  {
-    intersection = Resources.Load<GameObject>("ROAD_intersection");
-    intersectionT = Resources.Load<GameObject>("ROAD_intersection_T");
-  }
-
-  private bool ValidationPrefab()
-  {
-    return !(intersection == null || intersectionT == null || NetworkModel.RoadIntersectionTransform == null);
-  }
-
-  /// <summary>
-  /// Получить вращение по направлению сегмента
-  /// </summary>
-  /// <param name="roadPoint"></param>
-  /// <returns></returns>
-  private Quaternion LookRotation(RoadPoint roadPoint)
-  {
-    RoadPoint roadPointA = roadPoint;
-    RoadPoint roadPointB = roadPointA.MySegement.GetOther(roadPointA);
-
-    Vector2 direction = roadPointB.Point - roadPointA.Point;
-    Vector3 forward = new Vector3(direction.x, NetworkModel.RoadIntersectionTransform.position.y, direction.y);
-
-    return Quaternion.LookRotation(forward);
-  }
-
-
-  /// <summary>
-  /// Получить вращение для Т образного пересечения
-  /// </summary>
-  private Quaternion LookRotationForTIntersection(List<RoadPoint> intersectionList)
-  {
-    RoadPoint segment1PointA = null;
-    RoadPoint segment1PointB = null;
-    RoadPoint segment2PointB = null;
-    RoadPoint segment2PointA = null;
-    Vector2 vectorSegment1;
-    Vector2 vectorSegment2;
-    int indexDirectionPoint = 0; // точка относительно которой будем расчитывать вращение
-
-    for (int j = 0; j < intersectionList.Count - 1; j++)
-    {
-      segment1PointA = intersectionList[j];
-      segment1PointB = segment1PointA.MySegement.GetOther(segment1PointA);
-
-      segment2PointA = intersectionList[j + 1];
-      segment2PointB = segment2PointA.MySegement.GetOther(segment2PointA);
-
-      //2 вектора должны смотреть в разные стороны
-      vectorSegment1 = segment1PointB.Point - segment1PointA.Point;
-      vectorSegment2 = segment2PointA.Point - segment2PointB.Point;
-
-      //Если между двумя векторами угл 180 градусов, значит относительно 3 точки мы поворачиваем правильно префаб перекрестка
-      if (Vector2.Dot(vectorSegment1.normalized, vectorSegment2.normalized) == 1)
-      {
-        indexDirectionPoint = j - 1;
-
-        if (indexDirectionPoint < 0)
-        {
-          indexDirectionPoint = intersectionList.Count - 1;
-          break;
-        }
-      }
-    }
-    return LookRotation(intersectionList[indexDirectionPoint]);
-  }
-
-
-  [Inject]
-  public RoadNetworkModel NetworkModel { get; private set; }
 
   [Inject]
   public ICoroutineExecutor Executor { get; private set; }
 
   [Inject]
+  public RoadNetworkModel NetworkModel { get; private set; }
+
+  [Inject]
   public SettingsModel SettingsModel { get; private set; }
+
+  [Inject]
+  public RoadPrefabsModel Prefabs { get; private set; }
 }

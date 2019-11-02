@@ -45,20 +45,15 @@ public class SplitSegmentCommand : BaseCommand
     //Проверить, какие сегменты добавлять и добавлять
     bool segment1 = false;
     bool segment2 = false;
-    Intersection newIntersection = null;
+    Intersection intersection1 = null;
+    Intersection intersection2 = null;
+    WaitUntil wait = new WaitUntil(CallbackUnlit.PeekFlag);
 
     //Если мы не влазим в шасштабы сети
     if (!withinSegment)
     {
-      segment1 = ClearWidthSegment(model.Segment, newSegment, out newIntersection);
+      segment1 = ClearWidthSegment(model.Segment, newSegment, out intersection1);
     }
-    if (!withinInversionSegment)
-    {
-      segment2 = ClearWidthSegment(model.Segment, newSegmentInversion, out newIntersection);
-    }
-
-    WaitUntil wait = new WaitUntil(CallbackUnlit.PeekFlag);
-
     if (segment1)
     {
       CallbackUnlit.PushFlag();
@@ -67,15 +62,19 @@ public class SplitSegmentCommand : BaseCommand
       yield return wait;
       CallbackUnlit.PopFlag();
     }
-    if (newIntersection != null)
+    if (intersection1 != null)
     {
       CallbackUnlit.PushFlag();
-      ShowIntersectionModel model = new ShowIntersectionModel(newIntersection, CallbackUnlit.PeekFlagTrue);
+      ShowIntersectionModel model = new ShowIntersectionModel(intersection1, CallbackUnlit.PeekFlagTrue);
       dispatcher.Dispatch(EventGlobal.E_ShowIntersection, model);
       yield return wait;
       CallbackUnlit.PopFlag();
     }
 
+    if (!withinInversionSegment)
+    {
+      segment2 = ClearWidthSegment(model.Segment, newSegmentInversion, out intersection2);
+    }
     if (segment2)
     {
       CallbackUnlit.PushFlag();
@@ -84,10 +83,10 @@ public class SplitSegmentCommand : BaseCommand
       yield return wait;
       CallbackUnlit.PopFlag();
     }
-    if (newIntersection != null)
+    if (intersection2 != null)
     {
       CallbackUnlit.PushFlag();
-      ShowIntersectionModel model = new ShowIntersectionModel(newIntersection, CallbackUnlit.PeekFlagTrue);
+      ShowIntersectionModel model = new ShowIntersectionModel(intersection2, CallbackUnlit.PeekFlagTrue);
       dispatcher.Dispatch(EventGlobal.E_ShowIntersection, model);
       yield return wait;
       CallbackUnlit.PopFlag();

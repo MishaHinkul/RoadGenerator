@@ -64,6 +64,11 @@ public class XCenterTemplateCommand : BaseCommand
     ShowIntersectionModel modelI = new ShowIntersectionModel(i, CallbackUnlit.PeekFlagTrue);
 
     CallbackUnlit.PushFlag();
+    dispatcher.Dispatch(EventGlobal.E_ShowIntersection, modelI);
+    yield return wait;
+    CallbackUnlit.PopFlag();
+
+    CallbackUnlit.PushFlag();
     dispatcher.Dispatch(EventGlobal.E_ShowSegment, modelA);
     yield return wait;
     CallbackUnlit.PopFlag();
@@ -80,11 +85,6 @@ public class XCenterTemplateCommand : BaseCommand
 
     CallbackUnlit.PushFlag();
     dispatcher.Dispatch(EventGlobal.E_ShowSegment, modelD);
-    yield return wait;
-    CallbackUnlit.PopFlag();
-
-    CallbackUnlit.PushFlag();
-    dispatcher.Dispatch(EventGlobal.E_ShowIntersection, modelI);
     yield return wait;
     CallbackUnlit.PopFlag();
 

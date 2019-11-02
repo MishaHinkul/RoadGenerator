@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RoadSettingsCommand : BaseCommand
+public class InitializeNetworkModelCommand : BaseCommand
 {
   public override void Execute()
   {
     NetworkModel.Scale = SettingsModel.Scale;
+    NetworkModel.WithRoad = PrefabsModel.Road.transform.lossyScale.z;
 
     if (NetworkModel.RoadNetworkTransform == null)
     {
@@ -31,8 +32,8 @@ public class RoadSettingsCommand : BaseCommand
   public RoadNetworkModel NetworkModel { get; private set; }
 
   [Inject]
-  public SettingsModel SettingsModel { get; private set; }
+  public RoadPrefabsModel PrefabsModel { get; private set; }
 
   [Inject]
-  public CameraSettings CameraSettingsModel { get; private set; }
+  public SettingsModel SettingsModel { get; private set; }
 }

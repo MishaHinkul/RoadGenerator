@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SetCameraSettingsCommand : BaseCommand
+public class InitializeCameraModelCommand : BaseCommand
 {
   public override void Execute()
   {

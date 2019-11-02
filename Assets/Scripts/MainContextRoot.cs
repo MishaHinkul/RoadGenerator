@@ -23,6 +23,7 @@ public class MainContextRoot : MVCSContext
     injectionBinder.Bind<PopulationsModel>().ToSingleton();
     injectionBinder.Bind<SettingsModel>().ToSingleton();
     injectionBinder.Bind<CameraSettings>().ToSingleton();
+    injectionBinder.Bind<RoadPrefabsModel>().ToSingleton();
   }
 
   // Commands and Bindings
@@ -60,11 +61,12 @@ public class MainContextRoot : MVCSContext
     commandBinder.Bind(EventGlobal.E_SplitSegment).To<SplitSegmentCommand>();
 
     commandBinder.Bind(EventGlobal.E_GeneradeRoads).To<LoadLevelStartGameCommand>()
-                                                   .To<RoadSettingsCommand>()
-                                                   .To<SetCameraSettingsCommand>()
+                                                   .To<InitializePrefabModelCommand>()
+                                                   .To<InitializeNetworkModelCommand>()
+                                                   .To<InitializeCameraModelCommand>()
                                                    .To<UpdateSettingsCameraCommand>()
                                                    .To<XCenterTemplateCommand>()
-                                                   //.To<SplitBaseConfigurationCommand>()
+                                                   .To<SplitBaseConfigurationCommand>()
                                                    //.To<ShowIntersectionCommand>()
                                                    //.To<ShowRoadSegmentsCommands>()
                                                    //.To<LoadGraphCommand>()

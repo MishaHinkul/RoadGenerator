@@ -14,9 +14,9 @@ public class SplitBaseConfigurationCommand : BaseCommand
   private IEnumerator SplitForLevel()
   {
     yield return Executor.StartCoroutine(SplitLevel(0));
-    yield return Executor.StartCoroutine(SplitLevel(1));
-    yield return Executor.StartCoroutine(SplitLevel(2));
-    yield return Executor.StartCoroutine(SplitLevel(3));
+    //yield return Executor.StartCoroutine(SplitLevel(1));
+    //yield return Executor.StartCoroutine(SplitLevel(2));
+    //yield return Executor.StartCoroutine(SplitLevel(3));
 
     Release();
   }
