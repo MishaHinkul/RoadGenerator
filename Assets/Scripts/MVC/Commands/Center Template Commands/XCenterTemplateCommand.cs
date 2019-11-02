@@ -16,12 +16,6 @@ public class XCenterTemplateCommand : BaseCommand
       model = GetDefaultMode();
     }
 
-    Retain();
-    Executor.StartCoroutine(SetX());
-  }
-
-  private IEnumerator SetX()
-  {
     Quaternion rotation = Quaternion.Euler(0, 0, model.Angle);
 
     RoadPoint a = new RoadPoint();
@@ -54,41 +48,11 @@ public class XCenterTemplateCommand : BaseCommand
     Intersection i = new Intersection(new List<RoadPoint>() { rA.Begin, rB.Begin, rC.Begin, rD.Begin });
     NetworkModel.RoadIntersections.Add(i);
 
-    //Show
-    WaitUntil wait = new WaitUntil(CallbackUnlit.PeekFlag);
-
-    ShowSegmentnModel modelA = new ShowSegmentnModel(rA, CallbackUnlit.PeekFlagTrue);
-    ShowSegmentnModel modelB = new ShowSegmentnModel(rB, CallbackUnlit.PeekFlagTrue);
-    ShowSegmentnModel modelC = new ShowSegmentnModel(rC, CallbackUnlit.PeekFlagTrue);
-    ShowSegmentnModel modelD = new ShowSegmentnModel(rD, CallbackUnlit.PeekFlagTrue);
-    ShowIntersectionModel modelI = new ShowIntersectionModel(i, CallbackUnlit.PeekFlagTrue);
-
-    CallbackUnlit.PushFlag();
-    dispatcher.Dispatch(EventGlobal.E_ShowIntersection, modelI);
-    yield return wait;
-    CallbackUnlit.PopFlag();
-
-    CallbackUnlit.PushFlag();
-    dispatcher.Dispatch(EventGlobal.E_ShowSegment, modelA);
-    yield return wait;
-    CallbackUnlit.PopFlag();
-
-    CallbackUnlit.PushFlag();
-    dispatcher.Dispatch(EventGlobal.E_ShowSegment, modelB);
-    yield return wait;
-    CallbackUnlit.PopFlag();
-
-    CallbackUnlit.PushFlag();
-    dispatcher.Dispatch(EventGlobal.E_ShowSegment, modelC);
-    yield return wait;
-    CallbackUnlit.PopFlag();
-
-    CallbackUnlit.PushFlag();
-    dispatcher.Dispatch(EventGlobal.E_ShowSegment, modelD);
-    yield return wait;
-    CallbackUnlit.PopFlag();
-
-    Release();
+    NetworkModel.RoadItems.AddLast(i);
+    NetworkModel.RoadItems.AddLast(rA);
+    NetworkModel.RoadItems.AddLast(rB);
+    NetworkModel.RoadItems.AddLast(rC);
+    NetworkModel.RoadItems.AddLast(rD);
   }
 
   private CenterTemplateModel GetDefaultMode()
@@ -96,10 +60,6 @@ public class XCenterTemplateCommand : BaseCommand
     return new CenterTemplateModel(Vector2.zero, 270);
   }
 
-
   [Inject]
   public RoadNetworkModel NetworkModel { get; private set; }
-
-  [Inject]
-  public ICoroutineExecutor Executor { get; private set; }
 }

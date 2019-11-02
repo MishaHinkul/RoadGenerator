@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RoadSegment
+public class RoadSegment : RoadItem
 {
   public RoadPoint GetOther(RoadPoint main)
   {

@@ -15,6 +15,7 @@ public class RoadNetworkModel
     RoadIntersections = new List<Intersection>();
     RoadSegments = new List<RoadSegment>();
     ViewObjects = new Dictionary<HVector3, GameObject>();
+    RoadItems = new LinkedList<RoadItem>();
     ShortCutOff = 5f;
     CloseCutoff = 7f;
   }
@@ -179,6 +180,8 @@ public class RoadNetworkModel
   public Transform RoadIntersectionTransform { get; set; }
 
   public Dictionary<HVector3, GameObject> ViewObjects { get; private set; }
+
+  public LinkedList<RoadItem> RoadItems { get; private set; }
 
   /// <summary>
   /// Масштаб сети дорог
