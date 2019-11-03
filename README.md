@@ -1,1 +1,1 @@
-! [] (RoadGenerator.gif)
+! [] RoadGenerator.gif
