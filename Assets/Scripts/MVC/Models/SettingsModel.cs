@@ -9,7 +9,7 @@ public class SettingsModel
     CarSpawnTime = 1;
     StopGassStationTime = 1;
     Scale = 30;
-    SpeedVisualizeAlgorithm = 0.03f;
+    SpeedVisualizeAlgorithm = 0.015f;
   }
 
   public float CarSpawnTime { get; set; }

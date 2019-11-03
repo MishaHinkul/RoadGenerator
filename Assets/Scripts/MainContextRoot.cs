@@ -68,13 +68,11 @@ public class MainContextRoot : MVCSContext
                                                    .To<XCenterTemplateCommand>()
                                                    .To<SplitBaseConfigurationCommand>()
                                                    .To<ShowRoadItemsCommand>()
-                                                   //.To<ShowIntersectionCommand>()
-                                                   //.To<ShowRoadSegmentsCommands>()
-                                                   //.To<LoadGraphCommand>()
-                                                   //.To<DisableNavigationColliderCommand>()
-                                                   //.To<InitTreeEntryCommand>()
-                                                   //.To<GeneradeGasStationCommand>()
-                                                   /*.To<SpawnCarsCommand>()*/.InSequence().Pooled();
+                                                   .To<LoadGraphCommand>()
+                                                   .To<DisableNavigationColliderCommand>()
+                                                   .To<InitTreeEntryCommand>()
+                                                   .To<GeneradeGasStationCommand>()
+                                                   .To<SpawnCarsCommand>().InSequence().Pooled();
 
     //Car
     commandBinder.Bind(EventGlobal.E_CarLogics).To<CarLogicCommand>();

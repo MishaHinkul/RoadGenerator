@@ -105,7 +105,7 @@ public class SplitSegmentCommand : BaseCommand
 
     if (intersectionCount <= 1)
     {
-      NetworkModel.RemoveAllSaveSegment(p => p.IsEqual(newSegment));
+      NetworkModel.RemoveAllSaveSegmentIsEqual(newSegment);
       NetworkModel.SaveSegment(newSegment);
       segment = true;
     }
@@ -128,7 +128,7 @@ public class SplitSegmentCommand : BaseCommand
       }
       else
       {
-        NetworkModel.RemoveAllSaveSegment(p => p.IsEqual(segmentsA[0]));
+        NetworkModel.RemoveAllSaveSegmentIsEqual(segmentsA[0]);
       }
 
       if (patchB)
@@ -137,7 +137,7 @@ public class SplitSegmentCommand : BaseCommand
       }
       else
       {
-        NetworkModel.RemoveAllSaveSegment(p => p.IsEqual(segmentsA[1]));
+        NetworkModel.RemoveAllSaveSegmentIsEqual(segmentsA[1]);
       }
 
       if (patchC)
@@ -146,7 +146,7 @@ public class SplitSegmentCommand : BaseCommand
       }
       else
       {
-        NetworkModel.RemoveAllSaveSegment(p => p.IsEqual(segmentsB[0]));
+        NetworkModel.RemoveAllSaveSegmentIsEqual(segmentsB[0]);
       }
 
       if (patchD)
@@ -155,7 +155,7 @@ public class SplitSegmentCommand : BaseCommand
       }
       else
       {
-        NetworkModel.RemoveAllSaveSegment(p => p.IsEqual(segmentsB[1]));
+        NetworkModel.RemoveAllSaveSegmentIsEqual(segmentsB[1]);
       }
 
       //Все оставшиеся точки, и формируют перекрестки и т.д и состовляют пересечения в нашей сети
@@ -218,7 +218,7 @@ public class SplitSegmentCommand : BaseCommand
   /// </returns>
   private RoadSegment[] PatchSegment(RoadSegment segment, RoadPoint newPoint)
   {
-    NetworkModel.RemoveAllSaveSegment(p => p.IsEqual(segment));
+    NetworkModel.RemoveAllSaveSegmentIsEqual(segment);
 
     RoadSegment left = new RoadSegment(segment.Begin, new RoadPoint(newPoint.Point), segment.Level);
     RoadSegment right = new RoadSegment(segment.End, new RoadPoint(newPoint.Point), segment.Level);

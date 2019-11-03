@@ -40,9 +40,17 @@ public class RoadNetworkModel
     RoadItems.AddRange(intersection);
   }
 
-  public void RemoveAllSaveSegment(System.Predicate<RoadSegment> predicate)
+  public void RemoveAllSaveSegmentIsEqual(RoadSegment roadSegment)
   {
-    RoadSegments.RemoveAll(predicate);
+    List<RoadSegment> copy = new List<RoadSegment>(RoadSegments);
+    for (int i = 0; i < copy.Count; i++)
+    {
+      if (copy[i].IsEqual(roadSegment))
+      {
+        RoadSegments.Remove(copy[i]);
+        RoadItems.Remove(copy[i]);
+      }
+    }
   }
 
   public int GetRoadSegmentCount()

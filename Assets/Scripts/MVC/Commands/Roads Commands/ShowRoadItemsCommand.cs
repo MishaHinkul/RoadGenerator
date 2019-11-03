@@ -37,7 +37,6 @@ public class ShowRoadItemsCommand : BaseCommand
         CallbackUnlit.PopFlag();
       }
     }
-    int c = NetworkModel.RoadIntersections.Count;
     Release();
   }
 
