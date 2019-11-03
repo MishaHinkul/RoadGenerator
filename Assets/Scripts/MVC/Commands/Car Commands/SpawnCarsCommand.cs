@@ -4,19 +4,9 @@ using UnityEngine;
 
 public class SpawnCarsCommand : BaseCommand
 {
-  private GameObject carPrefab = null;
-
   public override void Execute()
   {
-    LoadResource();
-    if (Validation())
-    {
-      CoroutineExecutor.StartCoroutine(Spawn());
-    }
-    else
-    {
-      Debug.LogError("Car Prefub - not found");
-    }
+    CoroutineExecutor.StartCoroutine(Spawn());
   }
 
   private IEnumerator Spawn()
@@ -34,28 +24,16 @@ public class SpawnCarsCommand : BaseCommand
 
   private GameObject InstanceCar()
   {
-    GameObject instanceGO = GameObject.Instantiate<GameObject>(carPrefab);
-    if (instanceGO != null)
-    {
-      instanceGO.name = "Car";
-    }
-
-    return instanceGO;
+    return GameObject.Instantiate<GameObject>(Prefabs.Car);
   }
 
-  private void LoadResource()
-  {
-    carPrefab = Resources.Load<GameObject>("Car");
-  }
-
-  private bool Validation()
-  {
-    return carPrefab != null;
-  }
 
   [Inject]
   public ICoroutineExecutor CoroutineExecutor { get; private set; }
 
   [Inject]
   public SettingsModel SettingsModel { get; private set; }
+
+  [Inject]
+  public RoadPrefabsModel Prefabs { get; private set; }
 }

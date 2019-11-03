@@ -27,6 +27,14 @@ public class InitializePrefabModelCommand : BaseCommand
     {
       Prefabs.IntersectionT = Resources.Load<GameObject>("ROAD_intersection_T");
     }
+    if (Prefabs.GassStation == null)
+    {
+      Prefabs.GassStation = Resources.Load<GameObject>("GassStation");
+    }
+    if (Prefabs.Car == null)
+    {
+      Prefabs.Car = Resources.Load<GameObject>("Car");
+    }
   }
 
   [Inject]

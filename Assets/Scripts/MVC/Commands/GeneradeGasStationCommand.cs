@@ -61,9 +61,8 @@ public class GeneradeGasStationCommand : BaseCommand
     Vector3 center = new Vector3(tc.x, 0, tc.y);
 
 
-    GameObject build = GameObject.CreatePrimitive(PrimitiveType.Cube);
+    GameObject build = GameObject.Instantiate<GameObject>(Prefabs.GassStation);
     build.transform.position = center;
-    build.name = "Gass Station";
     build.transform.localScale = new Vector3(factor, height, wight);
 
     return build;
@@ -75,4 +74,7 @@ public class GeneradeGasStationCommand : BaseCommand
 
   [Inject]
   public PopulationsModel PopulationModel { get; private set; }
+
+  [Inject]
+  public RoadPrefabsModel Prefabs { get; private set; }
 }
