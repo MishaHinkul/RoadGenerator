@@ -4,20 +4,25 @@ using UnityEngine;
 
 public class SplitSegmentForLevelCommand : BaseCommand
 {
-    [Inject]
-    public RoadNetworkModel networkModel { get; private set; }
+  public override void Execute()
+  {
+    SplitSegmentForLevelModel model = eventData.data as SplitSegmentForLevelModel;
 
-    public override void Execute()
+    SplitSegmentModel segmentModel = null;
+    List<RoadSegment> segments = new List<RoadSegment>(NetworkModel.GetRoadSegmentList());
+
+    for (int i = 0; i < segments.Count; i++)
     {
-        int level = (int)eventData.data;
-
-        List<RoadSegment> segments = new List<RoadSegment>(networkModel.roadSegments);
-        for (int i = 0; i < segments.Count; i++)
-        {
-            if (segments[i].Level == level)
-            {
-                dispatcher.Dispatch(EventGlobal.E_SplitSegment, segments[i]);
-            }
-        }
+      if (segments[i].Level == model.Level)
+      {
+        segmentModel = new SplitSegmentModel(segments[i]);
+        dispatcher.Dispatch(EventGlobal.E_SplitSegment, segmentModel);
+      }
     }
+
+    CallbackUnlit.Execute(model.Callback);
+  }
+
+  [Inject]
+  public RoadNetworkModel NetworkModel { get; private set; }
 }

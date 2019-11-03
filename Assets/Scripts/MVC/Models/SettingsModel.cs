@@ -2,28 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Все доступные настройки для игры
-/// </summary>
 public class SettingsModel
 {
-    /// <summary>
-    /// Периодичность с которой будут появлятся машины 
-    /// </summary>
-    public float carSpawnTime;
+  public SettingsModel()
+  {
+    CarSpawnTime = 1;
+    StopGassStationTime = 1;
+    Scale = 30;
+    SpeedVisualizeAlgorithm = 0.015f;
+  }
 
-    /// <summary>
-    /// Время остановки на заправке
-    /// </summary>
-    public float stopGassStationTime;
+  public float CarSpawnTime { get; set; }
+  public float StopGassStationTime { get; set; }
+  public float Scale { get; set; }
+  public bool VisualizeAlgorithm { get; set; }
 
-    public float scale;
-
-    public SettingsModel()
-    {
-        carSpawnTime = 1;
-        stopGassStationTime = 1;
-        scale = 30;
-    }
-
+  public float SpeedVisualizeAlgorithm { get; set; }
 }

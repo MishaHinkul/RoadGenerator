@@ -6,22 +6,23 @@ using UnityEngine.UI;
 
 public class DebugView : BaseView
 {
-    [SerializeField]
-    private Button generadeButton;
+  [SerializeField]
+  private Button generadeButton;
 
 
-    internal void LoadView()
-    {
-        generadeButton.onClick.RemoveAllListeners();
-        generadeButton.onClick.AddListener(() =>
-        {
-            dispatcher.Dispatch(EventGlobal.E_GeneradeRoads);
+  internal void LoadView()
+  {
+    generadeButton.onClick.RemoveAllListeners();
+    generadeButton.onClick.AddListener(DispatchGeneradeRoads);
+  }
 
-        });
-    }
+  internal void RemoveView()
+  {
+    generadeButton.onClick.RemoveAllListeners();
+  }
 
-    internal void RemoveView()
-    {
-        generadeButton.onClick.RemoveAllListeners();
-    }
+  private void DispatchGeneradeRoads()
+  {
+    dispatcher.Dispatch(EventGlobal.E_GeneradeRoads);
+  }
 }

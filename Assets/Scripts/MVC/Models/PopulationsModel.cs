@@ -7,10 +7,17 @@ using UnityEngine;
 /// </summary>
 public class PopulationsModel
 {
-	public List<GameObject> buildings { get; set; }
+  public Vector3 GetRendomeBuilding()
+  {
+    int index = Random.Range(0, Buildings.Count);
+    return Buildings[index].transform.position;
+  }
 
-    public PopulationsModel()
-    {
-        buildings = new List<GameObject>();
-    }
+
+  public PopulationsModel()
+  {
+    Buildings = new List<GameObject>();
+  }
+
+  public List<GameObject> Buildings { get; set; }
 }

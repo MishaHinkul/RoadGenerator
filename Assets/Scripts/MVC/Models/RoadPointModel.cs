@@ -7,26 +7,47 @@ using UnityEngine;
 /// </summary>
 public class RoadPoint
 {
-    public Vector2 point { get; set; }
-    public RoadSegment mySegement { get; set; } //родитель данной точки
+  private const float MIN_DISTANCE = 0.0001f;
 
-    public RoadPoint()
+  public override bool Equals(object other)
+  {
+    RoadPoint otherRoadPoint = other as RoadPoint;
+    if (otherRoadPoint == null)
     {
+      return false;
     }
 
-    public RoadPoint(Vector2 point, RoadSegment segment = null)
+    //Просто проверка на расстояние игнорируя сегмент
+    if ((Point - otherRoadPoint.Point).sqrMagnitude < MIN_DISTANCE)
     {
-        this.point = new Vector2(point.x, point.y);
-        this.mySegement = segment;
+      return true;
     }
+    return false;
+  }
 
-    public override bool Equals(object other)
+  public override int GetHashCode()
+  {
+    return Point.GetHashCode();
+  }
+
+
+  public RoadPoint()
+  {
+  }
+
+  public RoadPoint(Vector2 point, RoadSegment segment = null)
+  {
+    Point = new Vector2(point.x, point.y);
+    MySegement = segment;
+  }
+
+  public Vector2 Point { get; set; }
+  public RoadSegment MySegement { get; set; } //родитель данной точки
+  public Vector3 WorldPosition
+  {
+    get
     {
-        //Просто проверка на расстояние игнорируя сегмент
-        if (Vector2.Distance((other as RoadPoint).point, this.point) < 0.01f)
-        {
-            return true;
-        }
-        return false;
+      return new Vector3(Point.x, 0, Point.y);
     }
+  }
 }

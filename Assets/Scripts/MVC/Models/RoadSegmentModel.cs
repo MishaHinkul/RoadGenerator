@@ -2,74 +2,68 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Сегмент дороги состоит из 2 точек. Точка начала и точка конца дороги
-/// </summary>
-public class RoadSegment
+public class RoadSegment : RoadItem
 {
-    public RoadPoint PointA { get; private set; }
-    public RoadPoint PointB { get; private set; }
+  public RoadPoint GetOther(RoadPoint main)
+  {
+    return this.Begin.Equals(main) ? this.End : this.Begin;
+  }
 
-    public int Level { get; private set; }
+  public float SegmentLength()
+  {
+    return Vector2.Distance(this.Begin.Point, this.End.Point);
+  }
 
-    public RoadSegment(RoadPoint a, RoadPoint b, int level)
+  public Vector3 GetWorldPosition(bool first)
+  {
+    if (first)
     {
-        this.PointA = new RoadPoint(a.point, this);
-        this.PointB = new RoadPoint(b.point, this);
-
-        this.Level = level;
+      return Begin.WorldPosition;
     }
+    return End.WorldPosition;
+  }
 
-    /// <summary>
-    /// Получить на основе одной точки - другую
-    /// </summary>
-    /// <param name="main"></param>
-    /// <returns></returns>
-	public RoadPoint GetOther(RoadPoint main)
+  public Vector3 GetWorldPerp()
+  {
+    //Получили направление для новой точки (перепендикуляр)
+    return Vector3.Cross(Begin.WorldPosition - End.WorldPosition, Vector3.down).normalized;// * (Random.Range (0f, 1f) < 0.5f ? -1 : 1);
+  }
+
+  public void DebugDriwLine()
+  {
+    Debug.DrawLine(GetWorldPosition(true), GetWorldPosition(false), Color.blue);
+    Debug.DrawRay(GetWorldPosition(true), Vector3.up, Color.red);
+    Debug.DrawRay(GetWorldPosition(false), Vector3.up, Color.red);
+  }
+
+  public bool IsEqual(RoadSegment segment)
+  {
+    if (this.Begin.Equals(segment.Begin) && this.End.Equals(segment.End))
     {
-        return this.PointA.Equals(main) ? this.PointB : this.PointA;
+      return true;
     }
-
-    public float SegmentLength()
+    else if (this.Begin.Equals(segment.End) && this.End.Equals(segment.Begin))
     {
-        return Vector2.Distance(this.PointA.point, this.PointB.point);
+      return true;
     }
+    return false;
+  }
 
-    /// <summary>
-    /// Конвертация Vector2 в Vector3
-    /// </summary>
-    /// <param name="first">вернуть первую или вторую точку</param>
-    /// <returns></returns>
-    public Vector3 GetVector3(bool first)
-    {
-        if (first)
-            return new Vector3(this.PointA.point.x, 0, this.PointA.point.y);
-        else
-            return new Vector3(this.PointB.point.x, 0, this.PointB.point.y);
-    }
+  public Vector2 GetForward()
+  {
+    return End.Point - Begin.Point;
+  }
 
-    public void DebugDriwLine()
-    {
-        Debug.DrawLine(GetVector3(true), GetVector3(false), Color.blue);
-        Debug.DrawRay(GetVector3(true), Vector3.up, Color.red);
-        Debug.DrawRay(GetVector3(false), Vector3.up, Color.red);
-    }
 
-    /// <summary>
-    /// Определяет, равен ли этот экземпляр указанному сегменту
-    /// </summary>
-    /// <returns><c>true</c> if this instance is equal the specified segment; otherwise, <c>false</c>.</returns>
-    /// <param name="segment">Segment.</param>
-    public bool IsEqual(RoadSegment segment)
-    {
-        if (this.PointA.Equals(segment.PointA) && this.PointB.Equals(segment.PointB))
-        {
-            return true;
-        }
-        else if (this.PointA.Equals(segment.PointB) && this.PointB.Equals(segment.PointA))
-        {
-            return true;
-        }
-        return false;
-    }
+  public RoadSegment(RoadPoint a, RoadPoint b, int level)
+  {
+    Begin = new RoadPoint(a.Point, this);
+    End = new RoadPoint(b.Point, this);
+    Level = level;
+  }
+
+
+  public RoadPoint Begin { get; private set; }
+  public RoadPoint End { get; private set; }
+  public int Level { get; private set; }
 }

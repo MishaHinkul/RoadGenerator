@@ -4,39 +4,36 @@ using UnityEngine;
 
 public class SpawnCarsCommand : BaseCommand
 {
-    [Inject]
-    public ICoroutineExecutor coroutineExecutor { get; private set; }
+  public override void Execute()
+  {
+    CoroutineExecutor.StartCoroutine(Spawn());
+  }
 
-    [Inject]
-    public SettingsModel settingsModel { get; private set; }
-
-    private GameObject carPrefab = null;
-
-    public override void Execute()
+  private IEnumerator Spawn()
+  {
+    WaitForSeconds waitTime = new WaitForSeconds(SettingsModel.CarSpawnTime);
+    WaitForEndOfFrame waitFrame = new WaitForEndOfFrame();
+    while (true)
     {
-        carPrefab = Resources.Load<GameObject>("Car");
-        if (carPrefab != null)
-        {
-            coroutineExecutor.StartCoroutine(Spawn());
-        }
-        else
-        {
-            Debug.LogError("Car Prefub - not found");
-        }
+      yield return waitTime;
+      GameObject instanceGO = InstanceCar();
+      yield return waitFrame;
+      dispatcher.Dispatch(EventGlobal.E_CarLogics, instanceGO);
     }
+  }
 
-    private IEnumerator Spawn()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(settingsModel.carSpawnTime);
-            GameObject instanceGO = GameObject.Instantiate<GameObject>(carPrefab);
-            yield return new WaitForEndOfFrame();
-            if (instanceGO != null)
-            {
-                instanceGO.name = "Car";
-                dispatcher.Dispatch(EventGlobal.E_CarLogics, instanceGO);
-            }
-        }
-    }
+  private GameObject InstanceCar()
+  {
+    return GameObject.Instantiate<GameObject>(Prefabs.Car);
+  }
+
+
+  [Inject]
+  public ICoroutineExecutor CoroutineExecutor { get; private set; }
+
+  [Inject]
+  public SettingsModel SettingsModel { get; private set; }
+
+  [Inject]
+  public RoadPrefabsModel Prefabs { get; private set; }
 }

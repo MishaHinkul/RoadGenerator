@@ -5,16 +5,17 @@ using UnityEngine;
 
 public class AgentMediator : EventMediator
 {
-    [Inject]
-    public AgentView view { get; set; }
+  public override void OnRegister()
+  {
+    AgentView.LoadView();
+  }
 
-    public override void OnRegister()
-    {
-        view.LoadView();
-    }
+  public override void OnRemove()
+  {
+    AgentView.RemoveView();
+  }
 
-    public override void OnRemove()
-    {
-        view.RemoveView();
-    }
+
+  [Inject]
+  public AgentView AgentView { get; set; }
 }

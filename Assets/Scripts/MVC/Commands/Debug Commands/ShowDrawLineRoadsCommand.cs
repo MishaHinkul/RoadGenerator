@@ -23,8 +23,8 @@ public class ShowDrawLineRoadsCommand : BaseCommand
     {
         while(true)
         {
-            Debug.DrawLine(cameraSettingsModel.constraint.constraintTopLeft, cameraSettingsModel.constraint.constraintTopRight, Color.red);
-            Debug.DrawLine(cameraSettingsModel.constraint.constraintBottomLeft, cameraSettingsModel.constraint.constraintBottomRight, Color.red);
+            Debug.DrawLine(cameraSettingsModel.Constraint.ConstraintTopLeft, cameraSettingsModel.Constraint.ConstraintTopRight, Color.red);
+            Debug.DrawLine(cameraSettingsModel.Constraint.ConstraintBottomLeft, cameraSettingsModel.Constraint.ConstraintBottomRight, Color.red);
             //foreach (RoadSegment segment in networkModel.roadSegments)
             //{
             //    segment.DebugDriwLine();

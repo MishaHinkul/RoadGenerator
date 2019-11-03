@@ -7,33 +7,46 @@ using UnityEngine;
 /// </summary>
 public class InitTreeEntryCommand : BaseCommand
 {
-    [Inject]
-    public RoadNetworkModel networkMode { get; private set; }
+  private const int ENTRY_COUNT = 3;
 
-    [Inject]
-    public TreeEntryModel entryModel { get; private set; }
-
-    public override void Execute()
+  public override void Execute()
+  {
+    for (int i = 0; i < ENTRY_COUNT; i++)
     {
-        //Первое пересечение это из которого строится вся карта
-        Intersection mainIntersection = networkMode.RoadIntersections[0];
-        int entryCount = 3;
-        for (int i = 0; i < entryCount; i++)
-        {        
-            bool addEntry = false;
-            do
-            {
-                int randomIndex = Random.Range(0, mainIntersection.Points.Count);
-                RoadPoint pointA = mainIntersection.Points[randomIndex];
-                RoadPoint pointB = pointA.mySegement.GetOther(pointA);
-                Vector3 position = new Vector3(pointB.point.x, networkMode.roadNetworkTransform.position.y, pointB.point.y);
-                if (!entryModel.Entrances.Contains(position))
-                {
-                    entryModel.Entrances.Add(position);
-                    addEntry = true;
-                }   
-            }
-            while (!addEntry);
-        }      
+      SetEntry();
     }
+  }
+
+  private void SetEntry()
+  {
+    bool addEntry = false;
+    Vector3 position;
+    do
+    {
+      position = GetPosition();
+      if (!EntryModel.Entrances.Contains(position))
+      {
+        EntryModel.Entrances.Add(position);
+        addEntry = true;
+      }
+    }
+    while (!addEntry);
+  }
+
+  private Vector3 GetPosition()
+  {
+    Intersection mainIntersection = NetworkMode.GetMainIntersection(); //Первое пересечение, это из которого строится вся карта
+    int randomIndex = Random.Range(0, mainIntersection.Points.Count);
+    RoadPoint pointA = mainIntersection.Points[randomIndex];
+    RoadPoint pointB = pointA.MySegement.GetOther(pointA);
+
+    return new Vector3(pointB.Point.x, NetworkMode.RoadNetworkTransform.position.y, pointB.Point.y);
+  }
+
+
+  [Inject]
+  public RoadNetworkModel NetworkMode { get; private set; }
+
+  [Inject]
+  public EntryModel EntryModel { get; private set; }
 }

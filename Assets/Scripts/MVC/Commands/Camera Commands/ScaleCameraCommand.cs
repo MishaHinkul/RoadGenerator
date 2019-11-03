@@ -4,30 +4,28 @@ using UnityEngine;
 
 public class ScaleCameraCommand : BaseCommand
 {
-    [Inject]
-    public CameraSettings cameraSettings { get; private set; }
-    public override void Execute()
+  public override void Execute()
+  {
+    if (eventData.data == null)
     {
-        if (eventData.data == null)
-        {
-            return;
-        }
-        float model = (float)eventData.data;
-        if (model == 0)
-        {
-            return;
-        }
-
-
-
-        cameraSettings.distance.min_max_Distance = new Vector2(6, 14);
-        cameraSettings.distance.speed = 25;
-        model *= cameraSettings.distance.speed;
-        cameraSettings.distance.desiredDistance = cameraSettings.distance.currentDistance + model;
-        cameraSettings.distance.desiredDistance = Mathf.Clamp(cameraSettings.distance.desiredDistance, 
-                                                              cameraSettings.distance.min_max_Distance.x, 
-                                                              cameraSettings.distance.min_max_Distance.y);
-        cameraSettings.distance.speedChangeDistance = 0.15f;
-        cameraSettings.lerpScale = true;
+      return;
     }
+    float modelData = (float)eventData.data;
+    if (modelData == 0)
+    {
+      return;
+    }
+
+    modelData *= CameraSettings.Distance.Speed;
+    CameraSettings.Distance.DesiredDistance = CameraSettings.Distance.CurrentDistance + modelData;
+    CameraSettings.Distance.DesiredDistance = Mathf.Clamp(CameraSettings.Distance.DesiredDistance,
+                                                          CameraSettings.Distance.MinMaxDistance.x,
+                                                          CameraSettings.Distance.MinMaxDistance.y);
+
+    CameraSettings.LerpScale = true;
+  }
+
+
+  [Inject]
+  public CameraSettings CameraSettings { get; private set; }
 }

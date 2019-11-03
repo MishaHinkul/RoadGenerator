@@ -4,20 +4,27 @@ using UnityEngine;
 
 public class DisableNavigationColliderCommand : BaseCommand
 {
-    [Inject]
-    public GraphModel graphModel { get; private set; }
-    public override void Execute()
+  public override void Execute()
+  {
+    for (int i = 0; i < GraphModel.Graph.vertices.Count; i++)
     {
-        for (int i = 0; i < graphModel.graph.vertices.Count; i++)
-        {
-            if (graphModel.graph.vertices[i] != null)
-            {
-                Collider collider = graphModel.graph.vertices[i].GetComponent<Collider>();
-                if (collider != null)
-                {
-                    collider.enabled = false;
-                }
-            }
-        }
+      DisableCollider(GraphModel.Graph.vertices[i]);
     }
+  }
+
+  private void DisableCollider(Vertex vertex)
+  {
+    if (vertex == null)
+    {
+      return;
+    }
+    Collider collider = vertex.GetComponent<Collider>();
+    if (collider != null)
+    {
+      collider.enabled = false;
+    }
+  }
+
+  [Inject]
+  public GraphModel GraphModel { get; private set; }
 }

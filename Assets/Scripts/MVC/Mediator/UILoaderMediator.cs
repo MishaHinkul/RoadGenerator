@@ -4,20 +4,21 @@ using strange.extensions.mediation.impl;
 
 public class UILoaderMediator : EventMediator
 {
-	[Inject]
-	public UILoaderView view { get; set; }
+  public override void PreRegister()
+  {
+  }
 
-	public override void PreRegister()
-	{
+  public override void OnRegister()
+  {
+    ViewLoader.LoadView();
+  }
 
-	}
-	public override void OnRegister()
-	{
-		view.LoadView();
-	}
+  public override void OnRemove()
+  {
+    ViewLoader.RemoveView();
+  }
 
-	public override void OnRemove()
-	{
-		view.RemoveView();
-	}
+
+  [Inject]
+  public UILoaderView ViewLoader { get; set; }
 }

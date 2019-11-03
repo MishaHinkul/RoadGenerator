@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class SplitBaseConfigurationCommand : BaseCommand
 {
-    public override void Execute()
-    {
-        Retain();
-        dispatcher.Dispatch(EventGlobal.E_SplitSegmentForLevel, 0);
-        dispatcher.Dispatch(EventGlobal.E_SplitSegmentForLevel, 0);
-        dispatcher.Dispatch(EventGlobal.E_SplitSegmentForLevel, 1);
-        dispatcher.Dispatch(EventGlobal.E_SplitSegmentForLevel, 1);
-        dispatcher.Dispatch(EventGlobal.E_SplitSegmentForLevel, 2);
-        dispatcher.Dispatch(EventGlobal.E_SplitSegmentForLevel, 3);
-        Release();
-    }
+  public override void Execute()
+  {
+    Retain();
+
+    SplitLevel(0);
+    SplitLevel(1);
+    SplitLevel(2);
+    SplitLevel(3);
+
+    Release();
+  }
+
+  private void SplitLevel(int level)
+  {
+    SplitSegmentForLevelModel segmentForLevelModel = new SplitSegmentForLevelModel(level);
+    dispatcher.Dispatch(EventGlobal.E_SplitSegmentForLevel, segmentForLevelModel);
+  }
 }
