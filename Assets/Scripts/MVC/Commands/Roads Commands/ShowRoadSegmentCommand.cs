@@ -32,25 +32,20 @@ public class ShowRoadSegmentCommand : BaseCommand
     globalPosition = NetworkModel.GetWorldPositionBeginSegment(model.Segment);
     iteration = NetworkModel.GetWithSegment(model.Segment);
 
-    GameObject gameObject = null;
-    //if (InstanceDeadLock(model.Segment.Begin, forward))
-    //{
-    //  yield return wait;
-    //}
     for (float pos = step; pos < iteration; pos += step)
     {
 
       instPosition = globalPosition + (forward * pos);
       if (NetworkModel.WorldPositionToIntersection(instPosition) == null)
       {
-        gameObject = InstancePrefab(Prefabs.Road, instPosition, forward);
+        InstancePrefab(Prefabs.Road, instPosition, forward);
         yield return wait;
       }
     }
-    //if (InstanceDeadLock(model.Segment.End, -forward))
-    //{
-    //  yield return wait;
-    //}
+    if (InstanceDeadLock(model.Segment.End, -forward))
+    {
+      yield return wait;
+    }
 
     CallbackUnlit.Execute(model.Callback);
     Release();
