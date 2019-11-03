@@ -99,8 +99,8 @@ public class RoadNetworkModel
 
   public Vector3 GetWorldPositionIntersection(Intersection intersection)
   {
-    Vector3 worldPos = intersection.WorldPosition;
-    return new Vector3(worldPos.x, RoadIntersectionTransform.position.y, worldPos.y);
+    RoadPoint mainPoint = intersection.MainPoint;
+    return new Vector3(mainPoint.Point.x, RoadIntersectionTransform.position.y, mainPoint.Point.y);
   }
 
   public Quaternion LookRotationWorldIntersection(Intersection intersection)
