@@ -65,7 +65,7 @@ public class SplitSegmentCommand : BaseCommand
 
   private float GetLenghtBegin(Vector3 pBegin, Vector3 pEnd)
   {
-    float splitDistance = RANGE_MAX; Random.Range(RANGE_MIN, RANGE_MAX);
+    float splitDistance = Random.Range(RANGE_MIN, RANGE_MAX);
 
     float length = Vector3.Distance(pBegin, pEnd);
     length *= splitDistance; // длинна, части сегмента
@@ -78,7 +78,7 @@ public class SplitSegmentCommand : BaseCommand
   {
     //Например: scale = 100, segment.Level = 0, рендом = 1.5
     // Длинна будущего сегмента = 66.66
-    float newLength = NetworkModel.Scale / ((level + 1) * 1); Random.Range(1f, 2f);
+    float newLength = NetworkModel.Scale / ((level + 1) * Random.Range(1f, 2f));
     return (int)newLength; // пусть будут только целые числа, чтобы правильно наложить меш и не масштабировать его
   }
 

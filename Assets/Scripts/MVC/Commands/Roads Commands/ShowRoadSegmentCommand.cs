@@ -32,6 +32,10 @@ public class ShowRoadSegmentCommand : BaseCommand
     globalPosition = NetworkModel.GetWorldPositionBeginSegment(model.Segment);
     iteration = NetworkModel.GetWithSegment(model.Segment);
 
+    if (InstanceDeadLock(model.Segment.Begin, forward))
+    {
+      yield return wait;
+    }
     for (float pos = step; pos < iteration; pos += step)
     {
 
