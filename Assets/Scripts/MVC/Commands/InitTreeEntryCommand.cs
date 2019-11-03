@@ -35,7 +35,7 @@ public class InitTreeEntryCommand : BaseCommand
 
   private Vector3 GetPosition()
   {
-    Intersection mainIntersection = NetworkMode.RoadIntersections[0]; //Первое пересечение, это из которого строится вся карта
+    Intersection mainIntersection = NetworkMode.GetMainIntersection(); //Первое пересечение, это из которого строится вся карта
     int randomIndex = Random.Range(0, mainIntersection.Points.Count);
     RoadPoint pointA = mainIntersection.Points[randomIndex];
     RoadPoint pointB = pointA.MySegement.GetOther(pointA);

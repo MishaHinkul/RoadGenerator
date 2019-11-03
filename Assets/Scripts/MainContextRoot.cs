@@ -67,6 +67,7 @@ public class MainContextRoot : MVCSContext
                                                    .To<UpdateSettingsCameraCommand>()
                                                    .To<XCenterTemplateCommand>()
                                                    .To<SplitBaseConfigurationCommand>()
+                                                   .To<ShowRoadItemsCommand>()
                                                    //.To<ShowIntersectionCommand>()
                                                    //.To<ShowRoadSegmentsCommands>()
                                                    //.To<LoadGraphCommand>()

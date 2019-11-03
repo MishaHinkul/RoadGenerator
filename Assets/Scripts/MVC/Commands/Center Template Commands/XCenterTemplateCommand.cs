@@ -43,16 +43,10 @@ public class XCenterTemplateCommand : BaseCommand
     RoadSegment rC = new RoadSegment(e, f, 0);
     RoadSegment rD = new RoadSegment(g, h, 0);
 
-    NetworkModel.RoadSegments.AddRange(new RoadSegment[] { rA, rB, rC, rD });
-
     Intersection i = new Intersection(new List<RoadPoint>() { rA.Begin, rB.Begin, rC.Begin, rD.Begin });
-    NetworkModel.RoadIntersections.Add(i);
 
-    NetworkModel.RoadItems.AddLast(i);
-    NetworkModel.RoadItems.AddLast(rA);
-    NetworkModel.RoadItems.AddLast(rB);
-    NetworkModel.RoadItems.AddLast(rC);
-    NetworkModel.RoadItems.AddLast(rD);
+    NetworkModel.SaveIntersection(i);
+    NetworkModel.SaveSegment(rA, rB, rC, rD);
   }
 
   private CenterTemplateModel GetDefaultMode()

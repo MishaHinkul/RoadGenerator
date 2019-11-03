@@ -33,19 +33,19 @@ public class OCenterTemplateCommand : BaseCommand
       b.Point = rotationB * (new Vector2(networkModel.Scale / 2.5f, 0) + model.Center);
 
       RoadSegment rA = new RoadSegment(a, b, 0);
-      networkModel.RoadSegments.Add(rA);
+      networkModel.SaveSegment(rA);
       if (first == null)
         first = rA;
 
       if (last != null)
       {
         Intersection iA = new Intersection(new List<RoadPoint>() { rA.Begin, last.Begin });
-        networkModel.RoadIntersections.Add(iA);
+        networkModel.SaveIntersection(iA);
       }
       last = rA;
     }
 
     Intersection iB = new Intersection(new List<RoadPoint>() { first.Begin, last.Begin });
-    networkModel.RoadIntersections.Add(iB);
+    networkModel.SaveIntersection(iB);
   }
 }

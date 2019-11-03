@@ -15,9 +15,54 @@ public class RoadNetworkModel
     RoadIntersections = new List<Intersection>();
     RoadSegments = new List<RoadSegment>();
     ViewObjects = new Dictionary<HVector3, GameObject>();
-    RoadItems = new LinkedList<RoadItem>();
+    RoadItems = new List<RoadItem>();
     ShortCutOff = 5f;
     CloseCutoff = 7f;
+  }
+
+  public void SaveSegment(params RoadSegment[] roadSegments)
+  {
+    if (roadSegments == null || roadSegments.Length == 0)
+    {
+      return;
+    }
+    RoadSegments.AddRange(roadSegments);
+    RoadItems.AddRange(roadSegments);
+  }
+
+  public void SaveIntersection(params Intersection[] intersection)
+  {
+    if (intersection == null || intersection.Length == 0)
+    {
+      return;
+    }
+    RoadIntersections.AddRange(intersection);
+    RoadItems.AddRange(intersection);
+  }
+
+  public void RemoveAllSaveSegment(System.Predicate<RoadSegment> predicate)
+  {
+    RoadSegments.RemoveAll(predicate);
+  }
+
+  public int GetRoadSegmentCount()
+  {
+    return RoadSegments.Count;
+  }
+
+  public RoadSegment GetRoadSegment(int index)
+  {
+    return RoadSegments[index];
+  }
+
+  public List<RoadSegment> GetRoadSegmentList()
+  {
+    return RoadSegments;
+  }
+
+  public Intersection GetMainIntersection()
+  {
+    return RoadIntersections[0];
   }
 
   public KindIntersection GetKindIntersection(Intersection intersection)
@@ -43,7 +88,7 @@ public class RoadNetworkModel
     for (int i = 0; i < RoadIntersections.Count; i++)
     {
       intersectionPos = GetWorldPositionIntersection(RoadIntersections[i]);
-      if (intersectionPos.Equals(pos))
+      if (intersectionPos == pos)
       {
         return RoadIntersections[i];
       }
@@ -54,8 +99,8 @@ public class RoadNetworkModel
 
   public Vector3 GetWorldPositionIntersection(Intersection intersection)
   {
-    RoadPoint roadPointA = intersection.Points[0]; ;
-    return new Vector3(roadPointA.Point.x, RoadIntersectionTransform.position.y, roadPointA.Point.y);
+    Vector3 worldPos = intersection.WorldPosition;
+    return new Vector3(worldPos.x, RoadIntersectionTransform.position.y, worldPos.y);
   }
 
   public Quaternion LookRotationWorldIntersection(Intersection intersection)
@@ -63,7 +108,7 @@ public class RoadNetworkModel
     switch (GetKindIntersection(intersection))
     {
       case KindIntersection.Four:
-        return LookRotationWorldForPoint(intersection.Points[0]);
+        return LookRotationWorldForPoint(intersection.MainPoint);
       case KindIntersection.T:
         return LookRotationWorldTIntersection(intersection.Points);
       default:
@@ -162,12 +207,12 @@ public class RoadNetworkModel
   /// <summary>
   /// Список всех дорог, в нашей сети
   /// </summary>
-  public List<RoadSegment> RoadSegments { get; private set; }
+  private List<RoadSegment> RoadSegments { get; set; }
 
   /// <summary>
   /// Список всех пересечений в нашей сети
   /// </summary>
-  public List<Intersection> RoadIntersections { get; private set; }
+  public List<Intersection> RoadIntersections { get; set; }
 
   /// <summary>
   /// Объект в сцене, родитель всей сети
@@ -181,7 +226,7 @@ public class RoadNetworkModel
 
   public Dictionary<HVector3, GameObject> ViewObjects { get; private set; }
 
-  public LinkedList<RoadItem> RoadItems { get; private set; }
+  public List<RoadItem> RoadItems { get; private set; }
 
   /// <summary>
   /// Масштаб сети дорог

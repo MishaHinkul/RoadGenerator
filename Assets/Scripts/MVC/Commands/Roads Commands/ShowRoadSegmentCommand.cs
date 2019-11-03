@@ -39,14 +39,11 @@ public class ShowRoadSegmentCommand : BaseCommand
     //}
     for (float pos = step; pos < iteration; pos += step)
     {
-     
+
       instPosition = globalPosition + (forward * pos);
-      HVector3 hPos = new HVector3(instPosition);
-      if (NetworkModel.WorldPositionToIntersection(instPosition) == null && 
-         !NetworkModel.ViewObjects.ContainsKey(hPos))
+      if (NetworkModel.WorldPositionToIntersection(instPosition) == null)
       {
         gameObject = InstancePrefab(Prefabs.Road, instPosition, forward);
-        NetworkModel.ViewObjects.Add(hPos, gameObject);
         yield return wait;
       }
     }

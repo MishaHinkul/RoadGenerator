@@ -28,8 +28,8 @@ public class GeneradeGasStationCommand : BaseCommand
     RoadSegment segment = null;
     do
     {
-      randomIndex = Random.Range(0, NetworkModel.RoadSegments.Count);
-      segment = NetworkModel.RoadSegments[randomIndex];
+      randomIndex = Random.Range(0, NetworkModel.GetRoadSegmentCount());
+      segment = NetworkModel.GetRoadSegment(randomIndex);
       if (!gasSegment.Contains(segment))
       {
         gasSegment.Add(segment);

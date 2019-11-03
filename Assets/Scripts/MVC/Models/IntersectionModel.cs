@@ -8,7 +8,6 @@ using UnityEngine;
 public class Intersection : RoadItem
 {
   private List<RoadPoint> points = null; //список должен быть отсортирован в круговом порядке
- 
 
   public bool IsThisOne(Intersection inter)
   {
@@ -39,6 +38,22 @@ public class Intersection : RoadItem
     get
     {
       return points;
+    }
+  }
+
+  public Vector3 WorldPosition
+  {
+    get
+    {
+      return MainPoint.WorldPosition;
+    }
+  }
+
+  public RoadPoint MainPoint
+  {
+    get
+    {
+      return points[0];
     }
   }
 }

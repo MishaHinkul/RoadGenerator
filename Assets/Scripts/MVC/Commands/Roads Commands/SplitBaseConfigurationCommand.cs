@@ -6,10 +6,12 @@ public class SplitBaseConfigurationCommand : BaseCommand
 {
   public override void Execute()
   {
+    Retain();
     SplitLevel(0);
     //yield return Executor.StartCoroutine(SplitLevel(1));
     //yield return Executor.StartCoroutine(SplitLevel(2));
     //yield return Executor.StartCoroutine(SplitLevel(3));
+    Release();
   }
 
   private void SplitLevel(int level)
